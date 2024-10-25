@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const path = require("path");
 const MySQLStore = require("express-mysql-session")(session);
 const bodyParser = require("body-parser");
 const db = require("./config/db");
@@ -10,6 +11,7 @@ const viewRoutes = require("./routes/view-router");
 const sentimentRoutes = require("./routes/sentiment-router");
 
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
