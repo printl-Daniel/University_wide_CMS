@@ -1,34 +1,34 @@
-const natural = require("natural");
+const { spawn } = require("child_process");
+const path = require("path");
 const langdetect = require("langdetect");
-
-let translate;
-
-const loadTranslate = async () => {
-  translate = await import("translate").then((module) => module.default);
-};
-
-loadTranslate();
-
-const tokenizer = new natural.WordTokenizer();
-const Analyzer = natural.SentimentAnalyzer;
-const stemmer = natural.PorterStemmer;
-const analyzer = new Analyzer("English", stemmer, "afinn");
+const pythonScriptPath = path.join(__dirname, "sentiment-analysis.py");
 
 const SentimentModel = {
-  detectLanguage(text) {
-    return langdetect.detectOne(text)?.lang || "en";
-  },
-
-  async translateText(text, lang) {
-    if (!translate) await loadTranslate();
-    return lang === "en" ? text : await translate(text, "en");
-  },
-
+  //ANALYZE SENTIMENT//
   async analyzeSentiment(text) {
-    const lang = this.detectLanguage(text);
-    const translatedText = await this.translateText(text, lang);
-    const tokenizedText = tokenizer.tokenize(translatedText);
-    return analyzer.getSentiment(tokenizedText);
+    // Detect language
+    return new Promise((resolve, reject) => {
+      const pythonProcess = spawn("python", [pythonScriptPath, text]);
+      // Handle data from the Python script
+      pythonProcess.stdout.on("data", (data) => {
+        try {
+          const result = JSON.parse(data.toString());
+          resolve(result);
+        } catch (error) {
+          reject(`Error parsing data: ${error}`);
+        }
+      });
+
+      pythonProcess.stderr.on("data", (error) => {
+        reject(`Error in sentiment analysis: ${error}`);
+      });
+
+      pythonProcess.on("close", (code) => {
+        if (code !== 0) {
+          reject(`Python process exited with code ${code}`);
+        }
+      });
+    });
   },
 };
 

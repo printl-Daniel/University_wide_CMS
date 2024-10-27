@@ -4,20 +4,18 @@ const model = require("../models/sentiment-model");
 const sentiment = {
   async analyzeSentiment(req, res) {
     try {
-      const { text } = req.body;
-      const sentimentScore = await model.analyzeSentiment(text);
+      let text = req.body.text;
+      text = text.toLowerCase();
+      const result = await model.analyzeSentiment(text);
+
       res.render("sentiment/feedbackReport", {
-        text,
-        sentimentScore,
-        sentiment:
-          sentimentScore > 0
-            ? "Positive"
-            : sentimentScore < 0
-            ? "Negative"
-            : "Neutral",
+        originalText: result.original_text,
+        translatedText: result.translated_text,
+        sentimentScore: result.sentiment_score,
+        sentiment: result.sentiment,
       });
     } catch (error) {
-      res.status(500).send("Error analyzing sentiment");
+      console.log(error);
     }
   },
 };

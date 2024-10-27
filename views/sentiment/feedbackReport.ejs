@@ -6,21 +6,18 @@
     <title>Sentiment Analysis</title>
   </head>
   <body>
-    <h1>Sentiment Analysis</h1>
-
+    <h1>Analyze Sentiment</h1>
     <form action="/sentiment/analyze" method="POST">
-      <textarea
-        name="text"
-        placeholder="Enter text to analyze"
-        required
-      ></textarea
-      ><br />
-      <button type="submit">Analyze Sentiment</button>
+      <textarea name="text" placeholder="Enter text"></textarea>
+      <button type="submit">Analyze</button>
     </form>
 
-    <% if (typeof sentimentScore !== 'undefined') { %>
-    <h2>Sentiment Score: <%= sentimentScore %></h2>
-    <h3>Sentiment: <%= sentiment %></h3>
+    <% if (sentiment) { %>
+    <h2>Results:</h2>
+    <p>Original Text: <%= originalText %></p>
+    <p>Translated Text: <%= translatedText %></p>
+    <p>Sentiment Score: <%= sentimentScore %></p>
+    <p>Sentiment: <%= sentiment %></p>
     <% } %>
   </body>
 </html>
