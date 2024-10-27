@@ -2,6 +2,6 @@ const express = require("express");
 const router = express.Router();
 const views = require("../controller/view-controller");
 
-router.get("/", views.index);
+router.get("/feedback", views.feedback);
 
 module.exports = router;

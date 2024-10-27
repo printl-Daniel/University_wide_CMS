@@ -1,49 +1,34 @@
-// models/SentimentModel.js
-const Sentiment = require("sentiment");
-const sentiment = new Sentiment();
+const natural = require("natural");
+const langdetect = require("langdetect");
+
+let translate;
+
+const loadTranslate = async () => {
+  translate = await import("translate").then((module) => module.default);
+};
+
+loadTranslate();
+
+const tokenizer = new natural.WordTokenizer();
+const Analyzer = natural.SentimentAnalyzer;
+const stemmer = natural.PorterStemmer;
+const analyzer = new Analyzer("English", stemmer, "afinn");
 
 const SentimentModel = {
-  analyzeText(text) {
-    const analysis = sentiment.analyze(text);
-    let category = "neutral";
-
-    if (analysis.score > 0) category = "positive";
-    else if (analysis.score < 0) category = "negative";
-
-    return { ...analysis, category };
+  detectLanguage(text) {
+    return langdetect.detectOne(text)?.lang || "en";
   },
 
-  categorizeProblem(text) {
-    if (typeof text !== "string") return []; // Ensure text is a string
-    // Simple keyword matching for common problem categories
-    // Simple keyword matching for common patient feedback categories
-    const problems = {
-      "Appointment Issues": [
-        "late",
-        "reschedule",
-        "cancellation",
-        "appointment",
-      ],
-      "Staff Behavior": ["rude", "helpful", "friendly", "unprofessional"],
-      "Facility Cleanliness": ["clean", "dirty", "hygiene", "messy"],
-      "Treatment Satisfaction": [
-        "effective",
-        "pain",
-        "relief",
-        "satisfied",
-        "dissatisfied",
-      ],
-      "Billing Concerns": ["bill", "charge", "payment", "insurance"],
-    };
+  async translateText(text, lang) {
+    if (!translate) await loadTranslate();
+    return lang === "en" ? text : await translate(text, "en");
+  },
 
-    let categories = [];
-    for (let problem in problems) {
-      if (problems[problem].some((keyword) => text.includes(keyword))) {
-        categories.push(problem);
-      }
-    }
-
-    return categories;
+  async analyzeSentiment(text) {
+    const lang = this.detectLanguage(text);
+    const translatedText = await this.translateText(text, lang);
+    const tokenizedText = tokenizer.tokenize(translatedText);
+    return analyzer.getSentiment(tokenizedText);
   },
 };
 
