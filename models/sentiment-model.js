@@ -1,6 +1,5 @@
 const { spawn } = require("child_process");
 const path = require("path");
-const langdetect = require("langdetect");
 const pythonScriptPath = path.join(__dirname, "sentiment-analysis.py");
 
 const SentimentModel = {

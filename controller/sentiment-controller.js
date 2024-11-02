@@ -1,4 +1,3 @@
-const express = require("express");
 const model = require("../models/sentiment-model");
 
 const sentiment = {
