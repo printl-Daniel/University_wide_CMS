@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import staff_dashBoard from '../userRole/staff/views/staff_dashBoard.vue';
+import inventory from '../userRole/staff/views/inventory';
 
 const routes = [
     {
@@ -7,6 +8,11 @@ const routes = [
         name: 'staff_dashBoard',
         component: staff_dashBoard,
       },
+      {
+        path: '/staff/inventory',
+        name: 'inventory',
+        component: inventory,
+      }
     
   ]
   

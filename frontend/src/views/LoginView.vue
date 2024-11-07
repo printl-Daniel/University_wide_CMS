@@ -1,24 +1,47 @@
 <template>
-  <div class="login-container">
-    <h2>Login</h2>
-    <form @submit.prevent="handleLogin">
-      <div class="input-group">
-        <label>Username</label>
-        <input v-model="username" placeholder="Enter username" required />
-      </div>
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" v-model="password" placeholder="Enter password" required />
-      </div>
-      <button type="submit">Login</button>
-    </form>
-    <p v-if="error" class="error">{{ error }}</p>
-  </div>
-</template>
+  <v-app>
+    <v-container
+      fluid
+      class="fill-height d-flex align-center justify-center"
+    >
+      <v-row>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title class="headline">Login</v-card-title>
+
+            <v-card-subtitle>Enter your credentials</v-card-subtitle>
+
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-text-field
+                v-model="email"
+                label="Email"
+                :rules="[emailRules]"
+                required
+                type="email"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="password"
+                label="Password"
+                :rules="[passwordRules]"
+                required
+                type="password"
+              ></v-text-field>
+
+              <v-btn :disabled="!valid" color="primary" @click="login">
+                Login
+              </v-btn>
+            </v-form>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-app>
+</template> 
 
 <script>
 export default {
-  data() {
+  data() {  
     return {
       username: "",
       password: "",
@@ -40,60 +63,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.login-container {
-  max-width: 400px;
-  margin: 10% auto;
-  padding: 20px;
-  text-align: center;
-  border: 1px solid;
-  border-radius: 20px;
-  
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.input-group {
-  margin-bottom: 15px;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  background-color: #333;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #555;
-}
-
-.error {
-  color: #e74c3c;
-  font-size: 14px;
-  margin-top: 10px;
-}
-</style>
