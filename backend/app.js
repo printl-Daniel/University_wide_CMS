@@ -4,7 +4,9 @@ const path = require("path");
 const MySQLStore = require("express-mysql-session")(session);
 const bodyParser = require("body-parser");
 const db = require("./config/db");
+const cors = require('cors');
 const app = express();
+const userRoutes = require('router.js');
 
 //==ROUTES==//
 const viewRoutes = require("./routes/view-router");
@@ -18,6 +20,9 @@ app.use(express.static("public"));
 //==ROUTES==//
 app.use("/", viewRoutes);
 app.use("/sentiment", sentimentRoutes);
+app.use(cors());
+app.use(bodyParser.json());
+app.use('/api', userRoutes);
 
 //==SESSION==//
 const sessionStore = new MySQLStore({}, db);
@@ -37,6 +42,5 @@ app.use(
 );
 
 //==PORT==//
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
