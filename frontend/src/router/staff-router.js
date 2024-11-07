@@ -10,10 +10,10 @@ const routes = [
     
   ]
   
-  const router = createRouter({
+  const staff_router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
   })
   
-  export default router
+  export default staff_router
   

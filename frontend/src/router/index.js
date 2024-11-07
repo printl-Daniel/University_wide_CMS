@@ -3,13 +3,13 @@ import LoginView from '../views/LoginView.vue';
 
 
 
+
 const routes = [
   {
     path: '/',
     name: 'login',
     component: LoginView  // Set LoginView as the default route
   },
- 
  
 
 ]
@@ -20,3 +20,4 @@ const router = createRouter({
 })
 
 export default router
+  
