@@ -7,6 +7,7 @@ const db = require("./config/db");
 const cors = require('cors');
 const app = express();
 const userRoutes = require('./routes/routes.js');
+const staffRoutes = require('./routes/staffRoutes');
 
 //==ROUTES==//
 const viewRoutes = require("./routes/view-router");

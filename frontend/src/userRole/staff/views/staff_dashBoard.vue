@@ -2,10 +2,10 @@
   <StaffSidebar />
   <div class="dashboard">
     
-    <staffHeader /> <!-- Header sa itaas -->
+    <staffHeader /> 
     <div class="main-content">
-      <!-- Sidebar sa kaliwa -->
-      <div class="content"> <!-- Dashboard content sa kanan -->
+
+      <div class="content"> 
         <h2>Staff Dashboard</h2>
         <p>Welcome, Staff! Manage inventory and reports here.</p>
       </div>

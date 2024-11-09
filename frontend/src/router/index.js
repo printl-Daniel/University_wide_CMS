@@ -53,7 +53,7 @@ const routes = [
     path: '/admin/manage-doctor',
     name: 'manageDoctor',
     component: manageDoctor,
-  }
+  },
 
 ];
 

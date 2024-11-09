@@ -19,9 +19,6 @@
           <router-link class="nav-link" to="/manage-patients">Manage Patients</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/appointments">Manage Appointments</router-link>
-        </li>
-        <li class="nav-item">
           <router-link class="nav-link" to="/feedback">Feedback & Evaluation</router-link>
         </li>
         <li class="nav-item">
