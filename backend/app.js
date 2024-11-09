@@ -7,7 +7,7 @@ const db = require("./config/db");
 const cors = require('cors');
 const app = express();
 const userRoutes = require('./routes/routes.js');
-const staffRoutes = require('./routes/staffRoutes');
+const staffRoutes = require('./routes/staff-routes.js');
 
 //==ROUTES==//
 const viewRoutes = require("./routes/view-router");
@@ -15,15 +15,20 @@ const sentimentRoutes = require("./routes/sentiment-router");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static("public")); // Serving static files
+
+// Use body-parser (You can replace with express built-in)
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // This replaces body-parser.json()
 
 //==ROUTES==//
 app.use("/", viewRoutes);
 app.use("/sentiment", sentimentRoutes);
 app.use(cors());
-app.use(bodyParser.json());
+
+// API Routes
 app.use('/api', userRoutes);
+app.use('/api', staffRoutes);
 
 //==SESSION==//
 const sessionStore = new MySQLStore({}, db);
@@ -35,9 +40,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60,
+      maxAge: 1000 * 60 * 60, // 1 hour
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === 'production', // secure cookie in production
     },
   })
 );

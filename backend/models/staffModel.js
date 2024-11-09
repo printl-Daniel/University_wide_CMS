@@ -3,21 +3,40 @@ const db = require('../config/db'); // Import the DB connection (adjust path as 
 
 const staffModel = {
   // Create a new staff member
-  createStaff: async (staffData) => {
-    const { firstName, lastName, contactInfo, email, username, passwordHashed, role = 'staff' } = staffData;
-    const query = `
-      INSERT INTO clinicstaff (firstName, lastName, contactInfo, email, username, passwordHashed, role)
-      VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    const values = [firstName, lastName, contactInfo, email, username, passwordHashed, role];
-
+  createStaff: async (req, res) => {
+    const { firstName, lastName, contactInfo, email, username, password } = req.body;
     try {
-      const [result] = await db.query(query, values);
-      return { staffId: result.insertId, ...staffData }; // Return staff data with generated staffId
+      const passwordHashed = await bcrypt.hash(password, 10);
+  
+      const staffData = {
+        firstName,
+        lastName,
+        contactInfo,
+        email,
+        username,
+        passwordHashed,
+      };
+  
+      const newStaff = await staffModel.createStaff(staffData);
+      return res.status(201).json({
+        message: "Staff member created successfully",
+        staff: newStaff,
+      });
     } catch (error) {
-      throw error; // Propagate error to be handled in controller
+      console.error("Error creating staff:", error); // This should print a detailed error
+      return res.status(500).json({ errorMessage: "Error creating staff" });
+    }
+  
+  },
+  getAllStaff: async () => {
+    const query = 'SELECT * FROM clinicstaff';
+    try {
+      const [rows] = await db.query(query);
+      return rows;
+    } catch (error) {
+      throw error;
     }
   },
-
   // Get all staff members
 //   getAllStaff: async () => {
 //     const query = 'SELECT * FROM clinicstaff';

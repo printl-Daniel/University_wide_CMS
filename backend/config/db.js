@@ -1,10 +1,10 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
 const db = mysql.createConnection({
   host: "localhost",
   user: "crud",
   password: "root",
-  database: "university-cms", //name of the database
+  database: "university_cms", //name of the database
 });
 
 db.connect((error) => {
