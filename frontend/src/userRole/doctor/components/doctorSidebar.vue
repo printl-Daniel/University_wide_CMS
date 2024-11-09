@@ -1,142 +1,79 @@
+<!-- Sidebar.vue -->
 <template>
-    <div class="sidebar">
-      <a href="/" class="logo">
-        <span class="logo-text">Clinic Management</span>
-      </a>
-      <hr>
-      <ul class="nav">
-        <li class="nav-item">
-          <a href="/doctor/dashboard" class="nav-link active">Dashboard</a>
+  <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 250px; height: 100vh;">
+    <!-- Logo Section -->
+    <h5 class="text-primary">Clinic Management</h5>
+    <hr />
+
+    <!-- Navigation Links -->
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item" v-for="(item, index) in navItems" :key="index">
+        <router-link
+          :to="item.link"
+          class="nav-link"
+          :class="{'active': isActive(item.link)}"
+        >
+          {{ item.title }}
+        </router-link>
+      </li>
+    </ul>
+
+    <hr />
+
+    <!-- User Profile Section -->
+    <div class="dropdown">
+      <button
+        class="btn btn-secondary dropdown-toggle d-flex align-items-center"
+        type="button"
+        id="dropdownMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <img src="https://via.placeholder.com/30" alt="Profile" class="rounded-circle me-2" />
+        {{ userName }}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li>
+          <router-link to="/doctor/profile" class="dropdown-item">Profile</router-link>
         </li>
         <li>
-          <a href="/doctor/patients" class="nav-link">Patients</a>
-        </li>
-        <li>
-          <a href="/doctor/appointments" class="nav-link">Appointments</a>
-        </li>
-        <li>
-          <a href="/doctor/medical-history" class="nav-link">Medical History</a>
-        </li>
-        <li>
-          <a href="/doctor/feedback" class="nav-link">Feedback</a>
-        </li>
-        <li>
-          <a href="/doctor/settings" class="nav-link">Settings</a>
+          <router-link to="/logout" class="dropdown-item">Sign out</router-link>
         </li>
       </ul>
-      <hr>
-      <div class="dropdown">
-        <a href="#" class="dropdown-toggle" id="dropdownUser2" @click="toggleDropdown">
-          <img src="https://via.placeholder.com/30" alt="" class="profile-img">
-          <strong>Bautista</strong>
-        </a>
-        <ul class="dropdown-menu" v-if="dropdownOpen">
-          <li><a class="dropdown-item" href="/doctor/profile">Profile</a></li>
-          <li><a class="dropdown-item" href="/logout">Sign out</a></li>
-        </ul>
-      </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: "DoctorSidebar",
-    data() {
-      return {
-        dropdownOpen: false,
-      };
-    },
-    methods: {
-      toggleDropdown() {
-        this.dropdownOpen = !this.dropdownOpen;
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .sidebar {
-    display: flex;
-    flex-direction: column;
-    background-color: #dae2d9; /* Light gray background */
-    height: 100vh;
-    width: 250px;
-    padding: 20px;
+  </div>
+</template>
+
+<script>
+export default {
+  name: "DoctorSidebar",
+  data() {
+    return {
+      navItems: [
+        { title: "Dashboard", link: "/doctor/dashboard" },
+        { title: "Patients", link: "/doctor/patients" },
+        { title: "Appointments", link: "/doctor/appointments" },
+        { title: "Medical History", link: "/doctor/medical-history" },
+        { title: "Feedback", link: "/doctor/feedback" },
+        { title: "Settings", link: "/doctor/settings" }
+      ],
+      userName: "Bautista"
+    };
+  },
+  methods: {
+    isActive(link) {
+      return this.$route.path === link;
+    }
   }
-  
-  .logo {
-    text-decoration: none;
-  }
-  
-  .logo-text {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #007bff; /* Primary color */
-  }
-  
-  hr {
-    margin: 10px 0;
-  }
-  
-  .nav {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .nav-item {
-    margin: 10px 0;
-  }
-  
-  .nav-link {
-    text-decoration: none;
-    color: #333; /* Dark text color */
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .nav-link.active,
-  .nav-link:hover {
-    background-color: #007bff; /* Highlight color */
-    color: white; /* White text on highlight */
-  }
-  
-  .dropdown {
-    position: relative;
-  }
-  
-  .dropdown-toggle {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .profile-img {
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .dropdown-menu {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    list-style: none;
-    padding: 0;
-    margin-top: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  }
-  
-  .dropdown-menu .dropdown-item {
-    text-decoration: none;
-    color: #333; /* Dark text color */
-    padding: 10px;
-    display: block;
-  }
-  
-  .dropdown-menu .dropdown-item:hover {
-    background-color: #007bff; /* Highlight color */
-    color: white; /* White text on highlight */
-  }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+.text-primary {
+  font-weight: bold;
+}
+.nav-link.active {
+  background-color: #007bff; /* Bootstrap primary color */
+  color: white;
+}
+</style>

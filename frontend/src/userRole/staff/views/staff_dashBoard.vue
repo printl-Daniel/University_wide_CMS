@@ -28,20 +28,20 @@ export default {
 <style scoped>
 .dashboard {
   display: flex;
-  height: 100vh; /* Buong taas ng screen */
+  height: 100vh; 
 }
 
 .main-content {
 
-  flex-grow: 1; /* Para sa natitirang taas sa ilalim ng header */
+  flex-grow: 1; 
 }
 
 .sidebar {
-  width: 250px; /* Fixed width para sa sidebar */
+  width: 250px; 
 }
 
 .content {
-  flex-grow: 1; /* Sakupin ang natitirang espasyo sa kanan */
+  flex-grow: 1; 
   padding: 20px;
 }
 </style>

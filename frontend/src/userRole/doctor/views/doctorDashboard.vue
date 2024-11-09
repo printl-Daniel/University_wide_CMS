@@ -15,7 +15,7 @@
   export default {
     components: {
       DoctorSidebar,
-    },
+    },  
   };
   </script>
   
@@ -27,7 +27,7 @@
   .content {
     padding: 20px;
     flex-grow: 1;
-    background-color: #fff; /* White background for content area */
+    background-color: #fff; 
   }
   </style>
   

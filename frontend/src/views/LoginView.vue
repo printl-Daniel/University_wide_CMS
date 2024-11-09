@@ -1,52 +1,47 @@
 <template>
-  <v-app>
-    <v-container
-      fluid
-      class="fill-height d-flex align-center justify-center"
-    >
-      <v-row>
-        <v-col cols="12" md="4">
-          <v-card>
-            <v-card-title class="headline">Login</v-card-title>
-            <v-card-subtitle>Enter your credentials</v-card-subtitle>
+  <div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card" style="width: 25rem;">
+      <div class="card-body">
+        <h5 class="card-title text-center">Login</h5>
+        <h6 class="card-subtitle mb-2 text-muted text-center">Enter your credentials</h6>
 
-            <v-form ref="form" v-model="valid" lazy-validation>
-              <!-- Username Field -->
-              <v-text-field
-                v-model="username"
-                label="Username"
-                :rules="[usernameRules]"
-                required
-              ></v-text-field>
+        <!-- Login Form -->
+        <form @submit.prevent="login">
+          <!-- Username Field -->
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              v-model="username"
+              required
+            />
+          </div>
 
-              <!-- Password Field -->
-              <v-text-field
-                v-model="password"
-                label="Password"
-                :rules="[passwordRules]"
-                required
-                type="password"
-              ></v-text-field>
+          <!-- Password Field -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              v-model="password"
+              required
+            />
+          </div>
 
-              <!-- Login Button -->
-              <v-btn :disabled="!valid" color="primary" @click="login">
-                Login
-              </v-btn>
-            </v-form>
+          <!-- Error Message -->
+          <div v-if="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
 
-            <v-alert
-              v-if="errorMessage"
-              type="error"
-              dismissible
-              class="mt-4"
-            >
-              {{ errorMessage }}
-            </v-alert>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-app>
+          <!-- Login Button -->
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -55,52 +50,51 @@ import axios from "axios";
 export default {
   data() {
     return {
-      username: "",
-      password: "",
-      valid: false,
-      errorMessage: "",
-      // Rules for username validation
-      usernameRules: [
-        (v) => !!v || "Username is required",
-      ],
-      // Rules for password validation
-      passwordRules: [
-        (v) => !!v || "Password is required",
-        (v) => v.length >= 6 || "Password must be at least 6 characters",
-      ],
+      username: "", // Stores the entered username
+      password: "", // Stores the entered password
+      errorMessage: "", // Stores error messages to display
     };
   },
   methods: {
-    // Login function
     async login() {
       try {
-        // Sending POST request to backend with username and password
-        const response = await axios.post("http://localhost:3000/api/login", {
+        // Send a POST request to the backend with the username and password
+        const response = await axios.post("http://localhost:5000/api/login", {
           username: this.username,
           password: this.password,
         });
 
-        if (response.status === 200) {
-
+        if (response.data) {
+          // Save user details to localStorage
           localStorage.setItem("username", response.data.username);
           localStorage.setItem("role", response.data.role);
           localStorage.setItem("userID", response.data.userID);
 
-          // Redirect based on role
+          // Redirect based on the user's role
           if (response.data.role === "admin") {
             this.$router.push("/admin/dashboard");
-          } else (response.data.role === "staff") {
+          } else if (response.data.role === "staff") {
             this.$router.push("/staff/dashboard");
-          } 
+          } else {
+            this.$router.push("/user/dashboard");
+          }
         }
       } catch (error) {
-        // Handle error if login fails
-        console.error("Login error:", error);
-        this.errorMessage = error.response.data.errorMessage || "Login failed. Please try again.";
+        // Display an error message if the login fails
+        this.errorMessage =
+          error.response?.data?.errorMessage || "Login failed. Please try again.";
       }
     },
   },
 };
-
 </script>
 
+<style>
+/* Basic styling for card and login form */
+.card {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.alert {
+  margin-top: 10px;
+}
+</style>

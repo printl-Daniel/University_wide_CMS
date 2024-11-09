@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const db = require("./config/db");
 const cors = require('cors');
 const app = express();
-const userRoutes = require('router.js');
+const userRoutes = require('./routes/routes.js');
 
 //==ROUTES==//
 const viewRoutes = require("./routes/view-router");
