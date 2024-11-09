@@ -1,4 +1,5 @@
 <template>
+  <StaffSidebar />
   <div class="container-fluid">
     <div class="row">
       <!-- Inventory Table -->
@@ -94,7 +95,13 @@
 </template>
 
 <script>
+import StaffSidebar from "../components/staff_sideBar.vue";
+
 export default {
+
+  components: {
+    StaffSidebar
+  },
   data() {
     return {
       dialog: false,
@@ -177,8 +184,13 @@ export default {
 };
 </script>
 
+
+
 <style scoped>
-.table {
-  width: 100%;
+.inventory-container {
+  margin: 0 auto; /* Centers the container */
+  padding: 20px; /* Adds some space within the container */
+  max-width: 1200px; /* Adjust as needed */
+  height: auto; /* Ensures it only takes up needed space */
 }
 </style>

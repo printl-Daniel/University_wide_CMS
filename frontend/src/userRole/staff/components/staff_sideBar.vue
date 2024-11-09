@@ -101,20 +101,6 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
-*,
-::after,
-::before {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-
-}
-
 .wrapper {
   align-items: stretch;
   display: flex;

@@ -1,0 +1,31 @@
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    background-color: #d4edda; /* Light green background */
+    height: 100vh; /* Full height */
+    border-right: 2px solid #ccc; /* Optional: Border for better visibility */
+    padding-top: 20px; /* Add space at the top */
+  }
+  
+  /* Sidebar header styling */
+  .sidebar-header {
+    padding: 10px;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    margin-bottom: 20px; /* Space between header and links */
+  }
+  
+  .nav-link {
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .nav-link:hover {
+    color: #007bff; /* Highlight color on hover */
+    background-color: #c3e6cb; /* Subtle hover background */
+  }
+  
+  .nav-item {
+    margin-bottom: 15px; /* Add spacing between menu items */
+  }
+  

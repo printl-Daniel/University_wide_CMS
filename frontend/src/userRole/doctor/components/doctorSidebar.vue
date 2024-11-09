@@ -1,7 +1,7 @@
-<!-- Sidebar.vue -->
+
 <template>
   <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 250px; height: 100vh;">
-    <!-- Logo Section -->
+
     <h5 class="text-primary">Clinic Management</h5>
     <hr />
 
