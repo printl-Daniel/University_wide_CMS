@@ -8,6 +8,7 @@ import inventory from '../userRole/staff/views/inventory.vue';
 import doctorDashboard from '../userRole/doctor/views/doctorDashboard.vue';
 import adminDashboard from '../userRole/admin/views/admindDashboard.vue';
 import manageStaff from '../userRole/admin/views/manageStaff.vue';
+import manageDoctor from '../userRole/admin/views/manageDoctor.vue';
 
 
 // Define routes for login and staff dashboard
@@ -43,11 +44,15 @@ const routes = [
     name: 'adminDashboard',
     component: adminDashboard,
   },
-
   {
     path: '/admin/manage-staff',
     name: 'manageStaff',
     component: manageStaff,
+  },
+  {
+    path: '/admin/manage-doctor',
+    name: 'manageDoctor',
+    component: manageDoctor,
   }
 
 ];
