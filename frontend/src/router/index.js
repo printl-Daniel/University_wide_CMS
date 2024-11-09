@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../views/LoginView.vue';
 //staff
 import staff_dashBoard from '../userRole/staff/views/staff_dashBoard.vue';
-import inventory from '../userRole/staff/views/inventory.vue';
+import inventory from '../userRole/staff/views/manage_inventory.vue';
 
 //admin
 import doctorDashboard from '../userRole/doctor/views/doctorDashboard.vue';

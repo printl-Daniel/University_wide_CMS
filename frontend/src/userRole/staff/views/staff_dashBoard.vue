@@ -11,7 +11,7 @@
       </div>
     </div>
   </div>s
-</template>
+</template>a
 
 <script>
 import StaffSidebar from "../components/staff_sideBar.vue";
