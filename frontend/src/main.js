@@ -11,8 +11,3 @@ createApp(App)
   .use(router)
   .use(vuetify)
   .mount('#app')
-
-  createApp(App)
-  .use(staff_router)
-  .use(vuetify)
-  .mount('#app')
