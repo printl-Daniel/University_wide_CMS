@@ -1,9 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../views/LoginView.vue';
+//staff
 import staff_dashBoard from '../userRole/staff/views/staff_dashBoard.vue';
 import inventory from '../userRole/staff/views/inventory.vue';
+
+//admin
 import doctorDashboard from '../userRole/doctor/views/doctorDashboard.vue';
 import adminDashboard from '../userRole/admin/views/admindDashboard.vue';
+import manageStaff from '../userRole/admin/views/manageStaff.vue';
 
 
 // Define routes for login and staff dashboard
@@ -38,6 +42,12 @@ const routes = [
     path: '/admin/dashboard',
     name: 'adminDashboard',
     component: adminDashboard,
+  },
+
+  {
+    path: '/admin/manage-staff',
+    name: 'manageStaff',
+    component: manageStaff,
   }
 
 ];
