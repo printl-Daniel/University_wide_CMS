@@ -13,7 +13,7 @@
           <router-link class="nav-link" to="/admin/manage-staff">Manage Staff</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/manage-doctors">Manage Doctors</router-link>
+          <router-link class="nav-link" to="/admin/manage-doctor">Manage Doctors</router-link>
         </li>
         <li class="nav-item">
           <router-link class="nav-link" to="/manage-patients">Manage Patients</router-link>
