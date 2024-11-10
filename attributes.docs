@@ -9,8 +9,8 @@ contactInfo (String)
 passwordHash (String, Required)
 createdAt (Timestamp, Default)
 updatedAt (Timestamp, Auto-updated)
-Patient
 
+Patient
 Attributes:
 patientId (Primary Key, Integer, Auto-Increment)
 firstName (String, Required)
@@ -20,13 +20,13 @@ contactInfo (String)
 medicalHistoryAccess (Boolean, Default True)
 createdAt (Timestamp, Default)
 updatedAt (Timestamp, Auto-updated)
-Doctor
 
+Doctor
 Attributes:
 doctorId (Primary Key, Integer, References staffId)
 specialization (String)
-Electronic Medical Records (EMR)
 
+Electronic Medical Records (EMR)
 Attributes:
 recordId (Primary Key, Integer, Auto-Increment)
 patientId (Foreign Key, References patientId, Integer)
@@ -34,8 +34,8 @@ doctorId (Foreign Key, References doctorId, Integer)
 treatmentDetails (Text)
 prescriptions (Text)
 recordDate (Timestamp, Default)
-Doctor Notes
 
+Doctor Notes
 Attributes:
 noteId (Primary Key, Integer, Auto-Increment)
 patientId (Foreign Key, References patientId, Integer)
