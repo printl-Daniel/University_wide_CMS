@@ -1,16 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { addProduct, updateQuantity, getAllInventory, getProductById } = require('../controllers/manageInventoryController');
+const inventoryController = require('../controller/inventoryController');
 
-router.post('/add', addProduct);
+// Route to add a new product
+router.post('/add', inventoryController.addProduct);
 
-// Route to update the quantity of an existing product
-router.post('/update-quantity', updateQuantity);
+// Route to update quantity
+router.patch('/update-quantity', inventoryController.updateQuantity);
 
-// Route to fetch all inventory products
-router.get('/', getAllInventory);
+// Route to update product details
+router.put('/update-product', inventoryController.updateProduct);
 
-// Route to fetch a specific product by productId
-router.get('/:productId', getProductById);
+// Route to get all inventory products
+router.get('/', inventoryController.getAllInventory);
+
+router.get('/history/:productId', inventoryController.getProductHistory);
+
+// Route to get a specific product by ID
+//router.get('/:productId', inventoryController.getProductById);
 
 module.exports = router;
