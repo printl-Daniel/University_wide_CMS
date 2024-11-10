@@ -1,0 +1,44 @@
+Staff
+Attributes:
+staffId (Primary Key, Integer, Auto-Increment)
+firstName (String, Required)
+lastName (String, Required)
+role (Enum: 'doctor', 'nurse', 'admin', Required)
+email (String, Unique, Required)
+contactInfo (String)
+passwordHash (String, Required)
+createdAt (Timestamp, Default)
+updatedAt (Timestamp, Auto-updated)
+Patient
+
+Attributes:
+patientId (Primary Key, Integer, Auto-Increment)
+firstName (String, Required)
+lastName (String, Required)
+email (String, Unique, Required)
+contactInfo (String)
+medicalHistoryAccess (Boolean, Default True)
+createdAt (Timestamp, Default)
+updatedAt (Timestamp, Auto-updated)
+Doctor
+
+Attributes:
+doctorId (Primary Key, Integer, References staffId)
+specialization (String)
+Electronic Medical Records (EMR)
+
+Attributes:
+recordId (Primary Key, Integer, Auto-Increment)
+patientId (Foreign Key, References patientId, Integer)
+doctorId (Foreign Key, References doctorId, Integer)
+treatmentDetails (Text)
+prescriptions (Text)
+recordDate (Timestamp, Default)
+Doctor Notes
+
+Attributes:
+noteId (Primary Key, Integer, Auto-Increment)
+patientId (Foreign Key, References patientId, Integer)
+doctorId (Foreign Key, References doctorId, Integer)
+notes (Text)
+noteDate (Timestamp, Default)
