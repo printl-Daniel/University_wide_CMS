@@ -1,67 +1,113 @@
-Staff
-Attributes:
-staffId (Primary Key, Integer, Auto-Increment)
-firstName (String, Required)
-lastName (String, Required)
-role (Enum: 'doctor', 'nurse', 'admin', Required)
-email (String, Unique, Required)
-contactInfo (String)
-passwordHash (String, Required)
-createdAt (Timestamp, Default)
-updatedAt (Timestamp, Auto-updated)
+1. Staff Table
+The Staff table meets 3NF as each non-key attribute is fully dependent on staffId, which is the primary key.
 
-Patient
 Attributes:
-patientId (Primary Key, Integer, Auto-Increment)
-firstName (String, Required)
-lastName (String, Required)
-email (String, Unique, Required)
-contactInfo (String)
-medicalHistoryAccess (Boolean, Default True)
-createdAt (Timestamp, Default)
-updatedAt (Timestamp, Auto-updated)
+staffId (Primary Key)
+firstName
+lastName
+roleId (Foreign Key, References Role.roleId)
+email
+contactInfo
+passwordHash
+createdAt
+updatedAt
 
-Doctor
-Attributes:
-doctorId (Primary Key, Integer, References staffId)
-specialization (String)
+2. Role Table
+This table manages different roles in the system (doctor, nurse, admin, etc.) and is fully normalized.
 
-Electronic Medical Records (EMR)
 Attributes:
-recordId (Primary Key, Integer, Auto-Increment)
-patientId (Foreign Key, References patientId, Integer)
-doctorId (Foreign Key, References doctorId, Integer)
-treatmentDetails (Text)
-prescriptions (Text)
-recordDate (Timestamp, Default)
+roleId (Primary Key)
+roleName (Enum: 'doctor', 'nurse', 'admin', 'patient')
+accessLevel (Defines access control levels)
 
-Doctor Notes
-Attributes:
-noteId (Primary Key, Integer, Auto-Increment)
-patientId (Foreign Key, References patientId, Integer)
-doctorId (Foreign Key, References doctorId, Integer)
-notes (Text)
-noteDate (Timestamp, Default)
+3. Patient Table
+The Patient table is already in 3NF, with all attributes fully dependent on patientId.
 
-Inventory
 Attributes:
-itemId (Primary Key, Integer, Auto-Increment)
-itemName (String, Required) - Name of the item (e.g., "Bandages," "Aspirin")
-category (String) - Type of item (e.g., "Medicine," "Equipment")
-quantity (Integer, Required) - Current stock level
-unit (String) - Unit of measurement (e.g., "Box," "Bottle")
-threshold (Integer) - Minimum stock level before reordering
-lastRestocked (Timestamp) - Date when the item was last restocked
-price (Decimal) - Price per unit for financial records
-createdAt (Timestamp, Default)
-updatedAt (Timestamp, Auto-updated)
+patientId (Primary Key)
+firstName
+lastName
+email
+contactInfo
+medicalHistoryAccess
+createdAt
+updatedAt
 
-Audit Trail
+4. Doctor Table
+Since Doctor is linked directly to Staff by doctorId, it meets 3NF requirements with only the necessary attributes.
+
 Attributes:
-auditId (Primary Key, Integer, Auto-Increment)
-actionType (String) - Description of the action taken (e.g., "Create," "Update," "Delete")
-tableName (String) - Table on which the action was performed (e.g., "Patient," "Inventory")
-recordId (Integer) - The specific record's ID that was affected (e.g., patientId, itemId)
-userId (Foreign Key, Integer) - ID of the user who performed the action (references staff.staffId)
-actionTimestamp (Timestamp, Default) - Date and time the action was performed
-changes (JSON or Text) - Summary of the changes (e.g., {"quantity": "10 -> 20"})
+doctorId (Primary Key, References Staff.staffId)
+specialization
+
+5. Electronic Medical Records (EMR) Table
+The EMR table stores patient records and is normalized, with attributes fully dependent on recordId.
+
+Attributes:
+recordId (Primary Key)
+patientId (Foreign Key, References Patient.patientId)
+doctorId (Foreign Key, References Doctor.doctorId)
+treatmentDetails
+prescriptions
+recordDate
+
+6. Doctor Notes Table
+The Doctor Notes table records doctor observations linked to patients and meets 3NF.
+
+Attributes:
+noteId (Primary Key)
+patientId (Foreign Key, References Patient.patientId)
+doctorId (Foreign Key, References Doctor.doctorId)
+notes
+noteDate
+
+7. Inventory Table
+The Inventory table manages stock and resources for the clinic. It’s in 3NF, as each attribute depends only on itemId.
+
+Attributes:
+itemId (Primary Key)
+itemName
+category
+quantity
+unit
+threshold
+lastRestocked
+price
+createdAt
+updatedAt
+
+8. Audit Trail Table
+The Audit Trail table logs actions in the system and is normalized to 3NF.
+
+Attributes:
+auditId (Primary Key)
+actionType
+tableName
+recordId (ID of the affected record in the table referenced by tableName)
+userId (Foreign Key, References Staff.staffId)
+actionTimestamp
+changes
+ipAddress
+notes
+
+9. Feedback Table
+The Feedback table allows patients to submit feedback and is in 3NF with no transitive dependencies.
+
+Attributes:
+feedbackId (Primary Key)
+patientId (Foreign Key, References Patient.patientId)
+feedbackText
+sentiment (Enum: 'positive', 'neutral', 'negative')
+feedbackDate
+
+
+10. Medical Certificates Table
+The Medical Certificates table manages patient requests for medical certificates and meets 3NF.
+
+Attributes:
+certificateId (Primary Key)
+patientId (Foreign Key, References Patient.patientId)
+doctorId (Foreign Key, References Doctor.doctorId)
+requestDate
+status (Enum: 'requested', 'approved', 'rejected')
+downloadLink
