@@ -1,17 +1,20 @@
 <template>
-  <StaffSidebar />
-  <div class="dashboard">
-    
-    <staffHeader /> 
-    <div class="main-content">
+  <div class="d-flex">
+    <!-- Sidebar Component -->
+    <StaffSidebar />
 
-      <div class="content"> 
-        <h2>Staff Dashboard</h2>
-        <p>Welcome, Staff! Manage inventory and reports here.</p>
+    <!-- Dashboard Content -->
+    <div class="dashboard">
+      <staffHeader />
+      <div class="main-content">
+        <div class="content">
+          <h2>Staff Dashboard</h2>
+          <p>Welcome, Staff! Manage inventory and reports here.</p>
+        </div>
       </div>
     </div>
-  </div>s
-</template>a
+  </div>
+</template>
 
 <script>
 import StaffSidebar from "../components/staff_sideBar.vue";
@@ -26,22 +29,32 @@ export default {
 </script>
 
 <style scoped>
-.dashboard {
+/* Flex container for sidebar and content */
+.d-flex {
   display: flex;
-  height: 100vh; 
+  height: 100vh; /* Make sure the content takes full height */
 }
 
-.main-content {
-
-  flex-grow: 1; 
+/* Sidebar should have a fixed width */
+.staffSidebar {
+  width: 250px; /* You can adjust this width as needed */
+  background-color: #f4f4f4;
+  /* Add padding, border, or other styles if needed */
 }
 
-.sidebar {
-  width: 250px; 
-}
-
-.content {
-  flex-grow: 1; 
+/* Dashboard content should take the remaining space */
+.dashboard {
+  flex-grow: 1;
   padding: 20px;
+}
+
+/* Main content style */
+.main-content {
+  margin-top: 20px;
+}
+
+/* Optional: Styling for content */
+.content {
+  margin-top: 20px;
 }
 </style>
