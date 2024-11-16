@@ -1,14 +1,14 @@
 <template>
-<DoctorSidebar/>
+<DoctorNavbar/>
 
 </template>
 
 <script>
-  import DoctorSidebar from "../components/doctorSidebar.vue";
+ import DoctorNavbar from "../components/doctorNavbar.vue";
 
   export default {
     components:{
-        DoctorSidebar
+      DoctorNavbar
     }
   }
   

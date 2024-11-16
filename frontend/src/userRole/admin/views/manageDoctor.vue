@@ -1,10 +1,10 @@
 <template>
-  <div class="d-flex">
-    <!-- Sidebar -->
-    <adminSidebar />
+  <div>
+    <!-- Admin Navbar (top navbar) -->
+    <AdminNavbar />
 
     <!-- Main Content -->
-    <div class="container mt-4 flex-grow-1">
+    <div class="container mt-4">
       <h2 class="mb-4">Manage Doctors</h2>
       <div class="card">
         <div class="card-header">
@@ -35,7 +35,7 @@
                     Edit
                   </button>
                   <button
-                    class="btn btn-danger btn-sm"
+                    class="btn btn-danger btn-sm ms-2"
                     @click="deleteDoctor(doctor.id)"
                   >
                     Delete
@@ -51,11 +51,11 @@
 </template>
 
 <script>
-import adminSidebar from "../components/admin-sideBar.vue";
+import AdminNavbar from "../components/adminNavbar.vue";
 
 export default {
   components: {
-    adminSidebar,
+    AdminNavbar,
   },
   data() {
     return {
@@ -92,10 +92,61 @@ export default {
 </script>
 
 <style scoped>
+/* Container for content */
 .container {
-  max-width: 800px;
+  max-width: 1200px; /* Max width for larger screens */
+  margin: 0 auto; /* Center the content */
+  padding-left: 15px;
+  padding-right: 15px;
 }
-.d-flex {
-  display: flex;
+
+/* Card styling */
+.card {
+  border: none; /* Remove card border */
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add light shadow for card */
+}
+
+/* Table styling */
+.table {
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 12px; /* Increased padding for readability */
+}
+
+.table-striped tbody tr:nth-child(odd) {
+  background-color: #f9f9f9; /* Slightly darker background for odd rows */
+}
+
+/* Button styling */
+button.btn {
+  border-radius: 5px; /* Round buttons slightly */
+}
+
+/* Add some space between buttons */
+button.btn.ms-2 {
+  margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+  /* Mobile responsiveness: Adjust content for smaller screens */
+  .container {
+    max-width: 100%; /* Make the container full width */
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px; /* Smaller padding on mobile screens */
+  }
+
+  .btn {
+    font-size: 0.8rem; /* Smaller font size for buttons on mobile */
+  }
 }
 </style>

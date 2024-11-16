@@ -1,20 +1,22 @@
 <template>
+  <div>
+    <DoctorNavbar/>
     <div class="dashboard">
-      <DoctorSidebar />
       <div class="content">
         <h2>Doctor Dashboard</h2>
         <p>Welcome, Doctor! Manage your tasks and view patient information here.</p>
         <!-- Additional dashboard content can go here -->
       </div>
     </div>
+  </div>
   </template>
   
   <script>
-  import DoctorSidebar from "../components/doctorSidebar.vue";
+  import DoctorNavbar from "../components/doctorNavbar.vue";
   
   export default {
     components: {
-      DoctorSidebar,
+      DoctorNavbar,
     },  
   };
   </script>

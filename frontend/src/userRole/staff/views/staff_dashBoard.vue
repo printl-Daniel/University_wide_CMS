@@ -1,5 +1,7 @@
 <template>
-      <navBar />
+      <div>
+        <navBar />
+      </div>
   <div class="container-fluid">
     <!-- Sidebar Component -->
 
