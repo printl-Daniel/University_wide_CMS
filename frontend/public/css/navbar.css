@@ -1,0 +1,23 @@
+/* Navbar styles */
+.navbar {
+  background-color: #d4edda; /* Light green background */
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.nav-link {
+  color: #333 !important; /* Ensure the link color overrides default styling */
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #007bff !important; /* Highlight color on hover */
+  background-color: #c3e6cb; /* Subtle hover background */
+}
+
+.nav-item {
+  margin-left: 20px; /* Add some spacing between menu items */
+}
