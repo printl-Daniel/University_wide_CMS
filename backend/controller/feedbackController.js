@@ -1,4 +1,4 @@
-const Feedback = require("../models/Feedback");
+const Feedback = require("../models/feedback");
 const { analyzeSentiment } = require("../utils/sentimentAnalysis");
 
 // Submit feedback
