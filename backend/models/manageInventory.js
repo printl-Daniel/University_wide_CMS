@@ -6,6 +6,7 @@ const inventorySchema = new Schema({
     type: String,
     required: true,
     unique: true,
+    index: true, // Create an index for faster lookups
   },
   itemName: {
     type: String,
@@ -13,28 +14,30 @@ const inventorySchema = new Schema({
   },
   category: {
     type: String,
-    enum: ['Medicine', 'Equipment', 'Medical Supply'], // Possible categories
+    required: true, // Mark category as required
   },
   quantity: {
     type: Number,
     required: true,
+    min: 0, // Ensure quantity cannot be negative
   },
   unit: {
     type: String,
-    enum: ['Box', 'Bottle', 'Pack'], // Possible units
+    required: true, // Mark unit as required
   },
   threshold: {
     type: Number,
     default: 5, // Minimum stock level before reordering
+    min: 0, // Ensure threshold cannot be negative
   },
   lastRestocked: {
     type: Date,
     default: Date.now, // Date when the item was last restocked
   },
-  status: {
-    type: String,
-    enum: ['In Stock', 'Out of Stock', 'Discontinued'],
-    default: 'In Stock',
+  price: {
+    type: Number,
+    required: true,
+    min: 0, // Ensure price cannot be negative
   },
   createdAt: {
     type: Date,
