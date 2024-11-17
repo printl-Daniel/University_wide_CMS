@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue';
 //staff
 import staff_dashBoard from '../userRole/staff/views/staff_dashBoard.vue';
 import inventory from '../userRole/staff/views/manage_inventory.vue';
+import patientRecords from '../userRole/staff/views/patientRecords.vue';
 
 //admin
 
@@ -39,6 +40,12 @@ const routes = [
     path: '/staff/inventory',
     name: 'inventory',
     component: inventory,
+  },
+
+  {
+    path: '/staff/patient-records',
+    name: 'patientRecords',
+    component: patientRecords,
   },
 //doctor-router
   {

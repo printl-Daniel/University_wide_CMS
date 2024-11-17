@@ -57,7 +57,7 @@
   </template>
   
   <script>
-  import StaffNavbar from '../components/staffNavbar.vue';
+  import StaffNavbar from '../components/staff_navbar.vue';
   
   export default {
     components: {

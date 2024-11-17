@@ -13,6 +13,9 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/staff/inventory">Manage Inventory</router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/staff/patient-records">View Patient Records</router-link>
+          </li>
         </ul>
       </div>
     </div>

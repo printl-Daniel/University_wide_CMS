@@ -7,8 +7,22 @@
       <!-- Main Content Container (flex-grow) -->
       <div class="container ">
         <h2>Inventory</h2>
-        <button class="btn btn-primary" @click="showModal = true">Add Item</button>
-
+        <div class="d-flex mb-4">
+          <input
+            type="text"
+            v-model="searchQuery"
+            class="form-control mr-2" 
+            placeholder="Search items..."
+            @input="filterInventory"
+          />
+          <button 
+            class="btn btn-secondary"
+            @click="filterInventory">
+            Search
+          </button>
+        
+        </div>
+        <button class="btn btn-primary ml-4" @click="showModal = true">Add Item</button>
         <!-- List of inventory items -->
         <div class="mt-4">
           <table class="table">
