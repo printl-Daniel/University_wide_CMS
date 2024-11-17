@@ -40,7 +40,7 @@
             <!-- Quantity -->
             <div class="mb-3">
               <label for="quantity" class="form-label">Quantity</label>
-              <input type="number" id="quantity" class="form-control" v-model="selectedItem.quantity" required min="1" />
+              <input type="number" id="quantity" class="form-control" v-model="selectedItem.quantity" required min="1" disabled />
             </div>
 
             <!-- Unit -->
@@ -60,7 +60,7 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary">Add Product</button>
+            <button type="submit" class="btn btn-primary">Save</button>
           </form>
         </div>
       </div>
