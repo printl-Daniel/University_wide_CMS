@@ -79,6 +79,11 @@ const routes = [
     name: "manageDoctor",
     component: manageDoctor,
   },
+  {
+    path: "/admin/view-user",
+    name: "user",
+    component: UserManagement,
+  },
 
   //patient
   {
