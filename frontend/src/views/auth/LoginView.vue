@@ -39,6 +39,11 @@
           <!-- Login Button -->
           <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
+
+        <!-- Sign Up Link -->
+        <div class="text-center mt-3">
+          <p>Don't have an account? <router-link to="/register" class="text-primary">Sign Up</router-link></p>
+        </div>
       </div>
     </div>
   </div>
