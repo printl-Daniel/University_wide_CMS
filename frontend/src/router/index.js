@@ -3,12 +3,23 @@ import LoginView from '../views/LoginView.vue';
 //staff
 import staff_dashBoard from '../userRole/staff/views/staff_dashBoard.vue';
 import inventory from '../userRole/staff/views/manage_inventory.vue';
+import patientRecords from '../userRole/staff/views/patientRecords.vue';
 
 //admin
-import doctorDashboard from '../userRole/doctor/views/doctorDashboard.vue';
+
 import adminDashboard from '../userRole/admin/views/admindDashboard.vue';
 import manageStaff from '../userRole/admin/views/manageStaff.vue';
 import manageDoctor from '../userRole/admin/views/manageDoctor.vue';
+
+
+//doctor
+import patientHistory from '@/userRole/doctor/views/patientHistory.vue';
+import doctorDashboard from '../userRole/doctor/views/doctorDashboard.vue';
+
+//patient
+import patientDashboard from '../userRole/patient/views/patientDashboard.vue';
+import medical from '../userRole/patient/views/certificateRequest.vue';
+import feedback from '../userRole/patient/views/feedBack.vue';
 
 
 // Define routes for login and staff dashboard
@@ -32,9 +43,20 @@ const routes = [
   },
 
   {
+    path: '/staff/patient-records',
+    name: 'patientRecords',
+    component: patientRecords,
+  },
+//doctor-router
+  {
     path: '/doctor/dashboard',
     name: 'doctorDashboard',
     component: doctorDashboard,
+  },
+  {
+    path: '/doctor/patient-history',
+    name: 'patientHistory', 
+    component: patientHistory,
   },
 
 
@@ -55,6 +77,22 @@ const routes = [
     component: manageDoctor,
   },
 
+  //patient
+  {
+    path: '/patient/dashboard',
+    name: 'patientDashboard',
+    component: patientDashboard,
+  },
+  {
+    path: '/patient/medical',
+    name: 'certificateRequest',
+    component: medical,
+  },
+  {
+    path: '/patient/feedback',
+    name: 'feedback',
+    component: feedback,
+  },
 ];
 
 // Create the router instance

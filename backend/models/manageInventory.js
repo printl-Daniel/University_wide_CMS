@@ -1,66 +1,61 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const inventorySchema = new mongoose.Schema({
-  productId: {
+const inventorySchema = new Schema({
+  itemId: {
     type: String,
     required: true,
-    unique: true, // Ensure productId is unique (like a barcode)
-    trim: true,
+    unique: true,
+    index: true, // Create an index for faster lookups
   },
-  productName: {
+  itemName: {
     type: String,
     required: true,
-    trim: true,
-  },
-  description: {
-    type: String,
-    trim: true,
   },
   category: {
     type: String,
-    enum: ['medicine', 'medical supply', 'equipment'],
-    required: true,
+    required: true, // Mark category as required
   },
   quantity: {
     type: Number,
     required: true,
-    default: 0,
+    min: 0, // Ensure quantity cannot be negative
   },
-  status: {
+  unit: {
     type: String,
-    enum: ['in-stock', 'out-of-stock', 'discontinued'],
-    default: 'in-stock',
+    required: true, // Mark unit as required
   },
-  history: [
-    {
-      action: {
-        type: String,
-        enum: ['added', 'quantity-updated', 'updated'],
-        required: true,
-      },
-      previousQuantity: {
-        type: Number,
-      },
-      newQuantity: {
-        type: Number,
-      },
-      quantityChange: {
-        type: Number,
-      },
-      date: {
-        type: Date,
-        default: Date.now,
-      },
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Staff',
-        required: true,
-      },
-    },
-  ],
-}, {
-  timestamps: true,
+  threshold: {
+    type: Number,
+    default: 5, // Minimum stock level before reordering
+    min: 0, // Ensure threshold cannot be negative
+  },
+  lastRestocked: {
+    type: Date,
+    default: Date.now, // Date when the item was last restocked
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0, // Ensure price cannot be negative
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now, // Automatically set the creation date
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now, // Automatically update the last updated date
+  },
 });
 
+// Middleware to update `updatedAt` on every document modification
+inventorySchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+// Create model
 const Inventory = mongoose.model('Inventory', inventorySchema);
+
 module.exports = Inventory;
