@@ -7,7 +7,6 @@ import inventory from "../userRole/staff/views/manage_inventory.vue";
 import patientRecords from "../userRole/staff/views/patientRecords.vue";
 
 //admin
-
 import adminDashboard from "../userRole/admin/views/admindDashboard.vue";
 import manageStaff from "../userRole/admin/views/manageStaff.vue";
 import manageDoctor from "../userRole/admin/views/manageDoctor.vue";
@@ -82,7 +81,7 @@ const routes = [
   {
     path: "/admin/view-user",
     name: "user",
-    component: UserManagement,
+    // component: UserManagement,
   },
 
   //patient

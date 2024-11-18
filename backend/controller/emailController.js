@@ -1,31 +1,36 @@
-const Email = require("../models/emailModel");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
-exports.sendEmail = async (req, res) => {
+exports.sendMail = async (req, res) => {
   try {
-    const { email } = req.body;
-    const newEmail = await Email.create({ email });
+    const { from, senderName, reason, contact } = req.body;
+
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASSWORD,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    // Email options
-    const mailOptions = {
-      from: process.env.GMAIL_USER,
-      to: process.env.GMAIL_USER, // Send the email to yourself
-      subject: "New Email Request Received",
-      text: `You received a new email request: ${email}`,
+    const mail = {
+      from: `"${senderName}" <${process.env.EMAIL_USER}>`,
+      to: "universitywideminus@gmail.com",
+      subject: "Certificate Request",
+      text: `Sender: ${senderName} \n\nContact: ${contact} \n\nReason: ${reason}`,
+      replyTo: `"${senderName}" <${from}>`,
     };
 
-    await transporter.sendMail(mailOptions);
-    res
-      .status(201)
-      .json({ message: "Email saved and notification sent!", email: newEmail });
+    await transporter.sendMail(mail);
+    res.status(200).json({ message: "Email sent successfully!" });
+
+    console.log(`Email sent to: universitywideminus@gmail.com`);
+    console.log(`From: ${from}`);
+    console.log(`Message: ${reason}`);
   } catch (error) {
+    console.error("Error sending email:", error);
     res.status(400).json({ error: error.message });
   }
 };
