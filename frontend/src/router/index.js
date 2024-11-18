@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginView from '../views/LoginView.vue';
+import LoginView from '../views/auth/LoginView.vue';
+import RegisterView from '../views/auth/RegisterView.vue';
 //staff
 import staff_dashBoard from '../userRole/staff/views/staff_dashBoard.vue';
 import inventory from '../userRole/staff/views/manage_inventory.vue';
@@ -28,6 +29,11 @@ const routes = [
     path: '/',
     name: 'login',
     component: LoginView  // Set LoginView as the default route
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterView
   },
 
   //staff-router
