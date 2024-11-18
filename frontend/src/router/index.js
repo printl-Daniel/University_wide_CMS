@@ -11,6 +11,7 @@ import patientRecords from '../userRole/staff/views/patientRecords.vue';
 import adminDashboard from '../userRole/admin/views/admindDashboard.vue';
 import manageStaff from '../userRole/admin/views/manageStaff.vue';
 import manageDoctor from '../userRole/admin/views/manageDoctor.vue';
+import user from '../userRole/admin/views/userManagement.vue';
 
 
 //doctor
@@ -21,6 +22,7 @@ import doctorDashboard from '../userRole/doctor/views/doctorDashboard.vue';
 import patientDashboard from '../userRole/patient/views/patientDashboard.vue';
 import medical from '../userRole/patient/views/certificateRequest.vue';
 import feedback from '../userRole/patient/views/feedBack.vue';
+import UserManagement from '../userRole/admin/views/userManagement.vue';
 
 
 // Define routes for login and staff dashboard
@@ -81,6 +83,11 @@ const routes = [
     path: '/admin/manage-doctor',
     name: 'manageDoctor',
     component: manageDoctor,
+  },
+  {
+    path: '/admin/view-user',
+    name: 'user',
+    component: UserManagement,
   },
 
   //patient

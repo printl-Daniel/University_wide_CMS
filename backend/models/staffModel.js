@@ -1,73 +1,41 @@
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
+const Schema = mongoose.Schema;
+const Role = require('./role');
 
-const userStaff = new mongoose.Schema({
-  firstName: {
+// Staff Schema
+const staffSchema = new Schema({
+  staffId: {
     type: String,
-    required: true,
+    unique: true,         // Ensures that each staffId is unique
+    required: true,       // Makes sure that staffId is provided
   },
-  lastName: {
-    type: String,
-    required: true,
+  firstName: { 
+    type: String, 
+    required: true 
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+  lastName: { 
+    type: String, 
+    required: true 
   },
-  password: {
-    type: String,
-    required: true,
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
   },
-  role: {
-    type: String,
-    default: 'staff',
-    immutable: true,
+  contactInfo: { 
+    type: String, 
+    required: true 
   },
-  phone: {
-    type: String,
-    required: true,
+  passwordHash: { 
+    type: String, 
+    required: true 
   },
-  address: {
-    street: {
-      type: String,
-    },
-    barangay: {
-      type: String,
-    },
-    city: {
-      type: String,
-    },
-    province: {
-      type: String,
-    },
-    zipCode: {
-      type: String,
-    },
-  },
-  employmentDate: {
-    type: Date,
-    default: Date.now,
-  },
-  status: {
-    type: String,
-    enum: ['active', 'inactive'],
-    default: 'active',
-  },
-  userId: {
-    // Adding a unique identifier that you can use in other collections like inventory
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Staff',
-    unique: true,
-    index: true,
+  roleId: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'Role',          // This is a reference to the Role model
+    required: true 
   }
-}, {
-  timestamps: true,
-});
+}, { timestamps: true });  // Automatically adds createdAt and updatedAt fields
 
-// Auto-increment for the staffId field, if required in addition to ObjectId
-userStaff.plugin(AutoIncrement, { inc_field: 'staffId' });
-
-const Staff = mongoose.model('Staff', userStaff);
-
+const Staff = mongoose.model('Staff', staffSchema);
 module.exports = Staff;

@@ -77,7 +77,7 @@
   
           <!-- Already have an account link -->
           <p class="text-center mt-3">
-            Already have an account? <router-link to="/login" class="text-primary">Sign In</router-link>
+            Already have an account? <router-link to="/" class="text-primary">Sign In</router-link>
           </p>
         </div>
       </div>
