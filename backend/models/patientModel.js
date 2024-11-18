@@ -7,8 +7,11 @@ const patientSchema = new Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   contactInfo: { type: String, required: true },
-  medicalHistoryAccess: { type: Boolean, default: false }
-}, { timestamps: true });
+  passwordHash: { type: String, required: true }, // Securely store hashed passwords
+  emailVerified: { type: Boolean, default: false }, // Email verification status
+  verificationToken: { type: String }, // Token for email verification
+  medicalHistoryAccess: { type: Boolean, default: false },
+}, { timestamps: true }); // Automatically adds createdAt and updatedAt fields
 
 const Patient = mongoose.model('Patient', patientSchema);
 module.exports = Patient;
