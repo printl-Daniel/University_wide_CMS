@@ -1,4 +1,4 @@
-const Patient = require('../models/patientModel');
+const Patient = require('../../models/patientModel');
 
 const register = async (req, res) => {
   const { firstName, lastName, email, contactInfo, password } = req.body;
