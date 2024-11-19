@@ -1,148 +1,123 @@
 <template>
-  <div class="container d-flex align-items-center justify-content-center vh-100">
-    <div class="card" style="width: 25rem;">
-      <div class="card-body">
-        <h5 class="card-title text-center">Patient Registration</h5>
-        <h6 class="card-subtitle mb-2 text-muted text-center">Create an account</h6>
-
-        <!-- Register Form -->
-        <form @submit.prevent="register">
-          <!-- Full Name Fields (Split into First and Last Name) -->
-          <div class="mb-3">
-            <label for="firstName" class="form-label">First Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="firstName"
-              v-model="firstName"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="lastName" class="form-label">Last Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="lastName"
-              v-model="lastName"
-              required
-            />
-          </div>
-
-          <!-- Email Field -->
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              v-model="email"
-              required
-            />
-          </div>
-
-          <!-- Contact Info Field -->
-          <div class="mb-3">
-            <label for="contactInfo" class="form-label">Contact Information</label>
-            <input
-              type="text"
-              class="form-control"
-              id="contactInfo"
-              v-model="contactInfo"
-              required
-            />
-          </div>
-
-          <!-- Medical History Access Field -->
-          <div class="mb-3 form-check">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              id="medicalHistoryAccess"
-              v-model="medicalHistoryAccess"
-            />
-            <label class="form-check-label" for="medicalHistoryAccess">Allow access to your medical history</label>
-          </div>
-
-          <!-- Password Field -->
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              v-model="password"
-              required
-            />
-          </div>
-
-          <!-- Error Message -->
-          <div v-if="errorMessage" class="alert alert-danger">
-            {{ errorMessage }}
-          </div>
-
-          <!-- Register Button -->
-          <button type="submit" class="btn btn-primary w-100">Register</button>
-        </form>
-
-        <!-- Already have an account link -->
-        <p class="text-center mt-3">
-          Already have an account? <router-link to="/" class="text-primary">Sign In</router-link>
-        </p>
+  <div class="register">
+    <h2>Register as a Patient</h2>
+    <form @submit.prevent="registerPatient">
+      <div>
+        <label for="firstName">First Name:</label>
+        <input type="text" v-model="firstName" required />
       </div>
+      
+      <div>
+        <label for="lastName">Last Name:</label>
+        <input type="text" v-model="lastName" required />
+      </div>
+      
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" v-model="email" required />
+      </div>
+      
+      <div>
+        <label for="contactInfo">Contact Info:</label>
+        <input type="text" v-model="contactInfo" required />
+      </div>
+      
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" v-model="password" required />
+      </div>
+      
+      <button type="submit">Register</button>
+    </form>
+
+    <div v-if="errorMessage" class="error">
+      <p>{{ errorMessage }}</p>
+    </div>
+    <div v-if="successMessage" class="success">
+      <p>{{ successMessage }}</p>
+    </div>
+
+    <!-- Link to Login page if user already has an account -->
+    <div class="login-link">
+      <p>Already have an account? <router-link to="/">Login</router-link></p>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      firstName: "",
-      lastName: "",
-      email: "",
-      contactInfo: "",
-      password: "",
-      medicalHistoryAccess: false, // Default to false
-      errorMessage: "",
+      firstName: '',
+      lastName: '',
+      email: '',
+      contactInfo: '',
+      password: '',
+      errorMessage: '',
+      successMessage: ''
     };
   },
   methods: {
-    async register() {
+    async registerPatient() {
       try {
-        // Send data to backend for registration
-        const response = await axios.post("http://localhost:5000/api/patients", {
+        const response = await axios.post('http://localhost:5000/api/patient/register', {
           firstName: this.firstName,
           lastName: this.lastName,
           email: this.email,
           contactInfo: this.contactInfo,
           password: this.password,
-          medicalHistoryAccess: this.medicalHistoryAccess,
         });
-
-        // Handle success
-        if (response.status === 200) {
-          this.$router.push("/login"); // Redirect to login page after successful registration
-        }
+        this.successMessage = 'Patient registered successfully!';
+        this.errorMessage = '';
       } catch (error) {
-        // Handle error
-        this.errorMessage =
-          error.response?.data?.message || "Registration failed. Please try again.";
+        this.errorMessage = 'Error registering patient. Please try again.';
+        this.successMessage = '';
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-/* Styling for the register page */
-.card {
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+<style scoped>
+/* Add some styles for your registration form */
+.register {
+  max-width: 400px;
+  margin: 0 auto;
 }
-.alert {
+form {
+  display: flex;
+  flex-direction: column;
+}
+form div {
+  margin-bottom: 10px;
+}
+button {
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #45a049;
+}
+.error {
+  color: red;
+}
+.success {
+  color: green;
+}
+.login-link {
   margin-top: 10px;
+  text-align: center;
+}
+.login-link a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+.login-link a:hover {
+  text-decoration: underline;
 }
 </style>

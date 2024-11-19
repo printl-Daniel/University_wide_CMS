@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { registerPatient, verifyPatientEmail } = require('../controller/patientController');
+const { register } = require('../controller/patientController');  // Changed to register
 
-router.post('/register', registerPatient);
-router.get('/verify-email/:token', verifyPatientEmail);
+router.post('/register', register);  // Use the correct function name here
 
 module.exports = router;

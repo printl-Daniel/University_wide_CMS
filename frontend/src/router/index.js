@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/auth/LoginView.vue";
 import RegisterView from "../views/auth/RegisterView.vue";
+import OTP from "../views/auth/VerifyOTP.vue";
 //staff
 import staff_dashBoard from "../userRole/staff/views/staff_dashBoard.vue";
 import inventory from "../userRole/staff/views/manage_inventory.vue";
@@ -32,6 +33,13 @@ const routes = [
     name: "register",
     component: RegisterView,
   },
+  {
+    path: "/token",
+    name: "otpVerification",
+    component: OTP,
+  },
+
+  
 
   //staff-router
   {
@@ -81,7 +89,7 @@ const routes = [
   {
     path: "/admin/view-user",
     name: "user",
-    component: UserManagement,
+    component: userManagement,
   },
 
   //patient
