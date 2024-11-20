@@ -1,8 +1,17 @@
 <template>
   <div>
-    <DoctorNavbar />
-    <div class="dashboard">
-      <div class="content">
+    <!-- Top Navbar (TopNav) -->
+    <div class="header">
+      <topNav />
+    </div>
+    
+    <!-- Page Content -->
+    <div class="page-content d-flex">
+      <!-- Sidebar (SideNav) -->
+      <sideNav />
+      
+      <!-- Main Content Area -->
+      <div class="content flex-grow-1">
         <h2>Doctor Dashboard</h2>
         <p>
           Welcome, Doctor! Manage your tasks and view patient information here.
@@ -14,23 +23,17 @@
 </template>
 
 <script>
-import DoctorNavbar from "../components/doctorNavbar.vue";
+import topNav from "../components/topNav.vue";
+import sideNav from "../components/sideNav.vue";
 
 export default {
   components: {
-    DoctorNavbar,
+    topNav,
+    sideNav,
   },
 };
 </script>
 
 <style scoped>
-.dashboard {
-  display: flex;
-}
 
-.content {
-  padding: 20px;
-  flex-grow: 1;
-  background-color: #fff;
-}
 </style>

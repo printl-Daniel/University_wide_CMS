@@ -1,13 +1,16 @@
 <template>
   <div>
     <!-- Admin Navbar (top navbar) -->
-    <div>
-      <AdminNavbar />
+    <div class="header">
+      <topNav />
     </div>
 
-    <!-- Dashboard Content -->
-    <div class="main-container">
-      <div class="container">
+    <div class="page-content d-flex">
+      <div class="sidebar">
+        <sideNav />
+      </div>
+
+      <div class="content flex-grow-1">
         <h2>Dashboard</h2>
         <div class="row g-4 mt-3">
           <!-- Inventory Card -->
@@ -58,12 +61,14 @@
 </template>
 
 <script>
-import AdminNavbar from '../components/adminNavbar.vue'
-import Chart from 'chart.js/auto'
+import Chart from 'chart.js/auto';
+import sideNav from '../components/sideNav.vue';
+import topNav from '../components/topNav.vue';
 
 export default {
   components: {
-    AdminNavbar
+    sideNav,
+    topNav
   },
   mounted() {
     // Initialize the sentiment analysis chart using Chart.js
@@ -120,5 +125,29 @@ export default {
 </script>
 
 <style scoped>
-/* Optional styles for your component */
+
+.card {
+  margin-bottom: 15px;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 1.2rem;
+}
+
+/* For responsive layout */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
 </style>
