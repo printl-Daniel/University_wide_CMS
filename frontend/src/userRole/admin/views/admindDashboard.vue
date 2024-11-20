@@ -69,33 +69,30 @@ export default {
     // Initialize the sentiment analysis chart using Chart.js
     const ctx = document.getElementById('feedbackSentimentChart').getContext('2d');
     new Chart(ctx, {
-      type: 'line', // Line chart for sentiment analysis trends
+      type: 'bar', // Change chart type to 'bar'
       data: {
         labels: ['January', 'February', 'March', 'April', 'May'], // X-axis labels (Months)
         datasets: [
           {
             label: 'Positive Sentiment',
             data: [80, 85, 75, 90, 88], // Data for positive sentiment percentages
-            borderColor: 'rgba(75, 192, 192, 1)', // Line color for positive feedback
-            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color for positive feedback
-            fill: true, // Fill area under the line
-            tension: 0.1
+            backgroundColor: 'rgba(75, 192, 192, 0.6)', // Bar color for positive feedback
+            borderColor: 'rgba(75, 192, 192, 1)', // Border color for positive feedback
+            borderWidth: 1
           },
           {
             label: 'Neutral Sentiment',
             data: [50, 40, 37, 50, 45], // Data for neutral sentiment percentages
-            borderColor: 'rgba(255, 159, 64, 1)', // Line color for neutral feedback
-            backgroundColor: 'rgba(255, 159, 64, 0.2)', // Fill color for neutral feedback
-            fill: true, // Fill area under the line
-            tension: 0.1
+            backgroundColor: 'rgba(255, 159, 64, 0.6)', // Bar color for neutral feedback
+            borderColor: 'rgba(255, 159, 64, 1)', // Border color for neutral feedback
+            borderWidth: 1
           },
           {
             label: 'Negative Sentiment',
             data: [10, 7, 13, 4, 5], // Data for negative sentiment percentages
-            borderColor: 'rgba(255, 99, 132, 1)', // Line color for negative feedback
-            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Fill color for negative feedback
-            fill: true, // Fill area under the line
-            tension: 0.1
+            backgroundColor: 'rgba(255, 99, 132, 0.6)', // Bar color for negative feedback
+            borderColor: 'rgba(255, 99, 132, 1)', // Border color for negative feedback
+            borderWidth: 1
           }
         ]
       },
