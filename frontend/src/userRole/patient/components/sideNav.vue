@@ -73,7 +73,7 @@ export default {
   mounted() {
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/css/navPatient.css";
+    link.href = "/css/nav.css";
     document.head.appendChild(link);
   },
 };
