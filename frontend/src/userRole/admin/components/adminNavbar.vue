@@ -11,17 +11,14 @@
               <router-link class="nav-link" to="/admin/dashboard">Dashboard</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/admin/manage-staff">Manage User</router-link>
+              <router-link class="nav-link" to="/admin/inventory">Inventory</router-link>
             </li>
             <li class="nav-item">
-          <router-link class="nav-link" to="/admin/manage-doctor">Manage Doctors</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/manage-patients">Manage Patients</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/feedback">Feedback & Evaluation</router-link>
-        </li>     
+              <router-link class="nav-link" to="/admin/view-user">Manage User</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/feedback">Feedback & Evaluation</router-link>
+            </li>     
           </ul>
         </div>
       </div>

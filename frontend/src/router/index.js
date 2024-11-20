@@ -9,9 +9,8 @@ import patientRecords from "../userRole/staff/views/patientRecords.vue";
 
 //admin
 import adminDashboard from "../userRole/admin/views/admindDashboard.vue";
-import manageStaff from "../userRole/admin/views/manageStaff.vue";
-import manageDoctor from "../userRole/admin/views/manageDoctor.vue";
 import userManagement from "@/userRole/admin/views/userManagement.vue";
+import adminInventory from "../userRole/admin/views/manage_inventory.vue";
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
 import doctorDashboard from "../userRole/doctor/views/doctorDashboard.vue";
@@ -77,20 +76,16 @@ const routes = [
     name: "adminDashboard",
     component: adminDashboard,
   },
-  {
-    path: "/admin/manage-staff",
-    name: "manageStaff",
-    component: manageStaff,
-  },
-  {
-    path: "/admin/manage-doctor",
-    name: "manageDoctor",
-    component: manageDoctor,
-  },
+ 
   {
     path: "/admin/view-user",
     name: "user",
     component: userManagement,
+  },
+  {
+    path: "/admin/inventory",
+    name: "AdminInventory",
+    component: adminInventory,
   },
 
   //patient

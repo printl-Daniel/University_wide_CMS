@@ -25,10 +25,11 @@ The Patient table is already in 3NF, with all attributes fully dependent on pati
 
 Attributes:
 patientId (Primary Key)
-firstName
-lastName
+fullName
 email
 contactInfo
+birthDate
+address
 medicalHistoryAccess
 createdAt
 updatedAt
