@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { registerPatient, verifyPatientEmail } = require('../controller/patientController');
+const patientController = require('../controller/user/patientController');
 
-router.post('/register', registerPatient);
-router.get('/verify-email/:token', verifyPatientEmail);
+// Registration and OTP verification routes
+router.post('/register', patientController.registerPatient);
+router.post('/verify-otp', patientController.verifyOtp);
+router.post('/login', patientController.loginPatient);
 
 module.exports = router;

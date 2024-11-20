@@ -8,17 +8,18 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <router-link class="nav-link" to="/admin/dashboard">Dashboard</router-link>
+              <router-link class="nav-link" to="/patient/dashboard">Dashboard</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/admin/inventory">Inventory</router-link>
+              <router-link class="nav-link" to="/patient/records">Medical Records</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/admin/view-user">Manage User</router-link>
+              <router-link class="nav-link" to="/patient/medical">Request Medical</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/feedback">Feedback & Evaluation</router-link>
-            </li>     
+              <router-link class="nav-link" to="/patient/feedback">Feedback</router-link>
+            </li>
+            
           </ul>
         </div>
       </div>

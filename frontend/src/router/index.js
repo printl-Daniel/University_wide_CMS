@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/auth/LoginView.vue";
 import RegisterView from "../views/auth/RegisterView.vue";
+import OTP from "../views/auth/VerifyOTP.vue";
 //staff
 import staff_dashBoard from "../userRole/staff/views/staff_dashBoard.vue";
 import inventory from "../userRole/staff/views/manage_inventory.vue";
@@ -8,9 +9,13 @@ import patientRecords from "../userRole/staff/views/patientRecords.vue";
 
 //admin
 import adminDashboard from "../userRole/admin/views/admindDashboard.vue";
+
 import manageStaff from "../userRole/admin/views/manageStaff.vue";
 import manageDoctor from "../userRole/admin/views/manageDoctor.vue";
 //import userManagement from "@/userRole/admin/views/userManagement.vue";
+
+import userManagement from "@/userRole/admin/views/userManagement.vue";
+import adminInventory from "../userRole/admin/views/manage_inventory.vue";
 
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
@@ -32,6 +37,11 @@ const routes = [
     path: "/register",
     name: "register",
     component: RegisterView,
+  },
+  {
+    path: "/token",
+    name: "otpVerification",
+    component: OTP,
   },
 
   //staff-router
@@ -69,6 +79,7 @@ const routes = [
     name: "adminDashboard",
     component: adminDashboard,
   },
+
   {
     path: "/admin/manage-staff",
     name: "manageStaff",
@@ -85,6 +96,17 @@ const routes = [
   //   component: UserManagement,
   // },
 
+  {
+    path: "/admin/view-user",
+    name: "user",
+    component: userManagement,
+  },
+  {
+    path: "/admin/inventory",
+    name: "AdminInventory",
+    component: adminInventory,
+  },
+
   //patient
   {
     path: "/patient/inbox",
@@ -96,11 +118,18 @@ const routes = [
     name: "sendMail",
     component: sendMail,
   },
+
   // {
   //   path: "/patient/feedback",
   //   name: "feedback",
   //   component: feedback,
   // },
+
+  {
+    path: "/patient/records",
+    name: "records",
+    component: records,
+  },
 ];
 
 // Create the router instance

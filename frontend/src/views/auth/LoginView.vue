@@ -7,14 +7,15 @@
 
         <!-- Login Form -->
         <form @submit.prevent="login">
-          <!-- Username Field -->
+          <!-- Email Field -->
           <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
+            <label for="email" class="form-label">Email</label>
             <input
-              type="text"
+              type="email"
               class="form-control"
-              id="username"
-              v-model="username"
+              id="email"
+              v-model="form.email"
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -26,14 +27,15 @@
               type="password"
               class="form-control"
               id="password"
-              v-model="password"
+              v-model="form.password"
+              placeholder="Enter your password"
               required
             />
           </div>
 
           <!-- Error Message -->
-          <div v-if="errorMessage" class="alert alert-danger">
-            {{ errorMessage }}
+          <div v-if="message" class="alert alert-danger">
+            {{ message }}
           </div>
 
           <!-- Login Button -->
@@ -55,39 +57,29 @@ import axios from "axios";
 export default {
   data() {
     return {
-      username: "", // Stores the entered username
-      password: "", // Stores the entered password
-      errorMessage: "", // Stores error messages to display
+      form: {
+        email: "", // Stores the entered email
+        password: "", // Stores the entered password
+      },
+      message: "", // Stores error messages to display
     };
   },
   methods: {
     async login() {
       try {
-        // Send a POST request to the backend with the username and password
-        const response = await axios.post("http://localhost:5000/api/login", {
-          username: this.username,
-          password: this.password,
-        });
+        const response = await axios.post("http://localhost:5000/api/patient/login",{ email: this.email,
+          password: this.password});
+        this.message = response.data.message;
 
-        if (response.data) {
-          // Save user details to localStorage
-          localStorage.setItem("username", response.data.username);
-          localStorage.setItem("role", response.data.role);
-          localStorage.setItem("userID", response.data.userID);
+        // Store JWT token in localStorage
+        localStorage.setItem("token", response.data.token);
 
-          // Redirect based on the user's role
-          if (response.data.role === "admin") {
-            this.$router.push("/admin/dashboard");
-          } else if (response.data.role === "staff") {
-            this.$router.push("/staff/dashboard");
-          } else {
-            this.$router.push("/user/dashboard");
-          }
-        }
+        // Redirect to /patient/dashboard
+        this.$router.push("/patient/dashboard");
       } catch (error) {
-        // Display an error message if the login fails
-        this.errorMessage =
-          error.response?.data?.errorMessage || "Login failed. Please try again.";
+        // Handle error response
+        this.message = error.response?.data?.message || "Login failed. Please try again.";
+        this.form.password = ""; // Clear the password field
       }
     },
   },
@@ -95,7 +87,10 @@ export default {
 </script>
 
 <style>
-/* Basic styling for card and login form */
+/* Styling for card and alignment */
+.container {
+  min-height: 100vh;
+}
 .card {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
