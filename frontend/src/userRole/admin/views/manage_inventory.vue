@@ -1,31 +1,29 @@
 <template>
   <div>
     <AdminNavbar />
-    <!-- Main Layout with Sidebar and Content -->
     <div class="main-container">
-
-      <!-- Main Content Container (flex-grow) -->
-      <div class="container ">
-        <h2>Inventory</h2>
-        <div class="d-flex mb-4">
-          <input
-            type="text"
-            v-model="searchQuery"
-            class="form-control mr-2" 
-            placeholder="Search items..."
-            @input="filterInventory"
-          />
-          <button 
-            class="btn btn-secondary"
-            @click="filterInventory">
-            Search
+      <div class="container">
+        <h2 class="page-title">Inventory</h2>
+        <div class="d-flex mb-4 search-container">
+          <div class="search-bar-container">
+            <input
+              type="text"
+              v-model="searchQuery"
+              class="form-control search-input"
+              placeholder="Search items..."
+              @input="filterInventory"
+            />
+            <button class="btn btn-secondary search-btn" @click="filterInventory">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+          <button class="btn btn-primary add-item-btn" @click="showModal = true">
+            <i class="fas fa-plus"></i> Add Item
           </button>
-        
         </div>
-        <button class="btn btn-primary ml-4" @click="showModal = true">Add Item</button>
-        <!-- List of inventory items -->
-        <div class="mt-4">
-          <table class="table">
+
+        <div class="mt-4 table-responsive">
+          <table class="table table-striped table-hover">
             <thead>
               <tr>
                 <th scope="col">ID</th>
@@ -48,7 +46,9 @@
                 <td>{{ item.threshold }}</td>
                 <td>{{ item.price }}</td>
                 <td>
-                  <button class="btn btn-warning" @click="openEditModal(item)">Edit</button>
+                  <button class="btn btn-warning" @click="openEditModal(item)">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -62,7 +62,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -79,22 +78,21 @@ export default {
   data() {
     return {
       showModal: false,
-      inventory: [], // Inventory list
+      inventory: [],
       showEditModal: false, 
       selectedItem: null,
+      searchQuery: '',
     };
   },
   methods: {
     addItem(newItem) {
-      // Add the new item to the inventory array
       this.inventory.push(newItem);
-      this.showModal = false; // Close the modal
+      this.showModal = false;
     },
     openEditModal(item) {
-    this.selectedItem = item; // Set the selected item for editing
-    this.showEditModal = true; // Show the edit modal
-  },
-
+      this.selectedItem = item;
+      this.showEditModal = true;
+    },
     async displayItems() {
       try {
         const res = await axios.get('http://localhost:5000/api/inventory/display-items');
@@ -112,47 +110,107 @@ export default {
 </script>
 
 <style scoped>
-.main-container{
-  border: 1px solid;
-  margin: 10px;
+.main-container {
+  border: 1px solid #eaeaea;
+  margin: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Style the content area to ensure it doesn't go under the fixed navbar */
 .container {
   padding: 20px;
-  background-color: #f9f9f9; /* Light background for better contrast */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: #ffffff;
+  border-radius: 8px;
 }
 
-/* Table styling */
-table.table {
+.page-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.search-input {
   width: 100%;
-  border-collapse: collapse;
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
+  border-radius: 25px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+}
+
+.search-btn {
+  border-radius: 25px;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.add-item-btn {
+  background-color: #28a745;
+  color: white;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-size: 14px;
+}
+
+.table-responsive {
+  margin-top: 20px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eaeaea;
   text-align: left;
 }
 
-table.table th,
-table.table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eaeaea;
-}
-
-table.table th {
-  background-color: #007bff; /* Primary color for header */
+.table th {
+  background-color: #007bff;
   color: white;
   font-weight: bold;
   text-transform: uppercase;
 }
 
-table.table tbody tr:hover {
-  background-color: #f1f1f1; /* Light gray on hover */
+.table tbody tr:hover {
+  background-color: #f1f1f1;
 }
 
-table.table tbody tr:last-child td {
-  border-bottom: none; /* Remove border from the last row */
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table td button {
+  font-size: 14px;
+}
+
+.table .btn {
+  border-radius: 25px;
+  transition: background-color 0.3s;
+}
+
+.table .btn:hover {
+  background-color: #0056b3;
+}
+
+/* Add Modal Button */
+.add-item-btn i, .search-btn i {
+  margin-right: 5px;
 }
 </style>
