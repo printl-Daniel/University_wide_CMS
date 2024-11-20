@@ -3,7 +3,7 @@ require("dotenv").config();
 
 exports.sendMail = async (req, res) => {
   try {
-    const { from, senderName, reason, contact } = req.body;
+    const { from, senderName, message, contact, subject } = req.body;
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -18,8 +18,8 @@ exports.sendMail = async (req, res) => {
     const mail = {
       from: `"${senderName}" <${process.env.EMAIL_USER}>`,
       to: "universitywideminus@gmail.com",
-      subject: "Certificate Request",
-      text: `Sender: ${senderName} \n\nContact: ${contact} \n\nReason: ${reason}`,
+      subject: subject,
+      text: `Sender: ${senderName} \n\nContact: ${contact} \n\nMessage: ${message}`,
       replyTo: `"${senderName}" <${from}>`,
     };
 
@@ -28,7 +28,7 @@ exports.sendMail = async (req, res) => {
 
     console.log(`Email sent to: universitywideminus@gmail.com`);
     console.log(`From: ${from}`);
-    console.log(`Message: ${reason}`);
+    console.log(`Message: ${message}`);
   } catch (error) {
     console.error("Error sending email:", error);
     res.status(400).json({ error: error.message });

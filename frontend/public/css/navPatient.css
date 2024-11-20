@@ -1,0 +1,87 @@
+.top-nav {
+  height: 10vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3vw;
+}
+
+.top-nav .logo {
+  display: flex;
+  gap: 1vw;
+}
+
+.top-nav .logo .text {
+  font-weight: 500;
+}
+.top-nav .logo i {
+  color: green;
+  font-size: 1.9vw;
+}
+
+.top-nav .right-items {
+  width: 30%;
+  display: flex;
+  gap: 2vw;
+  justify-content: end;
+}
+
+/* sidebar */
+.side-nav {
+  width: 18vw;
+  height: 90vh;
+  background-color: #f6f8fc;
+  padding: 1rem;
+}
+
+.compose-btn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 25px;
+  background-color: #4cca67;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.compose-btn:hover {
+  background-color: #4cca67;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 25px;
+}
+
+.nav-items {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 1px solid;
+  margin-top: 2vh;
+  border-color: #dadada;
+}
+
+.nav-items a {
+  padding: 0.5rem 2rem;
+  border-radius: 20px;
+  text-decoration: none;
+  display: flex;
+  gap: 1vw;
+  align-items: center;
+  color: #212529;
+}
+
+/* Dynamic background color for active links */
+.certificate.active {
+  background-color: #c6f1c6;
+}
+
+/* page */
+.page-content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}

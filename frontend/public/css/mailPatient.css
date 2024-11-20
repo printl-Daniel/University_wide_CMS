@@ -1,0 +1,69 @@
+.form-container {
+  width: 100%;
+  display: flex;
+  padding: 3rem;
+  height: 90vh;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+#senderName,
+#subject,
+#contact {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.name,
+.contact,
+.subject {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.name h6,
+.contact h6,
+.subject h6 {
+  width: 15%;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.name input,
+.contact input,
+.subject input {
+  width: 80%; /* Takes up the remaining space in the flex container */
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+textarea {
+  width: 100%;
+  height: 30vh;
+}
+
+.submit {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 25px;
+  background-color: #4cca67;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1vw;
+}

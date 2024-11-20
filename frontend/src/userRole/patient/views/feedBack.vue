@@ -62,11 +62,13 @@
 </template>
 
 <script>
-import PatientNavbar from "../components/patientNavbar.vue";
+import TopNav from "../components/topNav.vue";
+import SideNav from "../components/sideNav.vue";
 
 export default {
   components: {
-    PatientNavbar,
+    TopNav,
+    SideNav,
   },
   data() {
     return {

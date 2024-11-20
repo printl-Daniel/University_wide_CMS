@@ -10,15 +10,16 @@ import patientRecords from "../userRole/staff/views/patientRecords.vue";
 import adminDashboard from "../userRole/admin/views/admindDashboard.vue";
 import manageStaff from "../userRole/admin/views/manageStaff.vue";
 import manageDoctor from "../userRole/admin/views/manageDoctor.vue";
-import userManagement from "@/userRole/admin/views/userManagement.vue";
+//import userManagement from "@/userRole/admin/views/userManagement.vue";
+
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
 import doctorDashboard from "../userRole/doctor/views/doctorDashboard.vue";
 
 //patient
-import patientDashboard from "../userRole/patient/views/patientDashboard.vue";
-import medical from "../userRole/patient/views/certificateRequest.vue";
-import feedback from "../userRole/patient/views/feedBack.vue";
+import patientInbox from "../userRole/patient/views/inbox.vue";
+import sendMail from "../userRole/patient/views/sendMail.vue";
+// import feedback from "../userRole/patient/views/feedBack.vue";
 
 // Define routes for login and staff dashboard
 const routes = [
@@ -78,28 +79,28 @@ const routes = [
     name: "manageDoctor",
     component: manageDoctor,
   },
-  {
-    path: "/admin/view-user",
-    name: "user",
-    component: UserManagement,
-  },
+  // {
+  //   path: "/admin/view-user",
+  //   name: "user",
+  //   component: UserManagement,
+  // },
 
   //patient
   {
-    path: "/patient/dashboard",
-    name: "patientDashboard",
-    component: patientDashboard,
+    path: "/patient/inbox",
+    name: "patientInbox",
+    component: patientInbox,
   },
   {
-    path: "/patient/medical",
-    name: "certificateRequest",
-    component: medical,
+    path: "/patient/senMail",
+    name: "sendMail",
+    component: sendMail,
   },
-  {
-    path: "/patient/feedback",
-    name: "feedback",
-    component: feedback,
-  },
+  // {
+  //   path: "/patient/feedback",
+  //   name: "feedback",
+  //   component: feedback,
+  // },
 ];
 
 // Create the router instance
