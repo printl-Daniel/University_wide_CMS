@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/inventory", inventoryRouter);
-//app.use("/api/feedback", feedbackRouter);
+app.use("/api/feedback", feedbackRouter);
 app.use('/api/patient', patientRouter);
 
 // Connect to MongoDB

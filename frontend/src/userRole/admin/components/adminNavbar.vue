@@ -11,7 +11,7 @@
               <router-link class="nav-link" to="/admin/dashboard">Dashboard</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/admin/manage-staff">Manage Staff</router-link>
+              <router-link class="nav-link" to="/admin/manage-staff">Manage User</router-link>
             </li>
             <li class="nav-item">
           <router-link class="nav-link" to="/admin/manage-doctor">Manage Doctors</router-link>
@@ -21,13 +21,7 @@
         </li>
         <li class="nav-item">
           <router-link class="nav-link" to="/feedback">Feedback & Evaluation</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/reports">Reports</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/settings">Settings</router-link>
-        </li>
+        </li>     
           </ul>
         </div>
       </div>

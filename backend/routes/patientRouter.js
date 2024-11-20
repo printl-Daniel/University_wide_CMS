@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { register } = require('../controller/user/patientController');  // Changed to register
+const patientController = require('../controller/user/patientController');
 
-router.post('/register', register);  // Use the correct function name here
+// Registration and OTP verification routes
+router.post('/register', patientController.registerPatient);
+router.post('/verify-otp', patientController.verifyOtp);
+router.post('/login', patientController.loginPatient);
 
 module.exports = router;

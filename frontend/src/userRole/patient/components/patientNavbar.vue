@@ -11,6 +11,9 @@
               <router-link class="nav-link" to="/patient/dashboard">Dashboard</router-link>
             </li>
             <li class="nav-item">
+              <router-link class="nav-link" to="/patient/records">Medical Records</router-link>
+            </li>
+            <li class="nav-item">
               <router-link class="nav-link" to="/patient/medical">Request Medical</router-link>
             </li>
             <li class="nav-item">

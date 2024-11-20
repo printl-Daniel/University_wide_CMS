@@ -87,7 +87,7 @@ export default {
   methods: {
     async submitForm() {
       try {
-        const response = await axios.post('http://localhost:5000/api/inventory/update-item', this.newItem);
+        const response = await axios.post('http://localhost:5000/api/inventory/add-item', this.newItem);
       
         console.log('Item added successfully:', response.data);
         alert('Item added successfully.');

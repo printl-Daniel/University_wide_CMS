@@ -20,6 +20,7 @@ import doctorDashboard from "../userRole/doctor/views/doctorDashboard.vue";
 import patientDashboard from "../userRole/patient/views/patientDashboard.vue";
 import medical from "../userRole/patient/views/certificateRequest.vue";
 import feedback from "../userRole/patient/views/feedBack.vue";
+import records from "../userRole/patient/views/medicalRecord.vue";
 
 // Define routes for login and staff dashboard
 const routes = [
@@ -108,6 +109,11 @@ const routes = [
     name: "feedback",
     component: feedback,
   },
+  {
+    path: "/patient/records",
+    name: "records",
+    component: records,
+  }
 ];
 
 // Create the router instance
