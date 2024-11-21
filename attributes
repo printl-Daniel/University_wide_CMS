@@ -112,3 +112,15 @@ doctorId (Foreign Key, References Doctor.doctorId)
 requestDate
 status (Enum: 'requested', 'approved', 'rejected')
 downloadLink
+
+11.
+CREATE TABLE Email (
+    emailId INT AUTO_INCREMENT PRIMARY KEY,
+    senderEmail VARCHAR(255), -- e.g., "clinic@example.com"
+    recipientEmail VARCHAR(255), -- e.g., "patient@example.com"
+    subject VARCHAR(255),
+    body TEXT, -- Store the email content
+    status ENUM('queued', 'sent', 'failed'),
+    sentAt DATETIME,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);

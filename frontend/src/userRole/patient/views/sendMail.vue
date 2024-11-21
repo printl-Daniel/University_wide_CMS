@@ -37,6 +37,7 @@
               placeholder="Enter your email address"
             />
           </div>
+
           <!-- Contact Information Field -->
           <div class="form-group contact">
             <h6>Contact Information:</h6>
@@ -84,7 +85,7 @@ export default {
   mounted() {
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/css/mailPatient.css";
+    link.href = "/css/patient/mailPatient.css";
     document.head.appendChild(link);
   },
   data() {

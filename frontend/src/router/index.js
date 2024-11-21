@@ -19,6 +19,7 @@ import doctorDashboard from "../userRole/doctor/views/doctorDashboard.vue";
 //patient
 import patientInbox from "../userRole/patient/views/inbox.vue";
 import sendMail from "../userRole/patient/views/sendMail.vue";
+import sent from "../userRole/patient/views/sent.vue";
 // import feedback from "../userRole/patient/views/feedBack.vue";
 // Define routes for login and staff dashboard
 const routes = [
@@ -93,6 +94,12 @@ const routes = [
     path: "/patient/senMail",
     name: "sendMail",
     component: sendMail,
+  },
+
+  {
+    path: "/patient/sent",
+    name: "sent",
+    component: sent,
   },
   // {
   //   path: "/patient/feedback",

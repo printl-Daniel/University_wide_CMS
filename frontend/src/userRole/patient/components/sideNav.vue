@@ -1,19 +1,10 @@
 <template>
   <head>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
-      integrity="sha512-9xKTRVabjVeZmc+GUW8GgSmcREDunMM+Dt/GrzchfN8tkwHizc5RP4Ok/MXFFy5rIjJjzhndFScTceq5e6GvVQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inbox Table</title>
   </head>
+
   <body>
     <div class="side-nav">
       <button class="compose-btn" @click="goTo('/patient/senMail')">
@@ -29,8 +20,8 @@
         </router-link>
         <router-link
           class="certificate"
-          :class="{ active: isActive('/sent') }"
-          to="/sent"
+          :class="{ active: isActive('/patient/sent') }"
+          to="/patient/sent"
         >
           <i class="fa-solid fa-paper-plane"></i> Sent
         </router-link>

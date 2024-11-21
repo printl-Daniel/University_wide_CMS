@@ -12,7 +12,7 @@
           <table>
             <thead>
               <tr>
-                <th>Sender</th>
+                <th>Receiver</th>
                 <th>Content</th>
                 <th>Date</th>
               </tr>
