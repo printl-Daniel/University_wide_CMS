@@ -1,63 +1,73 @@
 <template>
   <div>
-    <AdminNavbar />
-    <div class="main-container">
-      <div class="container">
-        <h2 class="page-title">Inventory</h2>
-        <div class="d-flex mb-4 search-container">
-          <div class="search-bar-container">
-            <input
-              type="text"
-              v-model="searchQuery"
-              class="form-control search-input"
-              placeholder="Search items..."
-              @input="filterInventory"
-            />
-            <button class="btn btn-secondary search-btn" @click="filterInventory">
-              <i class="fas fa-search"></i> Search
+    <!-- Admin Navbar (top navbar) -->
+    <div class="header">
+      <topNav />
+    </div>
+
+    <div class="page-content d-flex">
+      <!-- Sidebar Navigation -->
+      <div class="sidebar">
+        <sideNav />
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="content flex-grow-1">
+          <h2 class="page-title">Inventory</h2>
+          <div class="d-flex mb-4 search-container">
+            <div class="search-bar-container">
+              <input
+                type="text"
+                v-model="searchQuery"
+                class="form-control search-input"
+                placeholder="Search items..."
+                @input="filterInventory"
+              />
+              <button class="btn btn-secondary search-btn" @click="filterInventory">
+                <i class="fas fa-search"></i> Search
+              </button>
+            </div>
+            <button class="btn btn-primary add-item-btn" @click="showModal = true">
+              <i class="fas fa-plus"></i> Add Item
             </button>
           </div>
-          <button class="btn btn-primary add-item-btn" @click="showModal = true">
-            <i class="fas fa-plus"></i> Add Item
-          </button>
-        </div>
 
-        <div class="mt-4 table-responsive">
-          <table class="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Threshold</th>
-                <th scope="col">Price</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in inventory" :key="item._id">
-                <td>{{ item.itemId }}</td>
-                <td>{{ item.itemName }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unit }}</td>
-                <td>{{ item.threshold }}</td>
-                <td>{{ item.price }}</td>
-                <td>
-                  <button class="btn btn-warning" @click="openEditModal(item)">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+          <div class="mt-4 table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Unit</th>
+                  <th scope="col">Threshold</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in inventory" :key="item._id">
+                  <td>{{ item.itemId }}</td>
+                  <td>{{ item.itemName }}</td>
+                  <td>{{ item.category }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.unit }}</td>
+                  <td>{{ item.threshold }}</td>
+                  <td>{{ item.price }}</td>
+                  <td>
+                    <button class="btn btn-warning" @click="openEditModal(item)">
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <!-- Add Inventory Modal -->
-        <addModal v-if="showModal" @close="showModal = false" @add-item="addItem"/>
-        <editItemModal v-if="showEditModal" :selectedItem="selectedItem" @close="showEditModal = false" @edit-item="editItem"/>
+          <!-- Add Inventory Modal -->
+          <addModal v-if="showModal" @close="showModal = false" @add-item="addItem" />
+          <editItemModal v-if="showEditModal" :selectedItem="selectedItem" @close="showEditModal = false" @edit-item="editItem" />
       </div>
     </div>
   </div>
@@ -65,13 +75,15 @@
 
 <script>
 import axios from 'axios';
-import AdminNavbar from '../components/adminNavbar.vue'
-import addModal from '../../../components/addItemModal.vue'
-import editItemModal from '../../../components/updateItemModal.vue'
+import sideNav from '../components/sideNav.vue';
+import topNav from '../components/topNav.vue';
+import addModal from '../../../components/addItemModal.vue';
+import editItemModal from '../../../components/updateItemModal.vue';
 
 export default {
   components: {
-    AdminNavbar, 
+    sideNav,
+    topNav,
     addModal,
     editItemModal,
   },
@@ -79,7 +91,7 @@ export default {
     return {
       showModal: false,
       inventory: [],
-      showEditModal: false, 
+      showEditModal: false,
       selectedItem: null,
       searchQuery: '',
     };
@@ -99,30 +111,20 @@ export default {
         this.inventory = res.data.items;
       } catch (error) {
         console.error('Error fetching items:', error);
-        alert('Failed to fetch items');
+        //alert('Failed to fetch items');
       }
+    },
+    filterInventory() {
+      // Implement search filtering logic here
     }
   },
-  mounted(){
+  mounted() {
     this.displayItems();
   }
 };
 </script>
 
 <style scoped>
-.main-container {
-  border: 1px solid #eaeaea;
-  margin: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.container {
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-}
-
 .page-title {
   font-size: 26px;
   font-weight: bold;

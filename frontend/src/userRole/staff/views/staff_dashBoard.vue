@@ -1,45 +1,48 @@
 <template>
   <div>
-    <navBar />
-  </div>
-  <div class="container-fluid">
-    <!-- Sidebar Component -->
-    <div class="sidebar">
-      <!-- You can include links to other sections of the dashboard -->
+    <!-- Admin Navbar (top navbar) -->
+    <div class="header">
+      <topNav />
     </div>
 
-    <!-- Dashboard Content -->
-    <div class="dashboard">
-      <div class="main-content">
-        <div class="content">
-          <h2>Staff Dashboard</h2>
-          <p>Welcome, Staff! Manage inventory and reports here.</p>
+    <div class="page-content d-flex">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <sideNav />
+      </div>
 
-          <!-- Quick Stats Section -->
-          <div class="quick-stats">
-            <div class="stat-item">
-              <h4>Total Patients</h4>
-              <p>{{ totalPatients }}</p>
-            </div>
-            <div class="stat-item">
-              <h4>Total Inventory Items</h4>
-              <p>{{ totalItems }}</p>
-            </div>
-            <div class="stat-item">
-              <h4>Low Stock Alerts</h4>
-              <p>{{ lowStockAlerts }}</p>
-            </div>
-          </div>
+      <!-- Dashboard Content -->
+      <div class="content flex-grow-1">
+        <div class="main-content">
 
-          <!-- Recent Activities Section -->
-          <div class="recent-activities">
-            <h4>Recent Activities</h4>
-            <ul>
-              <li v-for="activity in recentActivities" :key="activity.id">
-                {{ activity.description }} on {{ activity.date }}
-              </li>
-            </ul>
-          </div>
+            <h2>Staff Dashboard</h2>
+            <p>Welcome, Staff! Manage inventory and reports here.</p>
+
+            <!-- Quick Stats Section -->
+            <div class="quick-stats">
+              <div class="stat-item">
+                <h4>Total Patients</h4>
+                <p>{{ totalPatients }}</p>
+              </div>
+              <div class="stat-item">
+                <h4>Total Inventory Items</h4>
+                <p>{{ totalItems }}</p>
+              </div>
+              <div class="stat-item">
+                <h4>Low Stock Alerts</h4>
+                <p>{{ lowStockAlerts }}</p>
+              </div>
+            </div>
+
+            <!-- Recent Activities Section -->
+            <div class="recent-activities">
+              <h4>Recent Activities</h4>
+              <ul>
+                <li v-for="activity in recentActivities" :key="activity.id">
+                  {{ activity.description }} on {{ activity.date }}
+                </li>
+              </ul>
+            </div>
         </div>
       </div>
     </div>
@@ -47,11 +50,13 @@
 </template>
 
 <script>
-import navBar from "../components/staff_navbar.vue";
+import topNav from "../components/topNav.vue"; // Assuming you have topNav component
+import sideNav from "../components/sideNav.vue"; // Assuming you have sideNav component
 
 export default {
   components: {
-    navBar,
+    topNav,
+    sideNav
   },
   data() {
     return {
@@ -81,19 +86,6 @@ export default {
 </script>
 
 <style scoped>
-.container-fluid {
-  display: flex;
-}
-
-.sidebar {
-  background-color: #f8f9fa;
-  padding: 20px;
-  height: 100vh;
-}
-
-.dashboard-content {
-  padding: 20px;
-}
 
 .quick-stats {
   display: flex;

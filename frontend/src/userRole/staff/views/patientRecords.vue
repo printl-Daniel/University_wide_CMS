@@ -1,72 +1,85 @@
 <template>
   <div>
-    <!-- Navbar -->
-    <StaffNavbar />
+    <!-- Admin Navbar (top navbar) -->
+    <div class="header">
+      <topNav />
+    </div>
 
-    <!-- Patient Records Section -->
-    <div class="patient-records-container">
-      <h2 class="section-title">Patient Records</h2>
-
-      <!-- Search Functionality -->
-      <div class="search-container">
-        <label for="search" class="search-label"
-          >Search Patient by Name or ID</label
-        >
-        <input
-          type="text"
-          id="search"
-          v-model="searchQuery"
-          class="form-control"
-          placeholder="Enter patient name or ID"
-        />
-        <button class="btn search-btn" @click="searchPatient">Search</button>
+    <div class="page-content d-flex">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <sideNav />
       </div>
 
-      <!-- Patient Record Table -->
-      <div v-if="patients.length > 0" class="patient-table-container">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Full Name</th>
-              <th>Age</th>
-              <th>Gender</th>
-              <th>Medical History</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(patient, index) in patients" :key="index">
-              <td>{{ patient.id }}</td>
-              <td>{{ patient.fullName }}</td>
-              <td>{{ patient.age }}</td>
-              <td>{{ patient.gender }}</td>
-              <td>
-                <button
-                  class="btn btn-info"
-                  @click="viewPatientHistory(patient.id)"
-                >
-                  View History
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- Main Content Section -->
+      <div class="content flex-grow-1">
+        <!-- Patient Records Section -->
+        <div class="patient-records-container">
+          <h2 class="section-title">Patient Records</h2>
 
-      <!-- No Results Found Message -->
-      <div v-else class="no-results">
-        <p>No patients found matching your search query.</p>
+          <!-- Search Functionality -->
+          <div class="search-container">
+            <label for="search" class="search-label">Search Patient by Name or ID</label>
+            <input
+              type="text"
+              id="search"
+              v-model="searchQuery"
+              class="form-control"
+              placeholder="Enter patient name or ID"
+            />
+            <button class="btn search-btn" @click="searchPatient">Search</button>
+          </div>
+
+          <!-- Patient Record Table -->
+          <div v-if="patients.length > 0" class="patient-table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Full Name</th>
+                  <th>Age</th>
+                  <th>Gender</th>
+                  <th>Medical History</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(patient, index) in patients" :key="index">
+                  <td>{{ patient.id }}</td>
+                  <td>{{ patient.fullName }}</td>
+                  <td>{{ patient.age }}</td>
+                  <td>{{ patient.gender }}</td>
+                  <td>
+                    <button
+                      class="btn btn-info"
+                      @click="viewPatientHistory(patient.id)"
+                    >
+                      View History
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- No Results Found Message -->
+          <div v-else class="no-results">
+            <p>No patients found matching your search query.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import StaffNavbar from "../components/staff_navbar.vue";
+
+import topNav from "../components/topNav.vue"; // Assuming you have topNav component
+import sideNav from "../components/sideNav.vue"; // Assuming you have sideNav component
 
 export default {
   components: {
-    StaffNavbar,
+    topNav,
+    sideNav
   },
   data() {
     return {
@@ -199,4 +212,5 @@ export default {
   font-size: 1.2rem;
   color: #888;
 }
+
 </style>
