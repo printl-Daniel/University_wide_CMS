@@ -19,17 +19,17 @@
             <input
               type="text"
               v-model="searchQuery"
-              class="form-control mr-2" 
+              class="form-control mr-2"
               placeholder="Search items..."
               @input="filterInventory"
             />
-            <button 
-              class="btn btn-secondary"
-              @click="filterInventory">
+            <button class="btn btn-secondary" @click="filterInventory">
               Search
             </button>
           </div>
-          <button class="btn btn-primary ml-4" @click="showModal = true">Add Item</button>
+          <button class="btn btn-primary ml-4" @click="showModal = true">
+            Add Item
+          </button>
 
           <!-- List of inventory items -->
           <div class="mt-4">
@@ -56,7 +56,12 @@
                   <td>{{ item.threshold }}</td>
                   <td>{{ item.price }}</td>
                   <td>
-                    <button class="btn btn-warning" @click="openEditModal(item)">Edit</button>
+                    <button
+                      class="btn btn-warning"
+                      @click="openEditModal(item)"
+                    >
+                      Edit
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -64,8 +69,17 @@
           </div>
 
           <!-- Add Inventory Modal -->
-          <addModal v-if="showModal" @close="showModal = false" @add-item="addItem"/>
-          <editItemModal v-if="showEditModal" :selectedItem="selectedItem" @close="showEditModal = false" @edit-item="editItem"/>
+          <addModal
+            v-if="showModal"
+            @close="showModal = false"
+            @add-item="addItem"
+          />
+          <editItemModal
+            v-if="showEditModal"
+            :selectedItem="selectedItem"
+            @close="showEditModal = false"
+            @edit-item="editItem"
+          />
         </div>
       </div>
     </div>
@@ -73,11 +87,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-import topNav from '../components/topNav.vue'
-import sideNav from '../components/sideNav.vue'
-import addModal from '../../../components/addItemModal.vue'
-import editItemModal from '../../../components/updateItemModal.vue'
+import axios from "axios";
+import topNav from "../components/topNav.vue";
+import sideNav from "../components/sideNav.vue";
+import addModal from "../../../components/addItemModal.vue";
+import editItemModal from "../../../components/updateItemModal.vue";
 
 export default {
   components: {
@@ -90,9 +104,9 @@ export default {
     return {
       showModal: false,
       inventory: [], // Inventory list
-      showEditModal: false, 
+      showEditModal: false,
       selectedItem: null,
-      searchQuery: '', // Search query for filtering items
+      searchQuery: "", // Search query for filtering items
     };
   },
   methods: {
@@ -108,7 +122,7 @@ export default {
     filterInventory() {
       // Filter inventory based on search query
       if (this.searchQuery) {
-        this.inventory = this.inventory.filter(item =>
+        this.inventory = this.inventory.filter((item) =>
           item.itemName.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
       } else {
@@ -117,17 +131,19 @@ export default {
     },
     async displayItems() {
       try {
-        const res = await axios.get('http://localhost:5000/api/inventory/display-items');
+        const res = await axios.get(
+          "http://localhost:5000/api/inventory/display-items"
+        );
         this.inventory = res.data.items;
       } catch (error) {
-        console.error('Error fetching items:', error);
-        alert('Failed to fetch items');
+        console.error("Error fetching items:", error);
+        alert("Failed to fetch items");
       }
-    }
+    },
   },
-  mounted(){
+  mounted() {
     this.displayItems();
-  }
+  },
 };
 </script>
 

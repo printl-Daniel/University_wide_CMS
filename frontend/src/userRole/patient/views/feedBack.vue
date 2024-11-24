@@ -62,100 +62,100 @@
 </template>
 
 <script>
-import TopNav from "../components/topNav.vue";
-import SideNav from "../components/sideNav.vue";
+  import TopNav from "../components/topNav.vue";
+  import SideNav from "../components/sideNav.vue";
 
-export default {
-  components: {
-    TopNav,
-    SideNav,
-  },
-  data() {
-    return {
-      feedbackType: "",
-      message: "",
-      contactInfo: "",
-    };
-  },
-  methods: {
-    submitFeedback() {
-      alert("Thank you for your feedback!");
-      // Add form handling logic here
+  export default {
+    components: {
+      TopNav,
+      SideNav,
     },
-  },
-};
+    data() {
+      return {
+        feedbackType: "",
+        message: "",
+        contactInfo: "",
+      };
+    },
+    methods: {
+      submitFeedback() {
+        alert("Thank you for your feedback!");
+        // Add form handling logic here
+      },
+    },
+  };
 </script>
 
 <style scoped>
-.feedback-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 25px;
-  border: 2px solid #388e3c; /* Dark green accent */
-  border-radius: 10px;
-  background-color: #e8f5e9; /* Light greenish background */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.form-title {
-  text-align: center;
-  color: #2e7d32; /* Dark green */
-  margin-bottom: 20px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-label {
-  font-weight: 600;
-  color: #555;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-input,
-.form-input-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  transition: border-color 0.3s ease;
-}
-
-.form-input:focus,
-.form-input-select:focus {
-  border-color: #388e3c;
-  outline: none;
-}
-
-.form-button {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border-radius: 5px;
-  background-color: #388e3c; /* Green button */
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 15px;
-}
-
-.form-button:hover {
-  background-color: #2e7d32;
-}
-
-@media (max-width: 768px) {
   .feedback-container {
-    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 25px;
+    border: 2px solid #388e3c; /* Dark green accent */
+    border-radius: 10px;
+    background-color: #e8f5e9; /* Light greenish background */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
   .form-title {
-    font-size: 1.5rem;
+    text-align: center;
+    color: #2e7d32; /* Dark green */
+    margin-bottom: 20px;
+    font-weight: 600;
+    letter-spacing: 1px;
   }
-}
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .form-input,
+  .form-input-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+  }
+
+  .form-input:focus,
+  .form-input-select:focus {
+    border-color: #388e3c;
+    outline: none;
+  }
+
+  .form-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+    background-color: #388e3c; /* Green button */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+  }
+
+  .form-button:hover {
+    background-color: #2e7d32;
+  }
+
+  @media (max-width: 768px) {
+    .feedback-container {
+      padding: 20px;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+    }
+  }
 </style>
