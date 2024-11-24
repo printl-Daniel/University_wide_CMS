@@ -17,99 +17,132 @@
         </div>
         <div class="modal-body">
           <form @submit.prevent="submitForm">
-            <!-- Item ID -->
-            <div class="mb-3">
-              <label for="itemId" class="form-label">Item ID</label>
-              <input
-                type="text"
-                id="itemId"
-                class="form-control"
-                v-model="newItem.itemId"
-                required
-              />
+            <div class="row">
+              <!-- Item ID -->
+              <div class="col-md-6 mb-3">
+                <label for="itemId" class="form-label">Item ID (Barcode)</label>
+                <input
+                  type="text"
+                  id="itemId"
+                  class="form-control"
+                  v-model="newItem.itemId"
+                  required
+                />
+              </div>
+
+              <!-- Item Name -->
+              <div class="col-md-6 mb-3">
+                <label for="itemName" class="form-label">Item Name</label>
+                <input
+                  type="text"
+                  id="itemName"
+                  class="form-control"
+                  v-model="newItem.itemName"
+                  required
+                />
+              </div>
             </div>
 
-            <!-- Item Name -->
-            <div class="mb-3">
-              <label for="itemName" class="form-label">Item Name</label>
-              <input
-                type="text"
-                id="itemName"
-                class="form-control"
-                v-model="newItem.itemName"
-                required
-              />
+            <div class="row">
+              <!-- Category -->
+              <div class="col-md-6 mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select
+                  id="category"
+                  class="form-select"
+                  v-model="newItem.category"
+                  required
+                >
+                  <option value="" disabled>Select a category</option>
+                  <option value="Medicine">Medicine</option>
+                  <option value="Medical Supply">Medical Supply</option>
+                  <option value="Equipment">Equipment</option>
+                </select>
+              </div>
+
+              <!-- Quantity -->
+              <div class="col-md-6 mb-3">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  class="form-control"
+                  v-model="newItem.quantity"
+                  required
+                  min="1"
+                />
+              </div>
             </div>
 
-            <!-- Price -->
-            <div class="mb-3">
-              <label for="price" class="form-label">Price</label>
-              <input
-                type="number"
-                id="price"
-                class="form-control"
-                v-model="newItem.price"
-                required
-                min="0"
-                step="0.01"
-              />
+            <div class="row">
+              <!-- Unit of Measure -->
+              <div class="col-md-6 mb-3">
+                <label for="unitOfMeasure" class="form-label">Unit of Measure</label>
+                <select
+                  id="unitOfMeasure"
+                  class="form-select"
+                  v-model="newItem.unitOfMeasure"
+                  required
+                >
+                  <option value="Box">Box</option>
+                  <option value="Bottle">Bottle</option>
+                  <option value="Pack">Pack</option>
+                </select>
+              </div>
+
+              <!-- Expiration Date -->
+              <div class="col-md-6 mb-3">
+                <label for="expirationDate" class="form-label">Expiration Date</label>
+                <input
+                  type="date"
+                  id="expirationDate"
+                  class="form-control"
+                  v-model="newItem.expirationDate"
+                  required
+                />
+              </div>
             </div>
 
-            <!-- Category -->
-            <div class="mb-3">
-              <label for="category" class="form-label">Category</label>
-              <select
-                id="category"
-                class="form-select"
-                v-model="newItem.category"
-                required
-              >
-                <option value="" disabled>Select a category</option>
-                <option value="Medicine">Medicine</option>
-                <option value="Medical Supply">Medical Supply</option>
-                <option value="Equipment">Equipment</option>
-              </select>
+            <div class="row">
+              <!-- Supplier -->
+              <div class="col-md-6 mb-3">
+                <label for="supplier" class="form-label">Supplier</label>
+                <input
+                  type="text"
+                  id="supplier"
+                  class="form-control"
+                  v-model="newItem.supplier"
+                  required
+                />
+              </div>
+
+              <!-- Purchase Date -->
+              <div class="col-md-6 mb-3">
+                <label for="purchaseDate" class="form-label">Purchase Date</label>
+                <input
+                  type="date"
+                  id="purchaseDate"
+                  class="form-control"
+                  v-model="newItem.purchaseDate"
+                  required
+                />
+              </div>
             </div>
 
-            <!-- Quantity -->
-            <div class="mb-3">
-              <label for="quantity" class="form-label">Quantity</label>
-              <input
-                type="number"
-                id="quantity"
-                class="form-control"
-                v-model="newItem.quantity"
-                required
-                min="1"
-              />
-            </div>
-
-            <!-- Unit -->
-            <div class="mb-3">
-              <label for="unit" class="form-label">Unit</label>
-              <select
-                id="unit"
-                class="form-select"
-                v-model="newItem.unit"
-                required
-              >
-                <option value="Box">Box</option>
-                <option value="Bottle">Bottle</option>
-                <option value="Pack">Pack</option>
-              </select>
-            </div>
-
-            <!-- Threshold -->
-            <div class="mb-3">
-              <label for="threshold" class="form-label">Threshold</label>
-              <input
-                type="number"
-                id="threshold"
-                class="form-control"
-                v-model="newItem.threshold"
-                required
-                min="0"
-              />
+            <div class="row">
+              <!-- Cost Per Unit -->
+              <div class="col-md-6 mb-3">
+                <label for="costPerUnit" class="form-label">Cost Per Unit</label>
+                <input
+                  type="number"
+                  id="costPerUnit"
+                  class="form-control"
+                  v-model="newItem.costPerUnit"
+                  required
+                  min="0"
+                  step="0.01"
+                />
+              </div>
             </div>
 
             <!-- Submit Button -->
@@ -129,11 +162,13 @@ export default {
       newItem: {
         itemId: "",
         itemName: "",
-        price: 0,
         category: "",
         quantity: 0,
-        unit: "Box",
-        threshold: 5,
+        unitOfMeasure: "Box", // Default value for unit of measure
+        expirationDate: "", // Expiration date
+        supplier: "", // Supplier name
+        purchaseDate: "", // Purchase date
+        costPerUnit: 0, // Cost per unit
       },
     };
   },
@@ -154,11 +189,13 @@ export default {
         this.newItem = {
           itemId: "",
           itemName: "",
-          price: 0,
           category: "",
           quantity: 0,
-          unit: "Box",
-          threshold: 5,
+          unitOfMeasure: "Box",
+          expirationDate: "",
+          supplier: "",
+          purchaseDate: "",
+          costPerUnit: 0,
         };
       } catch (error) {
         console.error(
@@ -183,7 +220,7 @@ export default {
 
 /* Modal dialog */
 .modal-dialog {
-  max-width: 500px;
+  max-width: 800px; /* Increased dialog width */
   width: 100%;
   margin: 20px auto;
 }
@@ -246,6 +283,22 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+}
+
+/* Grid layout */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-md-6 {
+  width: 50%; /* Half-width for each input */
+  padding: 10px;
+}
+
+.col-md-12 {
+  width: 100%;
+  padding: 10px;
 }
 
 /* Submit button */
