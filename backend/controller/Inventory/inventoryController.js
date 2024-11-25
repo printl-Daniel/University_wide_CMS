@@ -125,23 +125,36 @@ exports.logHistory = async (req, res) => {
     try {
       const inventoryItems = await Inventory.find();  // Retrieve all items from DB
       res.status(200).json({
+        success: true,
+        data: inventoryItems,
       });
     } catch (error) {
       console.error("Error fetching items:", error);
       res.status(500).json({
+        success: false,
+        message: "Failed to fetch items",
       });
     }
   };
   
-  // // Get All History Entries
-  // exports.getAllHistory = async (req, res) => {
-  //   try {
-  //     const history = await History.find();
-  //     res.status(200).json({ history });
-  //   } catch (err) {
-  //     res.status(400).json({ message: 'Error fetching history logs', error: err.message });
-  //   }
-  // };
+  exports.getHistory = async (req, res) => {
+    try {
+      // Retrieve all history entries from the History collection
+      const historyEntries = await History.find().sort({ transactionDate: -1 }); // Sort by transaction date (most recent first)
+  
+      // Respond with the fetched history entries
+      res.status(200).json({
+        success: true,
+        data: historyEntries,
+      });
+    } catch (error) {
+      console.error("Error fetching history:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch history entries",
+      });
+    }
+  };
   
   // // Get All Audit Entries
   // exports.getAllAudits = async (req, res) => {

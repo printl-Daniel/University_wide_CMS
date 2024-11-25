@@ -45,39 +45,33 @@
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th scope="col">Item ID (Barcode)</th>
-                <th scope="col">Item Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Expiration Date</th>
-                <th scope="col">Supplier</th>
-                <th scope="col">Purchase Date</th>
-                <th scope="col">Cost per Unit</th>
-                <th scope="col">Action</th>
-              </tr>
+              <th scope="col">Item ID</th>
+              <th scope="col">Item Name</th>
+              <th scope="col">Category</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Unit of Measure</th>
+              <th scope="col">Expiration Date</th>
+              <th scope="col">Supplier</th>
+              <th scope="col">Purchase Date</th>
+              <th scope="col">Cost Per Unit</th>
+              <th scope="col">Action</th>
+            </tr>
             </thead>
             <tbody>
-              <tr v-for="item in inventory" :key="newItem._id">
+              <tr v-for="item in inventoryItems" :key="item._id">
                 <td>{{ item.itemId }}</td>
-                <td>{{ item.itemName }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unitOfMeasure }}</td>
-                <td>{{ formatDate(item.expirationDate) }}</td>
-                <td>{{ item.supplier }}</td>
-                <td>{{ formatDate(item.purchaseDate) }}</td>
-                <td>{{ item.costPerUnit.toFixed(2) }}</td>
+              <td>{{ item.itemName }}</td>
+              <td>{{ item.category }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unitOfMeasure }}</td>
+              <td>{{ formatDate(item.expirationDate) }}</td>
+              <td>{{ item.supplier }}</td>
+              <td>{{ formatDate(item.purchaseDate) }}</td>
+              <td>{{ item.costPerUnit | currency }}</td>
                 <td>
-                  <button class="btn btn-warning" @click="openEditModal(item)">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                  <!-- Button to view audit for each item -->
-                  <button class="btn btn-info ml-2" @click="openAuditModal(item)">
-                    <i class="fas fa-search"></i> Audit
-                  </button>
+
                 </td>
-              </tr>
+              </tr>            
             </tbody>
           </table>
         </div>
@@ -118,7 +112,7 @@ export default {
   data() {
     return {
       showModal: false,
-      inventory: [],
+      inventoryItems: [],
       showEditModal: false,
       selectedItem: null,
       searchQuery: '',
@@ -136,14 +130,14 @@ export default {
       this.showEditModal = true;
     },
     async displayItems() {
-  try {
-    const res = await axios.get('http://localhost:5000/api/inventory/display');
-    console.log(res.data);  // Add t his line to check the response
-    this.inventory = res.data.items; // or adjust to res.data if needed
-  } catch (error) {
-    console.error('Error fetching items:', error);
-  }
-},
+      try {
+        const res = await axios.get('http://localhost:5000/api/inventory/display');
+        console.log(res.data);  // Add t his line to check the response
+        this.inventoryItems = res.data.data; // or adjust to res.data if needed
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    },
     filterInventory() {
       // Implement search filtering logic here
     },
