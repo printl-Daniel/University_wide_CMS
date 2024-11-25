@@ -40,3 +40,5 @@ exports.createAppointment = async (req, res) => {
     });
   }
 };
+
+exports;

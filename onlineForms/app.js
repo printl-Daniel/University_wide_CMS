@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const appointmentRoutes = require("./routes/appointmentRouter");
+require("dotenv").config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
