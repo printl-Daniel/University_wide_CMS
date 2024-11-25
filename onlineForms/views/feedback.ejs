@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appointment Booking</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      label {
+        display: block;
+        margin: 15px 0 5px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 600px) {
+        .container {
+          margin: 20px;
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 20px;
+        }
+
+        button {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Book Your Appointment</h1>
+      <form id="appointmentForm" action="/api/appointments" method="POST">
+        <!-- Full Name -->
+        <label for="fullName">Full Name</label>
+        <input
+          type="text"
+          id="fullName"
+          name="fullName"
+          placeholder="Enter your full name"
+          required
+        />
+
+        <!-- Email Address -->
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Enter your email address"
+          required
+        />
+
+        <!-- Phone Number -->
+        <label for="phone">Phone Number</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="Enter your phone number"
+          required
+        />
+
+        <!-- Date -->
+        <label for="date">Appointment Date</label>
+        <input type="date" id="date" name="date" required />
+
+        <!-- Time -->
+        <label for="time">Appointment Time</label>
+        <input type="time" id="time" name="time" required />
+
+        <!-- Reason for Appointment -->
+        <label for="reason">Reason for Appointment</label>
+        <textarea
+          id="reason"
+          name="reason"
+          rows="4"
+          placeholder="Provide a brief reason"
+        ></textarea>
+
+        <!-- Submit Button -->
+        <button type="submit">Book Appointment</button>
+      </form>
+    </div>
+  </body>
+</html>

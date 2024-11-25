@@ -5,6 +5,7 @@ const inventoryRouter = require("./routes/inventoryRouter");
 const feedbackRouter = require("./routes/feedbackRouter");
 const sendEmail = require("./routes/emailRouter");
 const patientRouter = require("./routes/patientRouter");
+const appointmentsRouter = require("./routes/appointmentRouter");
 
 require("dotenv").config();
 const app = express();
@@ -17,6 +18,7 @@ app.use("/api/emails", sendEmail);
 
 //app.use("/api/feedback", feedbackRouter);
 app.use("/api/patient", patientRouter);
+app.use("/api/appointment", appointmentsRouter);
 
 // Connect to MongoDB
 connectDB();

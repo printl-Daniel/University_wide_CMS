@@ -15,6 +15,7 @@ import adminInventory from "../userRole/admin/views/manage_inventory.vue";
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
 import doctorDashboard from "../userRole/doctor/views/doctorDashboard.vue";
+import appointments from "../userRole/doctor/views/appointments.vue";
 
 //patient
 import patientInbox from "../userRole/patient/views/inbox.vue";
@@ -66,6 +67,11 @@ const routes = [
     path: "/doctor/patient-history",
     name: "patientHistory",
     component: patientHistory,
+  },
+  {
+    path: "/appointments",
+    name: "appointments",
+    component: appointments,
   },
   //admin-router
   {
