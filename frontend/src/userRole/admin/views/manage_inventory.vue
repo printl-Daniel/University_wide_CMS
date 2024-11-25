@@ -13,61 +13,85 @@
 
       <!-- Main Content Area -->
       <div class="content flex-grow-1">
-          <h2 class="page-title">Inventory</h2>
-          <div class="d-flex mb-4 search-container">
-            <div class="search-bar-container">
-              <input
-                type="text"
-                v-model="searchQuery"
-                class="form-control search-input"
-                placeholder="Search items..."
-                @input="filterInventory"
-              />
-              <button class="btn btn-secondary search-btn" @click="filterInventory">
-                <i class="fas fa-search"></i> Search
-              </button>
-            </div>
-            <button class="btn btn-primary add-item-btn" @click="showModal = true">
-              <i class="fas fa-plus"></i> Add Item
+        <h2 class="page-title">Inventory</h2>
+
+        <div class="d-flex mb-4 search-container">
+          <div class="search-bar-container">
+            <input
+              type="text"
+              v-model="searchQuery"
+              class="form-control search-input"
+              placeholder="Search items..."
+              @input="filterInventory"
+            />
+            <button class="btn btn-secondary search-btn" @click="filterInventory">
+              <i class="fas fa-search"></i> Search
             </button>
           </div>
+          <button class="btn btn-primary add-item-btn" @click="showModal = true">
+            <i class="fas fa-plus"></i> Add Item
+          </button>
+          <!-- Button to show Transaction History -->
+          <button class="btn btn-info ml-3" @click="showHistoryModal = true">
+            <i class="fas fa-history"></i> View Transaction History
+          </button>
+          <!-- Button to show Audit Records -->
+          <button class="btn btn-warning ml-3" @click="showAuditModal = true">
+            <i class="fas fa-search"></i> View Audit Logs
+          </button>
+        </div>
 
-          <div class="mt-4 table-responsive">
-            <table class="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Unit</th>
-                  <th scope="col">Threshold</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in inventory" :key="item._id">
-                  <td>{{ item.itemId }}</td>
-                  <td>{{ item.itemName }}</td>
-                  <td>{{ item.category }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.unit }}</td>
-                  <td>{{ item.threshold }}</td>
-                  <td>{{ item.price }}</td>
-                  <td>
-                    <button class="btn btn-warning" @click="openEditModal(item)">
-                      <i class="fas fa-edit"></i> Edit
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="mt-4 table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Item ID (Barcode)</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit</th>
+                <th scope="col">Expiration Date</th>
+                <th scope="col">Supplier</th>
+                <th scope="col">Purchase Date</th>
+                <th scope="col">Cost per Unit</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in inventory" :key="item._id">
+                <td>{{ item.itemId }}</td>
+                <td>{{ item.itemName }}</td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unitOfMeasure }}</td>
+                <td>{{ formatDate(item.expirationDate) }}</td>
+                <td>{{ item.supplier }}</td>
+                <td>{{ formatDate(item.purchaseDate) }}</td>
+                <td>{{ item.costPerUnit.toFixed(2) }}</td>
+                <td>
+                  <button class="btn btn-warning" @click="openEditModal(item)">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                  <!-- Button to view audit for each item -->
+                  <button class="btn btn-info ml-2" @click="openAuditModal(item)">
+                    <i class="fas fa-search"></i> Audit
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <!-- Add Inventory Modal -->
-          <addModal v-if="showModal" @close="showModal = false" @add-item="addItem" />
-          <editItemModal v-if="showEditModal" :selectedItem="selectedItem" @close="showEditModal = false" @edit-item="editItem" />
+        <!-- Add Inventory Modal -->
+        <addModal v-if="showModal" @close="showModal = false" @add-item="addItem" />
+        <!-- Edit Inventory Modal -->
+        <editItemModal v-if="showEditModal" :selectedItem="selectedItem" @close="showEditModal = false" @edit-item="editItem" />
+        
+        <!-- History Modal -->
+        <historyModal v-if="showHistoryModal" @close="showHistoryModal = false" />
+        
+        <!-- Audit Modal -->
+        <auditModal v-if="showAuditModal" @close="showAuditModal = false" :selectedItem="selectedItem" />
       </div>
     </div>
   </div>
@@ -79,6 +103,8 @@ import sideNav from '../components/sideNav.vue';
 import topNav from '../components/topNav.vue';
 import addModal from '../../../components/addItemModal.vue';
 import editItemModal from '../../../components/updateItemModal.vue';
+import historyModal from '../../../components/historyModal.vue';
+import auditModal from '../../../components/auditModal.vue'; // Import the Audit Modal
 
 export default {
   components: {
@@ -86,6 +112,8 @@ export default {
     topNav,
     addModal,
     editItemModal,
+    historyModal,
+    auditModal, // Register the Audit Modal component
   },
   data() {
     return {
@@ -94,6 +122,8 @@ export default {
       showEditModal: false,
       selectedItem: null,
       searchQuery: '',
+      showHistoryModal: false,
+      showAuditModal: false, // Flag to show Audit modal
     };
   },
   methods: {
@@ -111,12 +141,19 @@ export default {
         this.inventory = res.data.items;
       } catch (error) {
         console.error('Error fetching items:', error);
-        //alert('Failed to fetch items');
       }
     },
     filterInventory() {
       // Implement search filtering logic here
-    }
+    },
+    openAuditModal(item) {
+      this.selectedItem = item;
+      this.showAuditModal = true;
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US'); // formats date to MM/DD/YYYY
+    },
   },
   mounted() {
     this.displayItems();
@@ -126,9 +163,9 @@ export default {
 
 <style scoped>
 .page-title {
-  font-size: 26px;
+  font-size: 22px; /* Reduced font size */
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 16px; /* Reduced bottom margin */
   color: #333;
 }
 
@@ -149,6 +186,7 @@ export default {
   border-radius: 25px;
   padding: 8px 12px;
   border: 1px solid #ccc;
+  font-size: 14px; /* Adjusted font size */
 }
 
 .search-btn {
@@ -157,7 +195,7 @@ export default {
   color: white;
   padding: 8px 15px;
   margin-left: 10px;
-  font-size: 14px;
+  font-size: 14px; /* Adjusted font size */
 }
 
 .add-item-btn {
@@ -165,7 +203,7 @@ export default {
   color: white;
   border-radius: 25px;
   padding: 8px 20px;
-  font-size: 14px;
+  font-size: 14px; /* Adjusted font size */
 }
 
 .table-responsive {
@@ -178,9 +216,10 @@ export default {
 
 .table th,
 .table td {
-  padding: 12px 15px;
+  padding: 10px 12px; /* Reduced padding */
   border-bottom: 1px solid #eaeaea;
   text-align: left;
+  font-size: 14px; /* Adjusted font size */
 }
 
 .table th {
@@ -188,6 +227,7 @@ export default {
   color: white;
   font-weight: bold;
   text-transform: uppercase;
+  font-size: 14px; /* Adjusted font size */
 }
 
 .table tbody tr:hover {
@@ -199,7 +239,7 @@ export default {
 }
 
 .table td button {
-  font-size: 14px;
+  font-size: 14px; /* Adjusted button font size */
 }
 
 .table .btn {
