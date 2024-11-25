@@ -48,7 +48,7 @@ exports.addItemInventory = async (req, res) =>{
                 history: historyEntry
               });
         } catch (error) {
-            res.status(400).json({ message: 'Error adding item to inventory', error: err.message });
+            res.status(400).json({ message: 'Error adding item to inventory', error: error.message });
         }
         
 }
