@@ -20,7 +20,7 @@
             <div class="row">
               <!-- Item ID -->
               <div class="col-md-6 mb-3">
-                <label for="itemId" class="form-label">Item ID (Barcode)</label>
+                <label for="itemId" class="form-label">Item ID</label>
                 <input
                   type="text"
                   id="itemId"
@@ -176,7 +176,7 @@ export default {
     async submitForm() {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/inventory/add-item",
+          "http://localhost:5000/api/inventory/add",
           this.newItem
         );
 

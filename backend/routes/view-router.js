@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const views = require("../controller/view-controller");
+// const express = require("express");
+// const router = express.Router();
+// const views = require("../controller/view-controller");
 
-router.get("/feedback", views.feedback);
+// router.get("/feedback", views.feedback);
 
-module.exports = router;
+// module.exports = router;

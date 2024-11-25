@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const inventoryController = require('../controller/inventoryController');
+const inventoryController = require('../controller/Inventory/inventoryController');
 
-router.post('/add-item', inventoryController.addInventoryItem);
-router.get('/display-items', inventoryController.gettAllItems);
-router.put('/update-item/:itemId', inventoryController.updateItem);
+router.post('/add', inventoryController.addItemInventory);
+router.get('/display', inventoryController.getInventoryItems);
 
 
 module.exports = router;

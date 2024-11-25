@@ -58,7 +58,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in inventory" :key="item._id">
+              <tr v-for="item in inventory" :key="newItem._id">
                 <td>{{ item.itemId }}</td>
                 <td>{{ item.itemName }}</td>
                 <td>{{ item.category }}</td>
@@ -136,13 +136,14 @@ export default {
       this.showEditModal = true;
     },
     async displayItems() {
-      try {
-        const res = await axios.get('http://localhost:5000/api/inventory/display-items');
-        this.inventory = res.data.items;
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      }
-    },
+  try {
+    const res = await axios.get('http://localhost:5000/api/inventory/display');
+    console.log(res.data);  // Add t his line to check the response
+    this.inventory = res.data.items; // or adjust to res.data if needed
+  } catch (error) {
+    console.error('Error fetching items:', error);
+  }
+},
     filterInventory() {
       // Implement search filtering logic here
     },
