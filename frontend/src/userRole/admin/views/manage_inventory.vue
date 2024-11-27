@@ -15,32 +15,6 @@
       <div class="content flex-grow-1">
         <h2 class="page-title">Inventory</h2>
 
-        <div class="d-flex mb-4 search-container">
-          <div class="search-bar-container">
-            <input
-              type="text"
-              v-model="searchQuery"
-              class="form-control search-input"
-              placeholder="Search items..."
-              @input="filterInventory"
-            />
-            <button class="btn btn-secondary search-btn" @click="filterInventory">
-              <i class="fas fa-search"></i> Search
-            </button>
-          </div>
-          <button class="btn btn-primary add-item-btn" @click="showModal = true">
-            <i class="fas fa-plus"></i> Add Item
-          </button>
-          <!-- Button to show Transaction History -->
-          <button class="btn btn-info ml-3" @click="showHistoryModal = true">
-            <i class="fas fa-history"></i> View Transaction History
-          </button>
-          <!-- Button to show Audit Records -->
-          <button class="btn btn-warning ml-3" @click="showAuditModal = true">
-            <i class="fas fa-search"></i> View Audit Logs
-          </button>
-        </div>
-
         <div class="mt-4 table-responsive">
           <table id="inventoryTable" class="table table-striped table-hover">
             <thead>
