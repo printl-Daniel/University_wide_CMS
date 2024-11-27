@@ -11,6 +11,12 @@ import patientRecords from "../userRole/staff/views/patientRecords.vue";
 import adminDashboard from "../userRole/admin/views/admindDashboard.vue";
 import userManagement from "@/userRole/admin/views/userManagement.vue";
 import adminInventory from "../userRole/admin/views/manage_inventory.vue";
+import enrollment from "../userRole/admin/views/studentEnrollment.vue";
+import history from "../userRole/admin/views/viewHistory.vue";
+import audit from "../userRole/admin/views/viewAudit.vue";
+import addItemModal from "@/userRole/admin/views/addItemModal.vue";
+
+
 
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
@@ -89,6 +95,28 @@ const routes = [
     name: "AdminInventory",
     component: adminInventory,
   },
+  {
+    path: "/admin/enrollment",
+    name: "studentEnrollment",
+    component: enrollment,
+  },
+  {
+    path:"/admin/history",
+    name: "history",
+    component: history,
+  },
+  {
+    path:"/admin/audit",
+    name: "audit",
+    component: audit,
+  },
+  {
+    path:"/admin/add-item",
+    name: "addItem",
+    component: addItemModal,
+  },
+
+
 
   //patient
   {

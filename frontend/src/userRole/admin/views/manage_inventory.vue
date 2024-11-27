@@ -42,50 +42,48 @@
         </div>
 
         <div class="mt-4 table-responsive">
-          <table class="table table-striped table-hover">
+          <table id="inventoryTable" class="table table-striped table-hover">
             <thead>
               <tr>
-              <th scope="col">Item ID</th>
-              <th scope="col">Item Name</th>
-              <th scope="col">Category</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Unit of Measure</th>
-              <th scope="col">Expiration Date</th>
-              <th scope="col">Supplier</th>
-              <th scope="col">Purchase Date</th>
-              <th scope="col">Cost Per Unit</th>
-              <th scope="col">Action</th>
-            </tr>
+                <th scope="col">Item ID</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit of Measure</th>
+                <th scope="col">Expiration Date</th>
+                <th scope="col">Supplier</th>
+                <th scope="col">Purchase Date</th>
+                <th scope="col">Cost Per Unit</th>
+                <th scope="col">Action</th>
+              </tr>
             </thead>
             <tbody>
               <tr v-for="item in inventoryItems" :key="item._id">
                 <td>{{ item.itemId }}</td>
-              <td>{{ item.itemName }}</td>
-              <td>{{ item.category }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.unitOfMeasure }}</td>
-              <td>{{ formatDate(item.expirationDate) }}</td>
-              <td>{{ item.supplier }}</td>
-              <td>{{ formatDate(item.purchaseDate) }}</td>
-              <td>{{ item.costPerUnit | currency }}</td>
+                <td>{{ item.itemName }}</td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unitOfMeasure }}</td>
+                <td>{{ formatDate(item.expirationDate) }}</td>
+                <td>{{ item.supplier }}</td>
+                <td>{{ formatDate(item.purchaseDate) }}</td>
+                <td>{{ item.costPerUnit }}</td>
                 <td>
-
+                  <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
                 </td>
               </tr>            
             </tbody>
           </table>
         </div>
+      
 
-        <!-- Add Inventory Modal -->
-        <addModal v-if="showModal" @close="showModal = false" @add-item="addItem" />
-        <!-- Edit Inventory Modal -->
-        <editItemModal v-if="showEditModal" :selectedItem="selectedItem" @close="showEditModal = false" @edit-item="editItem" />
-        
-        <!-- History Modal -->
-        <historyModal v-if="showHistoryModal" @close="showHistoryModal = false" />
-        
-        <!-- Audit Modal -->
-        <auditModal v-if="showAuditModal" @close="showAuditModal = false" :selectedItem="selectedItem" />
+        <addQuantityModal
+          v-if="showAddQuantityModal"
+          :selectedItem="selectedItemForQuantity"
+          :showModal="showAddQuantityModal"
+          @close="showAddQuantityModal = false"
+          @quantity-added="handleQuantityAdded"
+        />
       </div>
     </div>
   </div>
@@ -95,10 +93,9 @@
 import axios from 'axios';
 import sideNav from '../components/sideNav.vue';
 import topNav from '../components/topNav.vue';
-import addModal from '../../../components/addItemModal.vue';
+import addModal from './addItemModal.vue';
 import editItemModal from '../../../components/updateItemModal.vue';
-import historyModal from '../../../components/historyModal.vue';
-import auditModal from '../../../components/auditModal.vue'; // Import the Audit Modal
+import addQuantityModal from '../../../components/addQuantityModal.vue';
 
 export default {
   components: {
@@ -106,8 +103,7 @@ export default {
     topNav,
     addModal,
     editItemModal,
-    historyModal,
-    auditModal, // Register the Audit Modal component
+    addQuantityModal,
   },
   data() {
     return {
@@ -116,38 +112,61 @@ export default {
       showEditModal: false,
       selectedItem: null,
       searchQuery: '',
-      showHistoryModal: false,
-      showAuditModal: false, // Flag to show Audit modal
+      showAddQuantityModal: false,
+      selectedItemForQuantity: null,
     };
   },
   methods: {
-    addItem(newItem) {
-      this.inventory.push(newItem);
-      this.showModal = false;
-    },
-    openEditModal(item) {
-      this.selectedItem = item;
-      this.showEditModal = true;
-    },
+   
     async displayItems() {
       try {
         const res = await axios.get('http://localhost:5000/api/inventory/display');
-        console.log(res.data);  // Add t his line to check the response
-        this.inventoryItems = res.data.data; // or adjust to res.data if needed
+        this.inventoryItems = res.data.data; // Update the inventory data
+        this.$nextTick(() => {
+          this.initializeDataTable(); // Reinitialize DataTable after data is loaded
+        });
       } catch (error) {
         console.error('Error fetching items:', error);
       }
     },
+    initializeDataTable() {
+      // Initialize DataTable only if it hasn't been initialized yet
+      if ($.fn.dataTable.isDataTable('#inventoryTable')) {
+        $('#inventoryTable').DataTable().destroy();
+      }
+      $('#inventoryTable').DataTable({
+        searching: true, // Enable search functionality
+        paging: true,    // Enable pagination
+        ordering: true,  // Enable column sorting
+        info: true,      // Show info like "Showing 1 to 10 of 100 entries"
+      });
+    },
     filterInventory() {
       // Implement search filtering logic here
-    },
-    openAuditModal(item) {
-      this.selectedItem = item;
-      this.showAuditModal = true;
+      // For now, we can use the built-in DataTables search functionality
+      $('#inventoryTable').DataTable().search(this.searchQuery).draw();
     },
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US'); // formats date to MM/DD/YYYY
+    },
+    openAddQuantityModal(item) {
+      this.selectedItemForQuantity = item;
+      this.showAddQuantityModal = true;
+    },
+    handleQuantityAdded(updatedItem) {
+      // Find the updated item in the inventory list and update it
+      const index = this.inventoryItems.findIndex((item) => item._id === updatedItem._id);
+      if (index !== -1) {
+        this.inventoryItems[index] = updatedItem;
+      }
+      this.refreshDataTable(); // Refresh DataTable after quantity is added
+    },
+    refreshDataTable() {
+      // Reinitialize the DataTable to reflect any changes in the inventory
+      this.$nextTick(() => {
+        this.initializeDataTable();
+      });
     },
   },
   mounted() {

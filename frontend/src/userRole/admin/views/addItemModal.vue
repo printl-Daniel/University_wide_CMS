@@ -1,21 +1,20 @@
 <template>
-  <div
-    class="modal fade show"
-    tabindex="-1"
-    style="display: block"
-    aria-hidden="false"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add New Product</h5>
-          <button
-            type="button"
-            class="btn-close"
-            @click="$emit('close')"
-          ></button>
-        </div>
-        <div class="modal-body">
+  <div>
+    <!-- Admin Navbar (top navbar) -->
+    <div class="header">
+      <topNav />
+    </div>
+
+    <div class="page-content d-flex">
+      <!-- Sidebar Navigation -->
+      <div class="sidebar">
+        <sideNav />
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="content flex-grow-1">
+        <div class="container mt-4">
+          <h2>Add New Product</h2>
           <form @submit.prevent="submitForm">
             <div class="row">
               <!-- Item ID -->
@@ -156,7 +155,15 @@
 
 <script>
 import axios from "axios";
+import sideNav from '../components/sideNav.vue';
+import topNav from '../components/topNav.vue';
+
 export default {
+  name: "AddItem",
+  components: {
+    sideNav,
+    topNav
+  },
   data() {
     return {
       newItem: {
@@ -182,9 +189,6 @@ export default {
 
         console.log("Item added successfully:", response.data);
         alert("Item added successfully.");
-        this.$emit("itemAdded", response.data.item); // Emit success event
-        this.$emit("close"); // Close the modal
-
         // Reset form fields
         this.newItem = {
           itemId: "",
@@ -210,65 +214,28 @@ export default {
 </script>
 
 <style scoped>
-/* Modal backdrop styling */
-.modal {
-  background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+/* Main content styling */
+.page-content {
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* Modal dialog */
-.modal-dialog {
-  max-width: 800px; /* Increased dialog width */
-  width: 100%;
-  margin: 20px auto;
-}
-
-/* Modal content styling */
-.modal-content {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  position: relative; /* Ensure positioning for close button */
-}
-
-/* Header styling */
-.modal-header {
-  background-color: #007bff;
-  color: #ffffff;
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header .modal-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-
-.modal-header .btn-close {
-  border: none;
-  color: #000000;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  position: absolute;
-  top: 12px;
-  right: 16px;
-}
-
-.modal-header .btn-close:hover {
-  color: #ffcccc;
-}
-
-/* Body styling */
-.modal-body {
+.content {
+  flex-grow: 1;
   padding: 20px;
 }
 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Form and input styling */
 .modal-body label {
   font-weight: bold;
   margin-bottom: 8px;
@@ -283,22 +250,6 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
-}
-
-/* Grid layout */
-.row {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.col-md-6 {
-  width: 50%; /* Half-width for each input */
-  padding: 10px;
-}
-
-.col-md-12 {
-  width: 100%;
-  padding: 10px;
 }
 
 /* Submit button */

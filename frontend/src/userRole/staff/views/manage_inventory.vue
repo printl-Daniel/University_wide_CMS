@@ -90,7 +90,7 @@
 import axios from "axios";
 import topNav from "../components/topNav.vue";
 import sideNav from "../components/sideNav.vue";
-import addModal from "../../../components/addItemModal.vue";
+import addModal from "../../admin/views/addItemModal.vue";
 import editItemModal from "../../../components/updateItemModal.vue";
 
 export default {
