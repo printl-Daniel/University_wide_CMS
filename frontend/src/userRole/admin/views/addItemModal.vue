@@ -14,7 +14,7 @@
       <!-- Main Content Area -->
       <div class="content flex-grow-1">
         <div class="container mt-4">
-          <h2>Add New Product</h2>
+
           <form @submit.prevent="submitForm">
             <div class="row">
               <!-- Item ID -->

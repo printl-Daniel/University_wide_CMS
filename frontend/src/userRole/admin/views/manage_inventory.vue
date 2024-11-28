@@ -13,7 +13,6 @@
 
       <!-- Main Content Area -->
       <div class="content flex-grow-1">
-        <h2 class="page-title">Inventory</h2>
 
         <div class="mt-4 table-responsive">
           <table id="inventoryTable" class="table table-striped table-hover">
