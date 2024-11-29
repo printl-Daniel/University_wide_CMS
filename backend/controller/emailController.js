@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-exports.sendMail = async (req, res) => {
+exports.endMail = async (req, res) => {
   try {
     const { from, senderName, message, contact, subject } = req.body;
 
