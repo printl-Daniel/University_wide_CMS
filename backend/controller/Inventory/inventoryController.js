@@ -1,8 +1,10 @@
-const Inventory = require('../../models/Inventory/inventory.js')
+const Inventory = require('../../models/Inventory/inventory.js');
 const History = require('../../models/Inventory/history.js'); 
 const Audit = require('../../models/Inventory/audit.js');
+const ClinicVisitLog = require('../../models/Clinic/clinicVisitLog.js');
 const mongoose = require('mongoose');
 
+// Add Item to Inventory
 exports.addItemInventory = async (req, res) => {
   const { 
     itemId, 
@@ -20,12 +22,11 @@ exports.addItemInventory = async (req, res) => {
   }
 
   try {
-    // Create new inventory item
     const newItem = new Inventory({
       itemId,
       itemName,
       category,
-      quantity:  req.body.quantity || 0,
+      quantity: req.body.quantity || 0,
       unitOfMeasure,
       expirationDate,
       supplier,
@@ -34,16 +35,15 @@ exports.addItemInventory = async (req, res) => {
     
     await newItem.save();
 
-    // Create history entry after adding item
     const historyEntry = new History({
-      transactionId: newItem._id,  // Using the newly created inventory item's _id as transactionId
+      transactionId: newItem._id,
       transactionDate: new Date(),
       itemName: newItem.itemName,
-      actionType: 'Added',  // Action type is 'Added' for adding an item to inventory
-      quantityChanged: 0,  // Initially, no quantity change (since it's 0 by default)
-      remainingQuantity: 0,  // Quantity is the same after addition
-      responsiblePerson: responsiblePerson || 'Admin',  // Default to 'Admin' if no person specified
-      reasonForAction: 'Initial stock',  // Reason for action
+      actionType: 'Added',
+      quantityChanged: 0,
+      remainingQuantity: 0,
+      responsiblePerson: responsiblePerson || 'Admin',
+      reasonForAction: 'Initial stock',
       supplier: newItem.supplier
     });
 
@@ -60,56 +60,66 @@ exports.addItemInventory = async (req, res) => {
   }
 };
 
+// Log Clinic Visit
+exports.logClinicVisit = async (req, res) => {
+  const {
+    controlNo,
+    nameOfPatient,
+    course,
+    year,
+    grade,
+    enrolee,
+    transferee,
+    visitor,
+    chiefComplaint,
+    treatmentOrMedication,
+    remarks
+  } = req.body;
 
-exports.logHistory = async (req, res) => {
-    const { itemName, actionType, quantityChanged, remainingQuantity, responsiblePerson, reasonForAction, supplier } = req.body;
-  
-    try {
-      const historyEntry = new History({
-        transactionId: newItem._id,
-        transactionDate: new Date(),
-        itemName,
-        actionType,
-        quantityChanged,
-        remainingQuantity,
-        responsiblePerson,
-        reasonForAction,
-        supplier
-      });
-  
-      await historyEntry.save();
-  
-      res.status(201).json({
-        message: 'History logged successfully!',
-        history: historyEntry
-      });
-    } catch (err) {
-      res.status(400).json({ message: 'Error logging history', error: err.message });
-    }
-  };
+  if (!controlNo || !nameOfPatient || !chiefComplaint || !treatmentOrMedication) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
 
-  // // Get All Inventory Items
-  exports.getInventoryItems = async (req, res) => {
-    try {
-      const inventoryItems = await Inventory.find();  // Retrieve all items from DB
-      res.status(200).json({
-        success: true,
-        data: inventoryItems,
-      });
-    } catch (error) {
-      console.error("Error fetching items:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to fetch items",
-      });
-    }
-  };
-  
-  
-  
+  try {
+    const newVisitLog = new ClinicVisitLog({
+      controlNo,
+      nameOfPatient,
+      internal: { course, year, grade },
+      external: { enrolee: enrolee || false, transferee: transferee || false, visitor: visitor || false },
+      chiefComplaint,
+      treatmentOrMedication,
+      remarks,
+    });
 
-  // Add quantity to an existing item
-// Inventory Controller
+    await newVisitLog.save();
+
+    res.status(201).json({
+      message: 'Clinic visit logged successfully!',
+      visitLog: newVisitLog,
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Error logging clinic visit', error: error.message });
+  }
+};
+
+// Get All Clinic Visit Logs
+exports.getClinicVisitLogs = async (req, res) => {
+  try {
+    const visitLogs = await ClinicVisitLog.find().sort({ date: -1 });
+    res.status(200).json({
+      success: true,
+      data: visitLogs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch clinic visit logs',
+    });
+  }
+};
+
+
+// Add Quantity to an Existing Item
 exports.addQuantityToItem = async (req, res) => {
   const { itemId } = req.params;
   const { quantityToAdd, responsiblePerson } = req.body;
@@ -119,42 +129,34 @@ exports.addQuantityToItem = async (req, res) => {
   }
 
   try {
-    // Find the item in the inventory by itemId
     const item = await Inventory.findOne({ itemId });
 
     if (!item) {
       return res.status(404).json({ message: 'Item not found' });
     }
 
-    // Add the specified quantity to the existing quantity
     item.quantity += quantityToAdd;
-
-    // Save the updated item in the database  
     await item.save();
 
-    // Generate a new transactionId to avoid conflicts
-    const newTransactionId = new mongoose.Types.ObjectId();  // Generate a new ObjectId for the history
+    const newTransactionId = new mongoose.Types.ObjectId();
 
-    // Create a history entry for this action
     const historyEntry = new History({
-      transactionId: newTransactionId,  // Ensure it's a new transactionId every time
+      transactionId: newTransactionId,
       transactionDate: new Date(),
       itemName: item.itemName,
-      actionType: 'Quantity Added',  // Action type is 'Quantity Added' here
+      actionType: 'Quantity Added',
       quantityChanged: quantityToAdd,
       remainingQuantity: item.quantity,
-      responsiblePerson: responsiblePerson,
+      responsiblePerson,
       reasonForAction: `Quantity added by ${quantityToAdd} units`,
       supplier: item.supplier,
     });
 
-    // Save the history entry
     await historyEntry.save();
 
-    // Respond with a success message and the updated item and history
     res.status(200).json({
       message: 'Quantity added successfully!',
-      item: item,
+      item,
       history: historyEntry,
     });
   } catch (error) {
@@ -162,24 +164,18 @@ exports.addQuantityToItem = async (req, res) => {
   }
 };
 
-
-
-
+// Get Inventory History
 exports.getHistory = async (req, res) => {
   try {
-    // Retrieve all history entries from the History collection
-    const historyEntries = await History.find().sort({ transactionDate: -1 }); // Sort by transaction date (most recent first)
-
-    // Respond with the fetched history entries
+    const historyEntries = await History.find().sort({ transactionDate: -1 });
     res.status(200).json({
       success: true,
       data: historyEntries,
     });
   } catch (error) {
-    console.error("Error fetching history:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch history entries",
+      message: 'Failed to fetch history entries',
     });
   }
 };
