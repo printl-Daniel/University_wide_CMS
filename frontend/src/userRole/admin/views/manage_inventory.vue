@@ -26,7 +26,6 @@
                 <th scope="col">Expiration Date</th>
                 <th scope="col">Supplier</th>
                 <th scope="col">Purchase Date</th>
-                <th scope="col">Cost Per Unit</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -40,7 +39,6 @@
                 <td>{{ formatDate(item.expirationDate) }}</td>
                 <td>{{ item.supplier }}</td>
                 <td>{{ formatDate(item.purchaseDate) }}</td>
-                <td>{{ item.costPerUnit }}</td>
                 <td>
                   <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
                 </td>

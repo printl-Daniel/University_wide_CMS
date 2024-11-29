@@ -26,8 +26,8 @@
                     <th scope="col">Transaction Date</th>
                     <th scope="col">Item Name</th>
                     <th scope="col">Action Type</th>
-                    <th scope="col">Quantity Changed</th>
-                    <th scope="col">Remaining Quantity</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Current Quantity</th>
                     <th scope="col">Responsible Person</th>
                     <th scope="col">Reason for Action</th>
                     <th scope="col">Supplier</th>
