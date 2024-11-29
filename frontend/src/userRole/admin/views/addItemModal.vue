@@ -60,17 +60,7 @@
               </div>
 
               <!-- Quantity -->
-              <div class="col-md-6 mb-3">
-                <label for="quantity" class="form-label">Quantity</label>
-                <input
-                  type="number"
-                  id="quantity"
-                  class="form-control"
-                  v-model="newItem.quantity"
-                  required
-                  min="1"
-                />
-              </div>
+            
             </div>
 
             <div class="row">
@@ -128,21 +118,6 @@
               </div>
             </div>
 
-            <div class="row">
-              <!-- Cost Per Unit -->
-              <div class="col-md-6 mb-3">
-                <label for="costPerUnit" class="form-label">Cost Per Unit</label>
-                <input
-                  type="number"
-                  id="costPerUnit"
-                  class="form-control"
-                  v-model="newItem.costPerUnit"
-                  required
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-            </div>
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary">Add Product</button>
@@ -170,12 +145,10 @@ export default {
         itemId: "",
         itemName: "",
         category: "",
-        quantity: 0,
         unitOfMeasure: "Box", // Default value for unit of measure
         expirationDate: "", // Expiration date
         supplier: "", // Supplier name
         purchaseDate: "", // Purchase date
-        costPerUnit: 0, // Cost per unit
       },
     };
   },
@@ -194,12 +167,11 @@ export default {
           itemId: "",
           itemName: "",
           category: "",
-          quantity: 0,
           unitOfMeasure: "Box",
           expirationDate: "",
           supplier: "",
           purchaseDate: "",
-          costPerUnit: 0,
+
         };
       } catch (error) {
         console.error(

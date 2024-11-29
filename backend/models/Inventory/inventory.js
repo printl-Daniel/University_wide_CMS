@@ -17,7 +17,8 @@ const inventorySchema = new mongoose.Schema({
   },
   quantity: { 
     type: Number, 
-    required: true 
+    required: true,
+    default: 0
   },
   unitOfMeasure: { 
     type: String, 
@@ -33,10 +34,6 @@ const inventorySchema = new mongoose.Schema({
   },
   purchaseDate: { 
     type: Date, 
-    required: true 
-  },
-  costPerUnit: { 
-    type: Number, 
     required: true 
   },
 }, { timestamps: true });  // Optionally add timestamps to track createdAt and updatedAt

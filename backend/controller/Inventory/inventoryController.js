@@ -8,16 +8,14 @@ exports.addItemInventory = async (req, res) => {
     itemId, 
     itemName, 
     category, 
-    quantity, 
     unitOfMeasure, 
     expirationDate, 
     supplier, 
     purchaseDate, 
-    costPerUnit, 
     responsiblePerson 
   } = req.body;
 
-  if (!itemId || !itemName || !category || !quantity || !unitOfMeasure || !expirationDate || !supplier || !purchaseDate || !costPerUnit) {
+  if (!itemId || !itemName || !category || !unitOfMeasure || !expirationDate || !supplier || !purchaseDate) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -27,12 +25,11 @@ exports.addItemInventory = async (req, res) => {
       itemId,
       itemName,
       category,
-      quantity,
+      quantity:  req.body.quantity || 0,
       unitOfMeasure,
       expirationDate,
       supplier,
       purchaseDate,
-      costPerUnit
     });
     
     await newItem.save();
@@ -43,8 +40,8 @@ exports.addItemInventory = async (req, res) => {
       transactionDate: new Date(),
       itemName: newItem.itemName,
       actionType: 'Added',  // Action type is 'Added' for adding an item to inventory
-      quantityChanged: quantity,
-      remainingQuantity: quantity,  // Quantity is the same after addition
+      quantityChanged: 0,  // Initially, no quantity change (since it's 0 by default)
+      remainingQuantity: 0,  // Quantity is the same after addition
       responsiblePerson: responsiblePerson || 'Admin',  // Default to 'Admin' if no person specified
       reasonForAction: 'Initial stock',  // Reason for action
       supplier: newItem.supplier
@@ -132,7 +129,7 @@ exports.addQuantityToItem = async (req, res) => {
     // Add the specified quantity to the existing quantity
     item.quantity += quantityToAdd;
 
-    // Save the updated item in the database
+    // Save the updated item in the database  
     await item.save();
 
     // Generate a new transactionId to avoid conflicts
