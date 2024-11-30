@@ -21,6 +21,9 @@
           <router-link class="sub-item" to="/admin/history">
             View History Log
           </router-link>
+          <router-link class="sub-item" to="/admin/DisburseItem">
+            Disburse Item
+          </router-link>
         </div>
       </div>
 

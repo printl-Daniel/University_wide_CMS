@@ -15,6 +15,7 @@ import enrollment from "../userRole/admin/views/studentEnrollment.vue";
 import history from "../userRole/admin/views/viewHistory.vue";
 import audit from "../userRole/admin/views/viewAudit.vue";
 import addItemModal from "@/userRole/admin/views/addItemModal.vue";
+import DisbursedItem from "../userRole/admin/views/DisburseItem.vue";
 
 
 
@@ -80,6 +81,11 @@ const routes = [
     component: appointments,
   },
   //admin-router
+  {
+    path: "/admin/DisburseItem",
+    name: "DisbursedItem",
+    component: DisbursedItem,
+  },
   {
     path: "/admin/dashboard",
     name: "adminDashboard",
@@ -147,5 +153,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+
 
 export default router;
