@@ -147,97 +147,35 @@ export default {
 </script>
 
 <style scoped>
-.page-title {
-  font-size: 22px; /* Reduced font size */
-  font-weight: bold;
-  margin-bottom: 16px; /* Reduced bottom margin */
-  color: #333;
-}
-
-.search-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.search-bar-container {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-}
-
-.search-input {
-  width: 100%;
-  border-radius: 25px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.search-btn {
-  border-radius: 25px;
-  background-color: #007bff;
-  color: white;
-  padding: 8px 15px;
-  margin-left: 10px;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.add-item-btn {
-  background-color: #28a745;
-  color: white;
-  border-radius: 25px;
-  padding: 8px 20px;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.table-responsive {
+.table {
   margin-top: 20px;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #f9f9f9;
-}
-
-.table th,
-.table td {
-  padding: 10px 12px; /* Reduced padding */
-  border-bottom: 1px solid #eaeaea;
-  text-align: left;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.table th {
-  background-color: #007bff;
-  color: white;
+.display thead {
+  color: #fff;
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 14px; /* Adjusted font size */
 }
 
-.table tbody tr:hover {
+.display tbody tr:hover {
   background-color: #f1f1f1;
 }
-
-.table tbody tr:last-child td {
-  border-bottom: none;
+th, td {
+  padding: 6px;  /* Reduced padding for compact view */
+  text-align: left;
+  border-bottom: 1px solid #ada9a9;
 }
 
-.table td button {
-  font-size: 14px; /* Adjusted button font size */
-}
-
-.table .btn {
-  border-radius: 25px;
+.display tbody td.actions button {
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.table .btn:hover {
+.display tbody td.actions button:hover {
   background-color: #0056b3;
-}
-
-/* Add Modal Button */
-.add-item-btn i, .search-btn i {
-  margin-right: 5px;
 }
 </style>

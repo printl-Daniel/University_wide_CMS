@@ -1,9 +1,20 @@
 <template>
   <div class="container d-flex align-items-center justify-content-center vh-100">
-    <div class="card" style="width: 25rem;">
+    <div class="card">
+      <!-- Logo -->
+      <div class="text-center">
+        <img
+          src="/img/icons/logo.png"
+          alt="Logo"
+          class="logo"
+        />
+      </div>
+
       <div class="card-body">
         <h5 class="card-title text-center">Login</h5>
-        <h6 class="card-subtitle mb-2 text-muted text-center">Enter your credentials</h6>
+        <h6 class="card-subtitle mb-3 text-muted text-center">
+          Enter your credentials
+        </h6>
 
         <!-- Login Form -->
         <form @submit.prevent="login">
@@ -44,7 +55,10 @@
 
         <!-- Sign Up Link -->
         <div class="text-center mt-3">
-          <p>Don't have an account? <router-link to="/register" class="text-primary">Sign Up</router-link></p>
+          <p>
+            Don't have an account?
+            <router-link to="/register" class="text-primary">Sign Up</router-link>
+          </p>
         </div>
       </div>
     </div>
@@ -67,8 +81,13 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post("http://localhost:5000/api/patient/login",{ email: this.email,
-          password: this.password});
+        const response = await axios.post(
+          "http://localhost:5000/api/patient/login",
+          {
+            email: this.email,
+            password: this.password,
+          }
+        );
         this.message = response.data.message;
 
         // Store JWT token in localStorage
@@ -78,7 +97,8 @@ export default {
         this.$router.push("/patient/dashboard");
       } catch (error) {
         // Handle error response
-        this.message = error.response?.data?.message || "Login failed. Please try again.";
+        this.message =
+          error.response?.data?.message || "Login failed. Please try again.";
         this.form.password = ""; // Clear the password field
       }
     },
@@ -87,14 +107,56 @@ export default {
 </script>
 
 <style>
-/* Styling for card and alignment */
+/* Styling for the login card */
 .container {
   min-height: 100vh;
 }
+
 .card {
+  width: 25rem;
+  padding: 20px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
+
+.logo {
+  max-width: 100px;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
 .alert {
   margin-top: 10px;
+}
+
+.text-primary {
+  color: #007bff;
+}
+
+.text-primary:hover {
+  text-decoration: underline;
 }
 </style>
