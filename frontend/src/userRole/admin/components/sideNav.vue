@@ -25,14 +25,21 @@
           :class="{ active: isActive('/admin/inventory') }"
           to="/admin/inventory"
         >
-        <i class="fa-solid fa-warehouse"></i> Inventory
+          <i class="fa-solid fa-warehouse"></i> Inventory
         </router-link>
         <router-link
           class="certificate"
           :class="{ active: isActive('/admin/view-user') }"
           to="/admin/view-user"
         >
-         <i class="fa-solid fa-users"></i> Manage User
+          <i class="fa-solid fa-users"></i> Manage User
+        </router-link>
+        <router-link
+          class="certificate"
+          :class="{ active: isActive('/appointments') }"
+          to="/appointments"
+        >
+          <i class="fa-regular fa-calendar-check"></i> Appointments
         </router-link>
         <router-link
           class="certificate"

@@ -1,0 +1,35 @@
+/* table */
+.table {
+  padding: 1rem;
+  height: 100%;
+  width: 82vw;
+  font-size: small;
+}
+
+.fade-text {
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.display {
+  height: 70vh;
+}

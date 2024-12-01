@@ -11,11 +11,11 @@ import patientRecords from "../userRole/staff/views/patientRecords.vue";
 import adminDashboard from "../userRole/admin/views/admindDashboard.vue";
 import userManagement from "@/userRole/admin/views/userManagement.vue";
 import adminInventory from "../userRole/admin/views/manage_inventory.vue";
+import appointments from "../userRole/admin/views/appointments.vue";
 
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
 import doctorDashboard from "../userRole/doctor/views/doctorDashboard.vue";
-import appointments from "../userRole/doctor/views/appointments.vue";
 
 //patient
 import patientInbox from "../userRole/patient/views/inbox.vue";
@@ -68,11 +68,7 @@ const routes = [
     name: "patientHistory",
     component: patientHistory,
   },
-  {
-    path: "/appointments",
-    name: "appointments",
-    component: appointments,
-  },
+
   //admin-router
   {
     path: "/admin/dashboard",
@@ -88,6 +84,11 @@ const routes = [
     path: "/admin/inventory",
     name: "AdminInventory",
     component: adminInventory,
+  },
+  {
+    path: "/appointments",
+    name: "appointments",
+    component: appointments,
   },
 
   //patient

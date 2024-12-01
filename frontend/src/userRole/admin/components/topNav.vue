@@ -4,7 +4,7 @@
       <div>O</div>
       <div class="text">Clinic</div>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <div class="input-group">
         <span class="input-group-text" id="basic-addon1">
           <i class="fas fa-search"></i>
@@ -17,7 +17,7 @@
           aria-describedby="basic-addon1"
         />
       </div>
-    </div>
+    </div> -->
     <div class="right-items">
       <div>
         <i class="fa-regular fa-bell"></i>

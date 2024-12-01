@@ -5,11 +5,8 @@ const { analyzeSentiment } = require("../utils/sentimentAnalysis");
 exports.submitFeedback = async (req, res) => {
   try {
     const { feedbackText } = req.body;
-
     // Call the Django API for sentiment analysis
     const sentiment = await analyzeSentiment(feedbackText);
-
-    // Create feedback record with analyzed sentiment
     const feedback = new Feedback({
       feedbackText,
       sentiment,
@@ -23,4 +20,3 @@ exports.submitFeedback = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
