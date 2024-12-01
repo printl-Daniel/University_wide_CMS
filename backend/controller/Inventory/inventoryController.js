@@ -1,7 +1,7 @@
 const Inventory = require('../../models/Inventory/inventory.js');
 const History = require('../../models/Inventory/history.js'); 
 const Audit = require('../../models/Inventory/audit.js');
-const ClinicVisitLog = require('../../models/Clinic/clinicVisitLog.js');
+// const ClinicVisitLog = require('../../models/Clinic/clinicVisitLog.js');
 const mongoose = require('mongoose');
 
 // Add Item to Inventory
@@ -61,62 +61,62 @@ exports.addItemInventory = async (req, res) => {
 };
 
 // Log Clinic Visit
-exports.logClinicVisit = async (req, res) => {
-  const {
-    controlNo,
-    nameOfPatient,
-    course,
-    year,
-    grade,
-    enrolee,
-    transferee,
-    visitor,
-    chiefComplaint,
-    treatmentOrMedication,
-    remarks
-  } = req.body;
+// exports.logClinicVisit = async (req, res) => {
+//   const {
+//     controlNo,
+//     nameOfPatient,
+//     course,
+//     year,
+//     grade,
+//     enrolee,
+//     transferee,
+//     visitor,
+//     chiefComplaint,
+//     treatmentOrMedication,
+//     remarks
+//   } = req.body;
 
-  if (!controlNo || !nameOfPatient || !chiefComplaint || !treatmentOrMedication) {
-    return res.status(400).json({ message: 'Missing required fields' });
-  }
+//   if (!controlNo || !nameOfPatient || !chiefComplaint || !treatmentOrMedication) {
+//     return res.status(400).json({ message: 'Missing required fields' });
+//   }
 
-  try {
-    const newVisitLog = new ClinicVisitLog({
-      controlNo,
-      nameOfPatient,
-      internal: { course, year, grade },
-      external: { enrolee: enrolee || false, transferee: transferee || false, visitor: visitor || false },
-      chiefComplaint,
-      treatmentOrMedication,
-      remarks,
-    });
+//   try {
+//     const newVisitLog = new ClinicVisitLog({
+//       controlNo,
+//       nameOfPatient,
+//       internal: { course, year, grade },
+//       external: { enrolee: enrolee || false, transferee: transferee || false, visitor: visitor || false },
+//       chiefComplaint,
+//       treatmentOrMedication,
+//       remarks,
+//     });
 
-    await newVisitLog.save();
+//     await newVisitLog.save();
 
-    res.status(201).json({
-      message: 'Clinic visit logged successfully!',
-      visitLog: newVisitLog,
-    });
-  } catch (error) {
-    res.status(400).json({ message: 'Error logging clinic visit', error: error.message });
-  }
-};
+//     res.status(201).json({
+//       message: 'Clinic visit logged successfully!',
+//       visitLog: newVisitLog,
+//     });
+//   } catch (error) {
+//     res.status(400).json({ message: 'Error logging clinic visit', error: error.message });
+//   }
+// };
 
-// Get All Clinic Visit Logs
-exports.getClinicVisitLogs = async (req, res) => {
-  try {
-    const visitLogs = await ClinicVisitLog.find().sort({ date: -1 });
-    res.status(200).json({
-      success: true,
-      data: visitLogs,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch clinic visit logs',
-    });
-  }
-};
+// // Get All Clinic Visit Logs
+// exports.getClinicVisitLogs = async (req, res) => {
+//   try {
+//     const visitLogs = await ClinicVisitLog.find().sort({ date: -1 });
+//     res.status(200).json({
+//       success: true,
+//       data: visitLogs,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Failed to fetch clinic visit logs',
+//     });
+//   }
+// };
 
 
 // Add Quantity to an Existing Item
@@ -176,6 +176,18 @@ exports.getHistory = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch history entries',
+    });
+  }
+};
+
+exports.getInventoryItems = async (req, res) => {
+  try {
+    const inventoryItems = await Inventory.find();  // Retrieve all items from DB
+    res.status(200).json({
+    });
+  } catch (error) {
+    console.error("Error fetching items:", error);
+    res.status(500).json({
     });
   }
 };
