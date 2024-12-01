@@ -1,51 +1,49 @@
-const Inventory = require('../../models/Inventory/inventory.js')
+const Inventory = require('../../models/Inventory/inventory.js');
 const History = require('../../models/Inventory/history.js'); 
 const Audit = require('../../models/Inventory/audit.js');
+const ClinicVisitLog = require('../../models/Clinic/clinicVisitLog.js');
+const mongoose = require('mongoose');
 
+// Add Item to Inventory
 exports.addItemInventory = async (req, res) => {
   const { 
     itemId, 
     itemName, 
     category, 
-    quantity, 
     unitOfMeasure, 
     expirationDate, 
     supplier, 
     purchaseDate, 
-    costPerUnit, 
     responsiblePerson 
   } = req.body;
 
-  if (!itemId || !itemName || !category || !quantity || !unitOfMeasure || !expirationDate || !supplier || !purchaseDate || !costPerUnit) {
+  if (!itemId || !itemName || !category || !unitOfMeasure || !expirationDate || !supplier || !purchaseDate) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
   try {
-    // Create new inventory item
     const newItem = new Inventory({
       itemId,
       itemName,
       category,
-      quantity,
+      quantity: req.body.quantity || 0,
       unitOfMeasure,
       expirationDate,
       supplier,
       purchaseDate,
-      costPerUnit
     });
     
     await newItem.save();
 
-    // Create history entry after adding item
     const historyEntry = new History({
-      transactionId: newItem._id,  // Using the newly created inventory item's _id as transactionId
+      transactionId: newItem._id,
       transactionDate: new Date(),
       itemName: newItem.itemName,
-      actionType: 'Added',  // Action type is 'Added' for adding an item to inventory
-      quantityChanged: quantity,
-      remainingQuantity: quantity,  // Quantity is the same after addition
-      responsiblePerson: responsiblePerson || 'Admin',  // Default to 'Admin' if no person specified
-      reasonForAction: 'Initial stock',  // Reason for action
+      actionType: 'Added',
+      quantityChanged: 0,
+      remainingQuantity: 0,
+      responsiblePerson: responsiblePerson || 'Admin',
+      reasonForAction: 'Initial stock',
       supplier: newItem.supplier
     });
 
@@ -62,93 +60,122 @@ exports.addItemInventory = async (req, res) => {
   }
 };
 
+// Log Clinic Visit
+exports.logClinicVisit = async (req, res) => {
+  const {
+    controlNo,
+    nameOfPatient,
+    course,
+    year,
+    grade,
+    enrolee,
+    transferee,
+    visitor,
+    chiefComplaint,
+    treatmentOrMedication,
+    remarks
+  } = req.body;
 
-exports.logHistory = async (req, res) => {
-    const { itemName, actionType, quantityChanged, remainingQuantity, responsiblePerson, reasonForAction, supplier } = req.body;
-  
-    try {
-      const historyEntry = new History({
-        transactionId: newItem._id,
-        transactionDate: new Date(),
-        itemName,
-        actionType,
-        quantityChanged,
-        remainingQuantity,
-        responsiblePerson,
-        reasonForAction,
-        supplier
-      });
-  
-      await historyEntry.save();
-  
-      res.status(201).json({
-        message: 'History logged successfully!',
-        history: historyEntry
-      });
-    } catch (err) {
-      res.status(400).json({ message: 'Error logging history', error: err.message });
+  if (!controlNo || !nameOfPatient || !chiefComplaint || !treatmentOrMedication) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    const newVisitLog = new ClinicVisitLog({
+      controlNo,
+      nameOfPatient,
+      internal: { course, year, grade },
+      external: { enrolee: enrolee || false, transferee: transferee || false, visitor: visitor || false },
+      chiefComplaint,
+      treatmentOrMedication,
+      remarks,
+    });
+
+    await newVisitLog.save();
+
+    res.status(201).json({
+      message: 'Clinic visit logged successfully!',
+      visitLog: newVisitLog,
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Error logging clinic visit', error: error.message });
+  }
+};
+
+// Get All Clinic Visit Logs
+exports.getClinicVisitLogs = async (req, res) => {
+  try {
+    const visitLogs = await ClinicVisitLog.find().sort({ date: -1 });
+    res.status(200).json({
+      success: true,
+      data: visitLogs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch clinic visit logs',
+    });
+  }
+};
+
+
+// Add Quantity to an Existing Item
+exports.addQuantityToItem = async (req, res) => {
+  const { itemId } = req.params;
+  const { quantityToAdd, responsiblePerson } = req.body;
+
+  if (quantityToAdd === undefined || !responsiblePerson) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found' });
     }
-  };
-  
-  // Create Audit Entry
-  // exports.createAuditEntry = async (req, res) => {
-  //   const { itemId, itemName, quantityOnRecord, quantityCounted, discrepancy, reasonForDiscrepancy, auditFindings, actionTaken } = req.body;
-  
-  //   try {
-  //     const auditEntry = new Audit({
-  //     //  auditId: uuidv4(),
-  //       auditDate: new Date(),
-  //       auditName: 'Quarterly Audit',
-  //       itemId,
-  //       itemName,
-  //       quantityOnRecord,
-  //       quantityCounted,
-  //       discrepancy,
-  //       reasonForDiscrepancy,
-  //       auditFindings,
-  //       actionTaken
-  //     });
-  
-  //     await auditEntry.save();
-  
-  //     res.status(201).json({
-  //       message: 'Audit entry saved successfully!',
-  //       audit: auditEntry
-  //     });
-  //   } catch (err) {
-  //     res.status(400).json({ message: 'Error saving audit entry', error: err.message });
-  //   }
-  // };
-  
-  // // Get All Inventory Items
-  exports.getInventoryItems = async (req, res) => {
-    try {
-      const inventoryItems = await Inventory.find();  // Retrieve all items from DB
-      res.status(200).json({
-      });
-    } catch (error) {
-      console.error("Error fetching items:", error);
-      res.status(500).json({
-      });
-    }
-  };
-  
-  // // Get All History Entries
-  // exports.getAllHistory = async (req, res) => {
-  //   try {
-  //     const history = await History.find();
-  //     res.status(200).json({ history });
-  //   } catch (err) {
-  //     res.status(400).json({ message: 'Error fetching history logs', error: err.message });
-  //   }
-  // };
-  
-  // // Get All Audit Entries
-  // exports.getAllAudits = async (req, res) => {
-  //   try {
-  //     const audits = await Audit.find();
-  //     res.status(200).json({ audits });
-  //   } catch (err) {
-  //     res.status(400).json({ message: 'Error fetching audit logs', error: err.message });
-  //   }
-  // };
+
+    item.quantity += quantityToAdd;
+    await item.save();
+
+    const newTransactionId = new mongoose.Types.ObjectId();
+
+    const historyEntry = new History({
+      transactionId: newTransactionId,
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: 'Quantity Added',
+      quantityChanged: quantityToAdd,
+      remainingQuantity: item.quantity,
+      responsiblePerson,
+      reasonForAction: `Quantity added by ${quantityToAdd} units`,
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: 'Quantity added successfully!',
+      item,
+      history: historyEntry,
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Error adding quantity', error: error.message });
+  }
+};
+
+// Get Inventory History
+exports.getHistory = async (req, res) => {
+  try {
+    const historyEntries = await History.find().sort({ transactionDate: -1 });
+    res.status(200).json({
+      success: true,
+      data: historyEntries,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch history entries',
+    });
+  }
+};

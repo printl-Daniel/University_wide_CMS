@@ -4,8 +4,7 @@ const mongoose = require('mongoose');
 const historySchema = new mongoose.Schema({
   transactionId: { 
     type: mongoose.Schema.Types.ObjectId,  // MongoDB auto-generated _id used as transactionId
-    required: true, 
-    unique: true,  // Ensure each transaction has a unique ID
+    required: true,
   },
   transactionDate: { 
     type: Date, 
@@ -18,7 +17,7 @@ const historySchema = new mongoose.Schema({
   actionType: { 
     type: String, 
     required: true, 
-    enum: ['Added', 'Used', 'Removed'],  // You can customize the action types
+  
   },
   quantityChanged: { 
     type: Number, 
@@ -40,7 +39,7 @@ const historySchema = new mongoose.Schema({
     type: String, 
     required: true 
   }
-}, { timestamps: true });  // Optional: add timestamps for tracking history record creation time
+}, { timestamps: true });
 
 const History = mongoose.model('History', historySchema);
 

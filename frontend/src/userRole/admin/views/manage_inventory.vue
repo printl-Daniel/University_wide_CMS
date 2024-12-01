@@ -13,52 +13,24 @@
 
       <!-- Main Content Area -->
       <div class="content flex-grow-1">
-        <h2 class="page-title">Inventory</h2>
-
-        <div class="d-flex mb-4 search-container">
-          <div class="search-bar-container">
-            <input
-              type="text"
-              v-model="searchQuery"
-              class="form-control search-input"
-              placeholder="Search items..."
-              @input="filterInventory"
-            />
-            <button class="btn btn-secondary search-btn" @click="filterInventory">
-              <i class="fas fa-search"></i> Search
-            </button>
-          </div>
-          <button class="btn btn-primary add-item-btn" @click="showModal = true">
-            <i class="fas fa-plus"></i> Add Item
-          </button>
-          <!-- Button to show Transaction History -->
-          <button class="btn btn-info ml-3" @click="showHistoryModal = true">
-            <i class="fas fa-history"></i> View Transaction History
-          </button>
-          <!-- Button to show Audit Records -->
-          <button class="btn btn-warning ml-3" @click="showAuditModal = true">
-            <i class="fas fa-search"></i> View Audit Logs
-          </button>
-        </div>
 
         <div class="mt-4 table-responsive">
-          <table class="table table-striped table-hover">
+          <table id="inventoryTable" class="table table-striped table-hover">
             <thead>
               <tr>
-                <th scope="col">Item ID (Barcode)</th>
+                <th scope="col">Item ID</th>
                 <th scope="col">Item Name</th>
                 <th scope="col">Category</th>
                 <th scope="col">Quantity</th>
-                <th scope="col">Unit</th>
+                <th scope="col">Unit of Measure</th>
                 <th scope="col">Expiration Date</th>
                 <th scope="col">Supplier</th>
                 <th scope="col">Purchase Date</th>
-                <th scope="col">Cost per Unit</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in inventory" :key="newItem._id">
+              <tr v-for="item in inventoryItems" :key="item._id">
                 <td>{{ item.itemId }}</td>
                 <td>{{ item.itemName }}</td>
                 <td>{{ item.category }}</td>
@@ -67,31 +39,22 @@
                 <td>{{ formatDate(item.expirationDate) }}</td>
                 <td>{{ item.supplier }}</td>
                 <td>{{ formatDate(item.purchaseDate) }}</td>
-                <td>{{ item.costPerUnit.toFixed(2) }}</td>
                 <td>
-                  <button class="btn btn-warning" @click="openEditModal(item)">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                  <!-- Button to view audit for each item -->
-                  <button class="btn btn-info ml-2" @click="openAuditModal(item)">
-                    <i class="fas fa-search"></i> Audit
-                  </button>
+                  <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
                 </td>
-              </tr>
+              </tr>            
             </tbody>
           </table>
         </div>
+      
 
-        <!-- Add Inventory Modal -->
-        <addModal v-if="showModal" @close="showModal = false" @add-item="addItem" />
-        <!-- Edit Inventory Modal -->
-        <editItemModal v-if="showEditModal" :selectedItem="selectedItem" @close="showEditModal = false" @edit-item="editItem" />
-        
-        <!-- History Modal -->
-        <historyModal v-if="showHistoryModal" @close="showHistoryModal = false" />
-        
-        <!-- Audit Modal -->
-        <auditModal v-if="showAuditModal" @close="showAuditModal = false" :selectedItem="selectedItem" />
+        <addQuantityModal
+          v-if="showAddQuantityModal"
+          :selectedItem="selectedItemForQuantity"
+          :showModal="showAddQuantityModal"
+          @close="showAddQuantityModal = false"
+          @quantity-added="handleQuantityAdded"
+        />
       </div>
     </div>
   </div>
@@ -101,10 +64,9 @@
 import axios from 'axios';
 import sideNav from '../components/sideNav.vue';
 import topNav from '../components/topNav.vue';
-import addModal from '../../../components/addItemModal.vue';
+import addModal from './addItemModal.vue';
 import editItemModal from '../../../components/updateItemModal.vue';
-import historyModal from '../../../components/historyModal.vue';
-import auditModal from '../../../components/auditModal.vue'; // Import the Audit Modal
+import addQuantityModal from '../../../components/addQuantityModal.vue';
 
 export default {
   components: {
@@ -112,48 +74,70 @@ export default {
     topNav,
     addModal,
     editItemModal,
-    historyModal,
-    auditModal, // Register the Audit Modal component
+    addQuantityModal,
   },
   data() {
     return {
       showModal: false,
-      inventory: [],
+      inventoryItems: [],
       showEditModal: false,
       selectedItem: null,
       searchQuery: '',
-      showHistoryModal: false,
-      showAuditModal: false, // Flag to show Audit modal
+      showAddQuantityModal: false,
+      selectedItemForQuantity: null,
     };
   },
   methods: {
-    addItem(newItem) {
-      this.inventory.push(newItem);
-      this.showModal = false;
-    },
-    openEditModal(item) {
-      this.selectedItem = item;
-      this.showEditModal = true;
-    },
+   
     async displayItems() {
-  try {
-    const res = await axios.get('http://localhost:5000/api/inventory/display');
-    console.log(res.data);  // Add t his line to check the response
-    this.inventory = res.data.items; // or adjust to res.data if needed
-  } catch (error) {
-    console.error('Error fetching items:', error);
-  }
-},
+      try {
+        const res = await axios.get('http://localhost:5000/api/inventory/display');
+        this.inventoryItems = res.data.data; // Update the inventory data
+        this.$nextTick(() => {
+          this.initializeDataTable(); // Reinitialize DataTable after data is loaded
+        });
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    },
+    initializeDataTable() {
+      // Initialize DataTable only if it hasn't been initialized yet
+      if ($.fn.dataTable.isDataTable('#inventoryTable')) {
+        $('#inventoryTable').DataTable().destroy();
+      }
+      $('#inventoryTable').DataTable({
+        searching: true, // Enable search functionality
+        paging: true,    // Enable pagination
+        ordering: true,  // Enable column sorting
+        info: true,      // Show info like "Showing 1 to 10 of 100 entries"
+      });
+    },
     filterInventory() {
       // Implement search filtering logic here
-    },
-    openAuditModal(item) {
-      this.selectedItem = item;
-      this.showAuditModal = true;
+      // For now, we can use the built-in DataTables search functionality
+      $('#inventoryTable').DataTable().search(this.searchQuery).draw();
     },
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US'); // formats date to MM/DD/YYYY
+    },
+    openAddQuantityModal(item) {
+      this.selectedItemForQuantity = item;
+      this.showAddQuantityModal = true;
+    },
+    handleQuantityAdded(updatedItem) {
+      // Find the updated item in the inventory list and update it
+      const index = this.inventoryItems.findIndex((item) => item._id === updatedItem._id);
+      if (index !== -1) {
+        this.inventoryItems[index] = updatedItem;
+      }
+      this.refreshDataTable(); // Refresh DataTable after quantity is added
+    },
+    refreshDataTable() {
+      // Reinitialize the DataTable to reflect any changes in the inventory
+      this.$nextTick(() => {
+        this.initializeDataTable();
+      });
     },
   },
   mounted() {
