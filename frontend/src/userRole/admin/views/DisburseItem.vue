@@ -47,6 +47,16 @@
                   required
                 />
               </div>
+              <div class="mb-3">
+              <label for="reason" class="form-label">Reason:</label>
+              <input
+                v-model="reason"
+                type="text"
+                id="reason"
+                class="form-control"
+                required
+              />
+            </div>
               <button type="submit" class="btn btn-primary">Reduce Stock</button>
             </form>
             <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
@@ -73,6 +83,7 @@
         itemId: "",
         quantity: 0,
         patientName: "",
+        reason: "", 
         errorMessage: "",
         successMessage: "",
       };
@@ -85,7 +96,12 @@
           this.successMessage = "";
   
           // Validate input
-          if (!this.itemId || this.quantity <= 0 || !this.patientName.trim()) {
+          if (
+            !this.itemId ||
+            this.quantity <= 0 ||
+            !this.patientName.trim() ||
+            !this.reason.trim()
+          ) {
             this.errorMessage =
               "All fields are required, and quantity must be greater than zero.";
             return;
@@ -96,6 +112,7 @@
             itemId: this.itemId,
             quantity: this.quantity,
             patientName: this.patientName,
+            reason: this.reason, 
           });
   
           // Handle success
@@ -105,6 +122,7 @@
           this.itemId = "";
           this.quantity = 0;
           this.patientName = "";
+          this.reason = "";
         } catch (error) {
           // Handle errors
           if (error.response && error.response.data) {
@@ -118,6 +136,7 @@
     },
   };
   </script>
+  
   
   <style scoped>
   .page-content {
