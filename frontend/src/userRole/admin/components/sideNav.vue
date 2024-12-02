@@ -29,16 +29,16 @@
           </a>
           <div class="sub-menu">
             <router-link class="sub-item" to="/admin/inventory"
-              >View Inventory</router-link
+              ><i class="fa-solid fa-clipboard-list"></i>View Inventory</router-link
             >
             <router-link class="sub-item" to="/admin/add-item"
-              >Add Inventory</router-link
+              ><i class="fa-solid fa-plus"></i>Add Item</router-link
             >
             <router-link class="sub-item" to="/admin/history"
-              >View History Log</router-link
+              ><i class="fa-solid fa-clock-rotate-left"></i>View History Log</router-link
             >
             <router-link class="sub-item" to="/admin/DisburseItem"
-              >Disburse Item</router-link
+              ><i class="fa-solid fa-notes-medical"></i>Disburse Item</router-link
             >
           </div>
         </div>

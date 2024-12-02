@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-container">
     <!-- Admin Navbar (Top Navbar) -->
     <div class="header">
       <topNav />
@@ -9,15 +9,14 @@
       <!-- Sidebar -->
       <sideNav />
 
-      <!-- Main Content (flex-grow-1) -->
+      <!-- Main Content -->
       <div class="content flex-grow-1">
         <!-- CSV Upload Section -->
-        <div class="card">
+        <div class="card full-width">
           <div class="card-header">
-            <h2>Import Students from CSV</h2>
+            <h4>Import Students from CSV</h4>
           </div>
           <div class="card-body">
-            <!-- File input to upload CSV -->
             <input
               type="file"
               accept=".csv"
@@ -28,35 +27,58 @@
         </div>
 
         <!-- Filter Section -->
-        <div class="card mt-4">
-
+        <div class="card full-width">
+          <div class="card-header">
+            <h5>Filter Students</h5>
           </div>
-          <div class="card-body">
-            <!-- College Filter -->
-            <label for="collegeFilter">College:</label>
-            <select v-model="filters.college" @change="fetchStudents" id="collegeFilter">
-              <option value="">All Colleges</option>
-              <option v-for="college in colleges" :key="college" :value="college">{{ college }}</option>
-            </select>
+          <div class="card-body d-flex gap-3 flex-wrap">
+            <div class="filter-group">
+              <label for="collegeFilter">College:</label>
+              <select
+                v-model="filters.college"
+                @change="fetchStudents"
+                id="collegeFilter"
+                class="form-control"
+              >
+                <option value="">All Colleges</option>
+                <option
+                  v-for="college in colleges"
+                  :key="college"
+                  :value="college"
+                >
+                  {{ college }}
+                </option>
+              </select>
+            </div>
 
-            <!-- Year and Section Filter -->
-            <label for="yearAndSectionFilter">Year & Section:</label>
-            <select v-model="filters.yearAndSection" @change="fetchStudents" id="yearAndSectionFilter">
-              <option value="">All Sections</option>
-              <option v-for="yearAndSection in yearAndSections" :key="yearAndSection" :value="yearAndSection">
-                {{ yearAndSection }}
-              </option>
-            </select>
+            <div class="filter-group">
+              <label for="yearAndSectionFilter">Year & Section:</label>
+              <select
+                v-model="filters.yearAndSection"
+                @change="fetchStudents"
+                id="yearAndSectionFilter"
+                class="form-control"
+              >
+                <option value="">All Sections</option>
+                <option
+                  v-for="yearAndSection in yearAndSections"
+                  :key="yearAndSection"
+                  :value="yearAndSection"
+                >
+                  {{ yearAndSection }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <!-- Students Table Section -->
-        <div class="card mt-4">
+        <div class="card full-width">
           <div class="card-header">
-            <h2>Enrolled Students</h2>
+            <h5>Enrolled Students</h5>
           </div>
           <div class="card-body">
-            <!-- Students Table -->
-            <table id="studentsTable" class="table table-striped">
+            <table id="studentsTable" class="table table-striped table-hover">
               <thead>
                 <tr>
                   <th>College</th>
@@ -84,6 +106,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import sideNav from '../components/sideNav.vue';
@@ -174,58 +197,73 @@ export default {
 
 
 <style scoped>
-/* Main content styling */
-.content {
-  flex-grow: 1;
-  padding: 20px;
+.main-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Card styling */
+.page-content {
+  display: flex;
+  flex-grow: 1;
+  overflow-x: hidden;
+}
+
+.content {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Full width for cards */
+.full-width {
+  width: 100%;
+}
+
 .card {
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-bottom: 20px;
 }
 
 .card-header {
   background-color: #f5f5f5;
-  padding: 15px;
+  padding: 10px;
   border-bottom: 1px solid #ddd;
 }
 
 .card-body {
-  padding: 15px;
+  padding: 10px;
 }
 
-h2 {
-  margin: 0;
-}
-
-/* File input styling */
 .file-input {
-  padding: 8px;
+  display: block;
+  width: 100%;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-/* Upload button styling */
-button {
-  padding: 8px 15px;
-  cursor: pointer;
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-button:hover {
-  background-color: #f0f0f0;
+.table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* Upload message styling */
-.text-success {
-  color: green;
-  font-weight: bold;
+.table th,
+.table td {
+  text-align: left;
+  padding: 8px;
 }
 
-.text-danger {
-  color: red;
-  font-weight: bold;
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5;
 }
 </style>
