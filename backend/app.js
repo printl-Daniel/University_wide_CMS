@@ -7,7 +7,7 @@ const feedbackRouter = require("./routes/feedbackRouter");
 const patientRouter = require("./routes/patientRouter");
 const appointmentsRouter = require("./routes/appointmentRouter");
 const studentEnrollment = require("./routes/csvUpload/studentRoutes");
-const inventoryRoutes = require('./routes/Inventory/inventoryRoutes');
+// const inventoryRoutes = require('./routes/Inventory/inventoryRouter');
 
 require("dotenv").config();
 const app = express();
@@ -24,7 +24,7 @@ app.use("/api/student-enrollment", studentEnrollment);
 app.use("/api/inventory", inventoryRouter);
 
 // Routes for reducestock
-app.use('/api/inventory', inventoryRoutes);
+// app.use('/api/inventory', inventoryRoutes);
 
 // app.use("/api/feedback", feedbackRouter);
 app.use("/api/patient", patientRouter);

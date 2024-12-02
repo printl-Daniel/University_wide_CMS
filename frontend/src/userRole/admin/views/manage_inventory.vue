@@ -14,39 +14,41 @@
       <!-- Main Content Area -->
       <div class="content flex-grow-1">
 
-        <div class="mt-4 table-responsive">
-          <table id="inventoryTable" class="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Item ID</th>
-                <th scope="col">Item Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Unit of Measure</th>
-                <th scope="col">Expiration Date</th>
-                <th scope="col">Supplier</th>
-                <th scope="col">Purchase Date</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in inventoryItems" :key="item._id">
-                <td>{{ item.itemId }}</td>
-                <td>{{ item.itemName }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unitOfMeasure }}</td>
-                <td>{{ formatDate(item.expirationDate) }}</td>
-                <td>{{ item.supplier }}</td>
-                <td>{{ formatDate(item.purchaseDate) }}</td>
-                <td>
-                  <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
-                </td>
-              </tr>            
-            </tbody>
-          </table>
+        <!-- Enhanced container for the table -->
+        <div class="table-container">
+          <div class="mt-2 table-responsive">
+            <table id="inventoryTable" class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Item ID</th>
+                  <th scope="col">Item Name</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Unit of Measure</th>
+                  <th scope="col">Expiration Date</th>
+                  <th scope="col">Supplier</th>
+                  <th scope="col">Purchase Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in inventoryItems" :key="item._id">
+                  <td>{{ item.itemId }}</td>
+                  <td>{{ item.itemName }}</td>
+                  <td>{{ item.category }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.unitOfMeasure }}</td>
+                  <td>{{ formatDate(item.expirationDate) }}</td>
+                  <td>{{ item.supplier }}</td>
+                  <td>{{ formatDate(item.purchaseDate) }}</td>
+                  <td>
+                    <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
+                  </td>
+                </tr>            
+              </tbody>
+            </table>
+          </div>
         </div>
-      
 
         <addQuantityModal
           v-if="showAddQuantityModal"
@@ -88,7 +90,6 @@ export default {
     };
   },
   methods: {
-   
     async displayItems() {
       try {
         const res = await axios.get('http://localhost:5000/api/inventory/display');
@@ -147,35 +148,51 @@ export default {
 </script>
 
 <style scoped>
+/* Add a container around the table with border and shadow */
+.table-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-right: 20px;
+}
+
 .table {
   margin-top: 20px;
+  border-collapse: collapse;
 }
 
-.display thead {
-  color: #fff;
+.table th, .table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Table header styling */
+.table thead {
+  background-color: #f8f9fa;
   font-weight: bold;
-  text-transform: uppercase;
+  color: #333;
 }
 
-.display tbody tr:hover {
+/* Hover effect for rows */
+.table tbody tr:hover {
   background-color: #f1f1f1;
 }
-th, td {
-  padding: 6px;  /* Reduced padding for compact view */
-  text-align: left;
-  border-bottom: 1px solid #ada9a9;
+
+
+/* Responsive Table */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.display tbody td.actions button {
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.table thead th {
+  text-align: center;
 }
 
-.display tbody td.actions button:hover {
-  background-color: #0056b3;
+.table tbody td {
+  text-align: center;
 }
 </style>

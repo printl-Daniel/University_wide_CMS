@@ -184,6 +184,8 @@ exports.getInventoryItems = async (req, res) => {
   try {
     const inventoryItems = await Inventory.find();  // Retrieve all items from DB
     res.status(200).json({
+      success: true,
+      data: inventoryItems,
     });
   } catch (error) {
     console.error("Error fetching items:", error);
