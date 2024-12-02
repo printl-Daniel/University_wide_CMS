@@ -226,6 +226,8 @@ exports.reduceQuantityFromItem = async (req, res) => {
       responsiblePerson,
       reasonForAction,
       supplier: item.supplier,
+      reasonForAction: reason,
+      college: college,
     });
 
     await historyEntry.save();
