@@ -1,7 +1,7 @@
 <template>
   <div class="top-nav">
     <div class="logo">
-      <div>O</div>
+      <img src="/img/icons/logo.png" alt="Clinic Logo" class="logo-img" />
       <div class="text">Clinic</div>
     </div>
     <!-- <div class="form-group">
@@ -40,3 +40,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.logo-img {
+  max-height: 40px; /* Adjust based on your design */
+  object-fit: contain;
+}</style>

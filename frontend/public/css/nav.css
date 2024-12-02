@@ -15,11 +15,13 @@
 
 .top-nav .logo {
   display: flex;
+  align-items: center; /* Align items vertically to the center */
   gap: 1vw;
 }
 
 .top-nav .logo .text {
   font-weight: 500;
+  line-height: 1;
 }
 .top-nav .logo i {
   color: green;
