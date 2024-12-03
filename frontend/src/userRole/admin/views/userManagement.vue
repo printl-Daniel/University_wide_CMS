@@ -22,51 +22,62 @@
           <div class="user-form-section mb-5 p-4 bg-light rounded shadow-sm border">
             <!-- Form Title -->
             <h4 class="mb-3">Add or Manage User</h4>
-            <form class="d-flex flex-wrap gap-3">
+            <form @submit.prevent="createUser" class="d-flex flex-wrap gap-3">
               <div class="flex-grow-1">
                 <label for="fullName" class="form-label">Full Name</label>
                 <input
+                  v-model="newUser.fullname"
                   type="text"
                   id="fullName"
                   class="form-control"
                   placeholder="Enter full name"
+                  required
                 />
               </div>
               <div class="flex-grow-1">
                 <label for="userName" class="form-label">Username</label>
                 <input
+                  v-model="newUser.username"
                   type="text"
                   id="userName"
                   class="form-control"
                   placeholder="Enter username"
-                />
-              </div>
-              <div class="flex-grow-1">
-                <label for="userEmail" class="form-label">Email</label>
-                <input
-                  type="email"
-                  id="userEmail"
-                  class="form-control"
-                  placeholder="Enter email"
+                  required
                 />
               </div>
               <div class="flex-grow-1">
                 <label for="userPassword" class="form-label">Password</label>
                 <input
+                  v-model="newUser.password"
                   type="password"
                   id="userPassword"
                   class="form-control"
                   placeholder="Enter password"
+                  required
                 />
               </div>
               <div class="flex-grow-1">
                 <label for="userRole" class="form-label">Role</label>
-                <select id="userRole" class="form-select">
+                <select v-model="newUser.role" id="userRole" class="form-select" required>
                   <option value="Admin">Admin</option>
                   <option value="Doctor">Doctor</option>
                   <option value="Staff">Staff</option>
                 </select>
               </div>
+
+              <!-- First-time Login Checkbox -->
+              <div class="flex-grow-1">
+                <label for="firstTimeLogin" class="form-label">First-Time Login</label>
+                <input
+                  v-model="newUser.isFirstLogin"
+                  type="checkbox"
+                  id="firstTimeLogin"
+                  class="form-check-input"
+                  disabled
+                />
+                <small class="form-text text-muted">User will be required to reset password on first login.</small>
+              </div>
+
               <div class="text-end w-100">
                 <button type="submit" class="comic-button mt-3">Save User</button>
               </div>
@@ -89,41 +100,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>John Doe</td>
-                    <td>johndoe</td>
-                    <td>johndoe@example.com</td>
-                    <td>Admin</td>
+                  <!-- Dynamic User Rows (Fetched from Backend) -->
+                  <tr v-for="user in users" :key="user._id">
+                    <td>{{ user._id }}</td>
+                    <td>{{ user.fullname }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
                     <td>
-                      <button class="btn btn-warning btn-sm">Edit</button>
-                      <button class="btn btn-danger btn-sm">Delete</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Jane Smith</td>
-                    <td>janesmith</td>
-                    <td>janesmith@example.com</td>
-                    <td>Doctor</td>
-                    <td>
-                      <button class="btn btn-warning btn-sm">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                      </button>
-                      <button class="btn btn-danger btn-sm">
-                        <i class="fa-solid fa-trash-can"></i> Delete
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Robert Brown</td>
-                    <td>robertb</td>
-                    <td>robertbrown@example.com</td>
-                    <td>Staff</td>
-                    <td>
-                      <button class="btn btn-warning btn-sm">Edit</button>
-                      <button class="btn btn-danger btn-sm">Delete</button>
+                      <button class="btn btn-warning btn-sm" @click="editUser(user)">Edit</button>
+                      <button class="btn btn-danger btn-sm" @click="deleteUser(user._id)">Delete</button>
                     </td>
                   </tr>
                 </tbody>
@@ -139,13 +125,79 @@
 <script>
 import topNav from "../components/topNav.vue";
 import sideNav from "../components/sideNav.vue";
+import axios from "axios";
 
 export default {
   components: {
     topNav,
     sideNav,
   },
+  data() {
+    return {
+      newUser: {
+        fullname: '',
+        username: '',
+        email: '',
+        password: '',
+        role: 'Staff',
+        isFirstLogin: true, 
+      },
+      users: [],  // Will hold the list of users fetched from the backend
+    };
+  },
+  methods: {
+    async createUser() {
+      try {
+        // Send user data to backend for creation
+        const response = await axios.post('http://localhost:5000/api/user/add-user', this.newUser);
+        this.users.push(response.data);  // Add newly created user to the list
+        this.resetForm();  // Reset form fields
+      } catch (error) {
+        console.error("Error creating user:", error);
+      }
+    },
+
+    // Method to fetch users from the backend
+    async fetchUsers() {
+      try {
+        const response = await axios.get('/api/users');
+        this.users = response.data;
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    // Method to delete a user
+    async deleteUser(userId) {
+      try {
+        await axios.delete(`/api/users/${userId}`);
+        this.users = this.users.filter(user => user._id !== userId);  // Remove the deleted user from the list
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    },
+
+    // Method to edit a user
+    editUser(user) {
+      // Populate form with user details for editing
+      this.newUser = { ...user };
+    },
+
+    // Reset form after adding a new user
+    resetForm() {
+      this.newUser = {
+        fullname: '',
+        username: '',
+        email: '',
+        password: '',
+        role: 'Staff',
+        isFirstLogin: true,  // Default is first-time login
+      };
+    },
+  },
   mounted() {
+    this.fetchUsers();  // Fetch users when the component is mounted
+
     // Initialize DataTable
     $("#userTable").DataTable({
       responsive: true,
