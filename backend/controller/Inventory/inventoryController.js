@@ -3,6 +3,31 @@ const History = require('../../models/Inventory/history.js');
 const Audit = require('../../models/Inventory/audit.js');
 // const ClinicVisitLog = require('../../models/Clinic/clinicVisitLog.js');
 const mongoose = require('mongoose');
+const cron = require('node-cron');
+
+
+// Cron job to check for medicines expiring in the next 7 days
+cron.schedule('* * * * *', async () => {
+  try {
+    const today = new Date();
+    const warningPeriod = 7; // Medicines expiring within 7 days
+
+    // Find medicines that are about to expire within 7 days
+    const expiringMedicines = await Medicine.find({
+      expiryDate: {
+        $gte: today,
+        $lt: new Date(today.getTime() + warningPeriod * 24 * 60 * 60 * 1000), // +7 days
+      },
+    });
+
+    // If you want to log the expiring medicines or send notifications:
+    console.log("Expiring medicines:", expiringMedicines);
+
+    // Optionally, send an email notification, or any other form of notification
+  } catch (error) {
+    console.error("Error checking expiring medicines:", error);
+  }
+});
 
 // Add Item to Inventory
 exports.addItemInventory = async (req, res) => {
