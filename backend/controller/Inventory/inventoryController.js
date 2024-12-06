@@ -1,33 +1,33 @@
 const Inventory = require('../../models/Inventory/inventory.js');
 const History = require('../../models/Inventory/history.js'); 
 const Audit = require('../../models/Inventory/audit.js');
-// const ClinicVisitLog = require('../../models/Clinic/clinicVisitLog.js');
+const Disburse = require('../../models/Inventory/disbursement.js');
 const mongoose = require('mongoose');
-const cron = require('node-cron');
+// const cron = require('node-cron');
 
 
 // Cron job to check for medicines expiring in the next 7 days
-cron.schedule('* * * * *', async () => {
-  try {
-    const today = new Date();
-    const warningPeriod = 7; // Medicines expiring within 7 days
+// cron.schedule('* * * * *', async () => {
+//   try {
+//     const today = new Date();
+//     const warningPeriod = 7; // Medicines expiring within 7 days
 
-    // Find medicines that are about to expire within 7 days
-    const expiringMedicines = await Medicine.find({
-      expiryDate: {
-        $gte: today,
-        $lt: new Date(today.getTime() + warningPeriod * 24 * 60 * 60 * 1000), // +7 days
-      },
-    });
+//     // Find medicines that are about to expire within 7 days
+//     const expiringMedicines = await Medicine.find({
+//       expiryDate: {
+//         $gte: today,
+//         $lt: new Date(today.getTime() + warningPeriod * 24 * 60 * 60 * 1000), // +7 days
+//       },
+//     });
 
-    // If you want to log the expiring medicines or send notifications:
-    console.log("Expiring medicines:", expiringMedicines);
+//     // If you want to log the expiring medicines or send notifications:
+//     console.log("Expiring medicines:", expiringMedicines);
 
-    // Optionally, send an email notification, or any other form of notification
-  } catch (error) {
-    console.error("Error checking expiring medicines:", error);
-  }
-});
+//     // Optionally, send an email notification, or any other form of notification
+//   } catch (error) {
+//     console.error("Error checking expiring medicines:", error);
+//   }
+// });
 
 // Add Item to Inventory
 exports.addItemInventory = async (req, res) => {
@@ -84,64 +84,6 @@ exports.addItemInventory = async (req, res) => {
     res.status(400).json({ message: 'Error adding item to inventory', error: error.message });
   }
 };
-
-// Log Clinic Visit
-// exports.logClinicVisit = async (req, res) => {
-//   const {
-//     controlNo,
-//     nameOfPatient,
-//     course,
-//     year,
-//     grade,
-//     enrolee,
-//     transferee,
-//     visitor,
-//     chiefComplaint,
-//     treatmentOrMedication,
-//     remarks
-//   } = req.body;
-
-//   if (!controlNo || !nameOfPatient || !chiefComplaint || !treatmentOrMedication) {
-//     return res.status(400).json({ message: 'Missing required fields' });
-//   }
-
-//   try {
-//     const newVisitLog = new ClinicVisitLog({
-//       controlNo,
-//       nameOfPatient,
-//       internal: { course, year, grade },
-//       external: { enrolee: enrolee || false, transferee: transferee || false, visitor: visitor || false },
-//       chiefComplaint,
-//       treatmentOrMedication,
-//       remarks,
-//     });
-
-//     await newVisitLog.save();
-
-//     res.status(201).json({
-//       message: 'Clinic visit logged successfully!',
-//       visitLog: newVisitLog,
-//     });
-//   } catch (error) {
-//     res.status(400).json({ message: 'Error logging clinic visit', error: error.message });
-//   }
-// };
-
-// // Get All Clinic Visit Logs
-// exports.getClinicVisitLogs = async (req, res) => {
-//   try {
-//     const visitLogs = await ClinicVisitLog.find().sort({ date: -1 });
-//     res.status(200).json({
-//       success: true,
-//       data: visitLogs,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: 'Failed to fetch clinic visit logs',
-//     });
-//   }
-// };
 
 
 // Add Quantity to an Existing Item
@@ -218,3 +160,74 @@ exports.getInventoryItems = async (req, res) => {
     });
   }
 };
+
+
+
+
+exports.disburseItem = async (req, res) => {
+  const { itemId, quantity, patientName, reason, college, responsiblePerson } = req.body;
+
+  if (!itemId || !quantity || !patientName || !reason || !college || !responsiblePerson) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    // Fetch the item from the inventory using itemId
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found in inventory' });
+    }
+
+    // Check if the quantity requested is less than or equal to the available quantity
+    if (item.quantity < quantity) {
+      return res.status(400).json({ message: 'Insufficient stock for disbursement' });
+    }
+
+    // Reduce the quantity from the inventory
+    item.quantity -= quantity;
+    await item.save();
+
+    // Log the disbursement action in the Disbursement model
+    const disbursementEntry = new Disbursement({
+      itemId,
+      itemName: item.itemName,
+      quantity,
+      patientName,
+      reason,
+      college,
+      responsiblePerson,
+      date: new Date(),
+    });
+
+    await disbursementEntry.save();
+
+    // Log the disbursement action in the History model for auditing
+    const historyEntry = new History({
+      transactionId: new mongoose.Types.ObjectId(),
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: 'Disbursement',
+      quantityChanged: -quantity, // Negative quantity since it is a reduction
+      remainingQuantity: item.quantity,
+      responsiblePerson,
+      reasonForAction: reason,
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: 'Item successfully disbursed!',
+      disbursement: disbursementEntry,
+      history: historyEntry,
+    });
+  } catch (error) {
+    console.error('Error during disbursement:', error);
+    res.status(500).json({
+      message: 'Server error during disbursement process.',
+    });
+  }
+};
+
+

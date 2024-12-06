@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/auth/LoginView.vue";
 import RegisterView from "../views/auth/RegisterView.vue";
 import OTP from "../views/auth/VerifyOTP.vue";
+import reset from "../views/auth/resetPassword.vue";
 //staff
 import staff_dashBoard from "../userRole/staff/views/staff_dashBoard.vue";
 import inventory from "../userRole/staff/views/manage_inventory.vue";
@@ -45,6 +46,11 @@ const routes = [
     path: "/token",
     name: "otpVerification",
     component: OTP,
+  },
+  {
+    path:"/reset-password",
+    name: "reset",
+    component: reset,
   },
 
   //staff-router

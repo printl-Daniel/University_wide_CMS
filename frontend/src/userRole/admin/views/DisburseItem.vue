@@ -14,74 +14,102 @@
       <!-- Main Content Area -->
       <div class="content flex-grow-1">
         <div class="container mt-4">
-          <h2 class="title">Reduce Stock</h2>
-          <form @submit.prevent="handleReduceStock" class="form-container">
-            <div class="form-group">
-              <label for="itemId" class="form-label">Item ID</label>
-              <input
-                v-model="itemId"
-                type="text"
-                id="itemId"
-                class="form-control"
-                placeholder="Enter item ID"
-                required
-              />
+
+          <form @submit.prevent="submitForm">
+            <div class="row">
+              <!-- Item ID -->
+              <div class="col-md-6 mb-3">
+                <label for="itemId" class="form-label">Item ID</label>
+                <input
+                  type="text"
+                  id="itemId"
+                  class="form-control"
+                  v-model="disburseItem.itemId"
+                  required
+                />
+              </div>
+
+              <!-- Item Name -->
+              <div class="col-md-6 mb-3">
+                <label for="itemName" class="form-label">Item Name</label>
+                <input
+                  type="text"
+                  id="itemName"
+                  class="form-control"
+                  v-model="disburseItem.itemName"
+                  required
+                  disabled
+                />
+              </div>
             </div>
-            <div class="form-group">
-              <label for="quantity" class="form-label">Quantity</label>
-              <input
-                v-model="quantity"
-                type="number"
-                id="quantity"
-                class="form-control"
-                min="1"
-                placeholder="Enter quantity"
-                required
-              />
+
+            <div class="row">
+              <!-- Quantity to Disburse -->
+              <div class="col-md-6 mb-3">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  class="form-control"
+                  v-model="disburseItem.quantity"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <!-- Patient Name -->
+              <div class="col-md-6 mb-3">
+                <label for="patientName" class="form-label">Patient Name</label>
+                <input
+                  type="text"
+                  id="patientName"
+                  class="form-control"
+                  v-model="disburseItem.patientName"
+                  required
+                />
+              </div>
             </div>
-            <div class="form-group">
-              <label for="patientName" class="form-label">Patient Name</label>
-              <input
-                v-model="patientName"
-                type="text"
-                id="patientName"
-                class="form-control"
-                placeholder="Enter patient's name"
-                required
-              />
+
+            <div class="row">
+              <!-- Reason for Disbursement -->
+              <div class="col-md-6 mb-3">
+                <label for="reason" class="form-label">Reason</label>
+                <input
+                  type="text"
+                  id="reason"
+                  class="form-control"
+                  v-model="disburseItem.reason"
+                  required
+                />
+              </div>
+
+              <!-- College -->
+              <div class="col-md-6 mb-3">
+                <label for="college" class="form-label">College</label>
+                <select
+                  id="college"
+                  class="form-select"
+                  v-model="disburseItem.college"
+                  required
+                >
+                  <option value="" disabled>Select a college</option>
+                  <option value="BSIT">BSIT</option>
+                  <option value="CBM">CBM</option>
+                  <option value="EDUC">EDUC</option>
+                  <option value="BTVLED">BTVLED</option>
+                  <option value="CAS">CAS</option>
+                  <option value="CCJE">CCJE</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="reason" class="form-label">Reason</label>
-              <input
-                v-model="reason"
-                type="text"
-                id="reason"
-                class="form-control"
-                placeholder="Enter the reason"
-                required
-              />
+
+            <!-- Submit Button -->
+            <div class="row">
+              <div class="col-md-12 text-end">
+                <button type="submit" class="btn btn-primary">Disburse Medication</button>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="college" class="form-label">College</label>
-              <select
-                v-model="college"
-                id="college"
-                class="form-control"
-                required
-              >
-                <option value="" disabled>Select a college</option>
-                <option value="BSIT">BSIT</option>
-                <option value="CBM">CBM</option>
-                <option value="EDUC">EDUC</option>
-                <option value="BTVLED">BTVLED</option>
-                <option value="CAS">CAS</option>
-                <option value="CCJE">CCJE</option>
-              </select>
-            </div>
-            <button type="submit" class="btn-submit">Reduce Stock</button>
           </form>
-          <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
-          <p v-if="successMessage" class="text-success mt-3">{{ successMessage }}</p>
         </div>
       </div>
     </div>
@@ -94,68 +122,63 @@ import sideNav from "../components/sideNav.vue";
 import topNav from "../components/topNav.vue";
 
 export default {
-  name: "ReduceStock",
+  name: "DisburseMedication",
   components: {
     sideNav,
     topNav,
   },
   data() {
     return {
-      itemId: "",
-      quantity: 0,
-      patientName: "",
-      reason: "",
-      college: "",
-      errorMessage: "",
-      successMessage: "",
+      disburseItem: {
+        itemId: "", // The item ID to be dispensed
+        itemName: "", // The item name (this will be fetched from backend)
+        quantity: 1, // Quantity to be dispensed
+        patientName: "", // Name of the patient
+        reason: "", // Reason for disbursement
+        college: "", // College of the student
+      },
     };
   },
   methods: {
-    async handleReduceStock() {
+    async submitForm() {
       try {
-        // Reset messages
-        this.errorMessage = "";
-        this.successMessage = "";
+        // Reset messages (not implemented in the template, but you can add success/error messages if needed)
+        const response = await axios.post("http://localhost:5000/api/disburse", this.disburseItem);
 
-        // Validate input
-        if (
-          !this.itemId ||
-          this.quantity <= 0 ||
-          !this.patientName.trim() ||
-          !this.reason.trim() ||
-          !this.college // Ensure a college is selected
-        ) {
-          this.errorMessage =
-            "All fields are required, and quantity must be greater than zero.";
-          return;
-        }
+        console.log("Disbursement successful:", response.data);
+        alert("Medication dispensed successfully.");
 
-        // Make API request
-        const response = await axios.post("/api/reduce-stock", {
-          itemId: this.itemId,
-          quantity: this.quantity,
-          patientName: this.patientName,
-          reason: this.reason,
-          college: this.college,
-        });
-
-        // Handle success
-        this.successMessage = `Successfully reduced ${this.quantity} units of stock for item ID ${response.data.id}, assigned to patient ${this.patientName}.`;
-
-        // Reset form
-        this.itemId = "";
-        this.quantity = 0;
-        this.patientName = "";
-        this.reason = "";
-        this.college = "";
+        // Reset form fields after success
+        this.disburseItem = {
+          itemId: "",
+          itemName: "",
+          quantity: 1,
+          patientName: "",
+          reason: "",
+          college: "",
+        };
       } catch (error) {
-        // Handle errors
-        if (error.response && error.response.data) {
-          this.errorMessage = error.response.data.message;
-        } else {
-          this.errorMessage = "An error occurred while reducing stock.";
+        console.error("Error dispensing medication:", error.response?.data?.message || error.message);
+        alert("Failed to dispense medication. Please try again.");
+      }
+    },
+
+    // Fetch item details by itemId to auto-populate item name
+    async fetchItemDetails() {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/inventory/${this.disburseItem.itemId}`);
+        if (response.data) {
+          this.disburseItem.itemName = response.data.itemName;
         }
-        console.error(error); // Log the error for debugging
+      } catch (error) {
+        console.error("Failed to fetch item details:", error);
+      }
+    },
+  },
+  watch: {
+    "disburseItem.itemId": function(newItemId) {
+      if (newItemId) {
+        this.fetchItemDetails();
       }
     },
   },
@@ -163,6 +186,7 @@ export default {
 </script>
 
 <style scoped>
+/* Main content styling */
 .page-content {
   display: flex;
 }
@@ -173,68 +197,98 @@ export default {
 }
 
 .container {
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h2.title {
+h2 {
+  margin-bottom: 20px;
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  color: #333;
   text-align: center;
 }
 
-.form-container {
-  display: flex;
-  flex-direction: column;
+/* Form container with box shadow */
+form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-label {
+/* Styling for the label */
+label {
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  display: block;
+  color: #333;
 }
 
-.form-control {
+/* Form input and select fields */
+input,
+select {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-control:focus {
+/* Input focus effect */
+input:focus,
+select:focus {
   border-color: #007bff;
-  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
-button.btn-submit {
-  padding: 12px 20px;
+/* Submit button */
+button {
+  width: 100%;
   background-color: #007bff;
   color: white;
+  font-size: 1.1rem;
+  padding: 12px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
 }
 
-button.btn-submit:hover {
+/* Button hover and focus effects */
+button:hover {
   background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-.text-danger {
-  color: red;
+button:active {
+  transform: translateY(0);
 }
 
-.text-success {
-  color: green;
+/* Form grid layout for input fields */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-md-6 {
+  flex: 1 0 48%;
+  margin-right: 2%;
+}
+
+.col-md-6:last-child {
+  margin-right: 0;
+}
+
+/* Add spacing for form elements */
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+.text-end {
+  text-align: right;
 }
 </style>

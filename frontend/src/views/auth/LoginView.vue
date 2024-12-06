@@ -23,13 +23,13 @@
           <!-- Email Field -->
           <div class="inputGroup">
             <input
-              type="email"
-              id="email"
-              v-model="form.email"
+              type="text"
+              id="username"
+              v-model="form.username"
               required
               autocomplete="off"
             />
-            <label for="email">Email</label>
+            <label for="username">Username</label>
           </div>
 
           <!-- Password Field -->
@@ -79,19 +79,22 @@ export default {
     async login() {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/patient/login",
+          "http://localhost:5000/api/user/login",
           {
-            email: this.email,
-            password: this.password,
+            username: this.form.username,
+            password: this.form.password,
           }
         );
-        this.message = response.data.message;
+        if (response.data.resetRequired) {
+          // Redirect to reset password page if it's the first login
+          this.$router.push("/reset-password");
+        } else {
+          // Store JWT token in localStorage
+          localStorage.setItem("token", response.data.token);
 
-        // Store JWT token in localStorage
-        localStorage.setItem("token", response.data.token);
-
-        // Redirect to /patient/dashboard
-        this.$router.push("/patient/dashboard");
+          // Redirect to the user dashboard
+          this.$router.push("admin/dashboard");
+        }
       } catch (error) {
         // Handle error response
         this.message =
