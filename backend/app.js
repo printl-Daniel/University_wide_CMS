@@ -7,6 +7,8 @@ const feedbackRouter = require("./routes/feedbackRouter");
 const patientRouter = require("./routes/patientRouter");
 const appointmentsRouter = require("./routes/appointmentRouter");
 const studentEnrollment = require("./routes/csvUpload/studentRoutes");
+const userRouter = require("./routes/userRouter/userRoutes");
+// const inventoryRoutes = require('./routes/Inventory/inventoryRouter');
 
 require("dotenv").config();
 const app = express();
@@ -18,8 +20,8 @@ app.use("/api/inventory", inventoryRouter);
 
 //routes for csv
 app.use("/api/student-enrollment", studentEnrollment);
-
 //
+
 app.use("/api/inventory", inventoryRouter);
 
 // app.use("/api/feedback", feedbackRouter);

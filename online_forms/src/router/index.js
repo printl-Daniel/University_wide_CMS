@@ -8,7 +8,6 @@ const routes = [
     name: "appointments",
     component: Appointments,
   },
-
   {
     path: "/feedback",
     name: "feedback",

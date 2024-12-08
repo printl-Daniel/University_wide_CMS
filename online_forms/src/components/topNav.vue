@@ -10,11 +10,15 @@
     </div>
   </div>
 </template>
-<script></script>
-
+<script setup></script>
 <style>
 .img-logo img {
   max-width: 5vw;
+}
+body {
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 .top-nav {
   font-family: "Poppins", serif;

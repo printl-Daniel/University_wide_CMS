@@ -11,7 +11,7 @@
 
 <script>
 import FeedbackForm from "../components/feedback.vue";
-import TopNav from "../components/topNav.vue";
+import TopNav from "../components/topNavFeedback.vue";
 
 export default {
   components: {
@@ -26,7 +26,7 @@ export default {
   margin: 0;
   box-sizing: border-box;
   font-family: "Poppins", serif;
-  font-weight: 400;
+  font-weight: 300;
   font-style: normal;
 }
 </style>

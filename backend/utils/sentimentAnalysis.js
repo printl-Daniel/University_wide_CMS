@@ -5,10 +5,16 @@ async function analyzeSentiment(text) {
     const response = await axios.post("http://127.0.0.1:8000/api/analyze", {
       text,
     });
-    return response.data.sentiment;
+    return {
+      sentiment: response.data.sentiment,
+      value: response.data.value,
+    };
   } catch (error) {
     console.error("Error calling sentiment analysis API:", error);
-    return "neutral";
+    return {
+      sentiment: "neutral",
+      value: "neutral",
+    };
   }
 }
 

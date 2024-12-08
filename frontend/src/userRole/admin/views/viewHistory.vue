@@ -9,46 +9,38 @@
       <!-- Sidebar -->
       <sideNav />
       
-      <!-- Main Content (flex-grow-1) -->
+      <!-- Main Content Area -->
       <div class="content flex-grow-1">
         <!-- Transaction History Table Section -->
-        <div class="card mt-4">
-          <div class="card-header">
-            <h2>Transaction History</h2>
-          </div>
-          <div class="card-body">
-            <!-- Transaction History Table -->
-            <div class="table-responsive">
-              <table id="transactionHistory" class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">Transaction ID</th>
-                    <th scope="col">Transaction Date</th>
-                    <th scope="col">Item Name</th>
-                    <th scope="col">Action Type</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Current Quantity</th>
-                    <th scope="col">Responsible Person</th>
-                    <th scope="col">Reason for Action</th>
-                    <th scope="col">Supplier</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="history in transactionHistory" :key="history.transactionId">
-                    <td>{{ history.transactionId }}</td>
-                    <td>{{ formatDate(history.transactionDate) }}</td>
-                    <td>{{ history.itemName }}</td>
-                    <td>{{ history.actionType }}</td>
-                    <td>{{ history.quantityChanged }}</td>
-                    <td>{{ history.remainingQuantity }}</td>
-                    <td>{{ history.responsiblePerson }}</td>
-                    <td>{{ history.reasonForAction }}</td>
-                    <td>{{ history.supplier }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div class="mt-4 table-responsive">
+          <table id="transactionHistoryTable" class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Transaction ID</th>
+                <th scope="col">Transaction Date</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Action Type</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Current Quantity</th>
+                <th scope="col">Responsible Person</th>
+                <th scope="col">Reason for Action</th>
+                <th scope="col">Supplier</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="history in transactionHistory" :key="history.transactionId">
+                <td>{{ history.transactionId }}</td>
+                <td>{{ formatDate(history.transactionDate) }}</td>
+                <td>{{ history.itemName }}</td>
+                <td>{{ history.actionType }}</td>
+                <td>{{ history.quantityChanged }}</td>
+                <td>{{ history.remainingQuantity }}</td>
+                <td>{{ history.responsiblePerson }}</td>
+                <td>{{ history.reasonForAction }}</td>
+                <td>{{ history.supplier }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -100,7 +92,7 @@ export default {
     // Initialize DataTable
     initializeDataTable() {
       $(document).ready(function () {
-        $('#transactionHistory').DataTable({
+        $('#transactionHistoryTable').DataTable({
           searching: true,  // Enable search functionality
           paging: true,     // Enable pagination
           ordering: true,   // Enable column sorting
@@ -123,51 +115,26 @@ export default {
   padding: 20px;
 }
 
-/* Card Styling */
-.card {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 20px;
-}
-
-.card-header {
-  background-color: #f5f5f5;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-}
-
-.card-body {
-  padding: 15px;
-}
-
-h2 {
-  margin: 0;
-  font-size: 1.2rem;  /* Smaller font size for title */
-  font-weight: bold;
-  color: #333;
-}
-
 /* Table Styles */
 .table-responsive {
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.85rem; /* Reduced font size */
 }
 
-th,
-td {
-  padding: 6px;  /* Reduced padding for smaller table size */
-  font-size: 0.9rem;  /* Smaller font size */
+th, td {
+  padding: 6px;  /* Reduced padding for compact view */
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ada9a9;
 }
 
 th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
@@ -175,16 +142,26 @@ th {
 }
 
 .table tbody tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f1f1f1; /* Highlight row on hover */
 }
 
 .table tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Button styling */
+/* Button styling (if any buttons are present in the table rows) */
 button {
-  display: none;
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
 
 button:focus {
@@ -194,7 +171,7 @@ button:focus {
 /* Responsive Design */
 @media (max-width: 768px) {
   .table {
-    font-size: 0.85rem;  /* Smaller font on mobile */
+    font-size: 0.75rem;  /* Even smaller font size for mobile */
   }
 
   .table th, .table td {

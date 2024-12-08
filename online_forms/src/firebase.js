@@ -1,7 +1,9 @@
+// firebase.js
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Firebase configuration (replace with your actual config or environment variables)
+// Firebase config object
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
@@ -11,9 +13,12 @@ const firebaseConfig = {
   appId: process.env.VUE_APP_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase App
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// Initialize Firestore
+
+// Get Firebase Auth and Firestore instances
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-export default db;
+// Export instances for use in other parts of your app
+export default { auth, db };

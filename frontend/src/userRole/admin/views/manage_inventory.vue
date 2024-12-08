@@ -14,39 +14,41 @@
       <!-- Main Content Area -->
       <div class="content flex-grow-1">
 
-        <div class="mt-4 table-responsive">
-          <table id="inventoryTable" class="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Item ID</th>
-                <th scope="col">Item Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Unit of Measure</th>
-                <th scope="col">Expiration Date</th>
-                <th scope="col">Supplier</th>
-                <th scope="col">Purchase Date</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in inventoryItems" :key="item._id">
-                <td>{{ item.itemId }}</td>
-                <td>{{ item.itemName }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unitOfMeasure }}</td>
-                <td>{{ formatDate(item.expirationDate) }}</td>
-                <td>{{ item.supplier }}</td>
-                <td>{{ formatDate(item.purchaseDate) }}</td>
-                <td>
-                  <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
-                </td>
-              </tr>            
-            </tbody>
-          </table>
+        <!-- Enhanced container for the table -->
+        <div class="table-container">
+          <div class="mt-2 table-responsive">
+            <table id="inventoryTable" class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Item ID</th>
+                  <th scope="col">Item Name</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Unit of Measure</th>
+                  <th scope="col">Expiration Date</th>
+                  <th scope="col">Supplier</th>
+                  <th scope="col">Purchase Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in inventoryItems" :key="item._id">
+                  <td>{{ item.itemId }}</td>
+                  <td>{{ item.itemName }}</td>
+                  <td>{{ item.category }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.unitOfMeasure }}</td>
+                  <td>{{ formatDate(item.expirationDate) }}</td>
+                  <td>{{ item.supplier }}</td>
+                  <td>{{ formatDate(item.purchaseDate) }}</td>
+                  <td>
+                    <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
+                  </td>
+                </tr>            
+              </tbody>
+            </table>
+          </div>
         </div>
-      
 
         <addQuantityModal
           v-if="showAddQuantityModal"
@@ -88,7 +90,6 @@ export default {
     };
   },
   methods: {
-   
     async displayItems() {
       try {
         const res = await axios.get('http://localhost:5000/api/inventory/display');
@@ -147,97 +148,51 @@ export default {
 </script>
 
 <style scoped>
-.page-title {
-  font-size: 22px; /* Reduced font size */
+/* Add a container around the table with border and shadow */
+.table-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-right: 20px;
+}
+
+.table {
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Table header styling */
+.table thead {
+  background-color: #f8f9fa;
   font-weight: bold;
-  margin-bottom: 16px; /* Reduced bottom margin */
   color: #333;
 }
 
-.search-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.search-bar-container {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-}
-
-.search-input {
-  width: 100%;
-  border-radius: 25px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.search-btn {
-  border-radius: 25px;
-  background-color: #007bff;
-  color: white;
-  padding: 8px 15px;
-  margin-left: 10px;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.add-item-btn {
-  background-color: #28a745;
-  color: white;
-  border-radius: 25px;
-  padding: 8px 20px;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.table-responsive {
-  margin-top: 20px;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #f9f9f9;
-}
-
-.table th,
-.table td {
-  padding: 10px 12px; /* Reduced padding */
-  border-bottom: 1px solid #eaeaea;
-  text-align: left;
-  font-size: 14px; /* Adjusted font size */
-}
-
-.table th {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 14px; /* Adjusted font size */
-}
-
+/* Hover effect for rows */
 .table tbody tr:hover {
   background-color: #f1f1f1;
 }
 
-.table tbody tr:last-child td {
-  border-bottom: none;
+
+/* Responsive Table */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.table td button {
-  font-size: 14px; /* Adjusted button font size */
+.table thead th {
+  text-align: center;
 }
 
-.table .btn {
-  border-radius: 25px;
-  transition: background-color 0.3s;
-}
-
-.table .btn:hover {
-  background-color: #0056b3;
-}
-
-/* Add Modal Button */
-.add-item-btn i, .search-btn i {
-  margin-right: 5px;
+.table tbody td {
+  text-align: center;
 }
 </style>

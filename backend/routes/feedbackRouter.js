@@ -1,7 +1,8 @@
-// const express = require("express");
-// const submitFeedback = require("../controller/feedbackController");
-// const router = express.Router();
+const express = require("express");
+const feedback = require("../controller/feedbackController");
+const router = express.Router();
 
-// router.post("/", submitFeedback);
+router.post("/sync", feedback.saveFeedback);
+router.get("/get", feedback.getAnalyzeFeedback);
 
-// module.exports = router;
+module.exports = router;

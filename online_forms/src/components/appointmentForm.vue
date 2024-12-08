@@ -4,7 +4,9 @@
       <div class="left-column">
         <div class="first-row">
           <div class="form-group">
-            <label for="name">Full Name</label>
+            <label for="name"
+              >Full Name <span class="required-indicator">*</span></label
+            >
             <div class="input-icon">
               <i class="fas fa-user"></i>
               <input
@@ -16,19 +18,9 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="email">Email Address</label>
-            <div class="input-icon">
-              <i class="fas fa-envelope"></i>
-              <input
-                v-model="appointment.email"
-                type="email"
-                id="email"
-                required
-              />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone Number</label>
+            <label for="phone"
+              >Phone Number <span class="required-indicator">*</span></label
+            >
             <div class="input-icon">
               <i class="fas fa-phone"></i>
               <input
@@ -39,9 +31,51 @@
               />
             </div>
           </div>
+
+          <div class="form-group email-group">
+            <div class="input-with-button">
+              <label for="email">
+                Email Address
+                <span class="required-indicator">
+                  *
+                  <p class="sign-in-message" v-if="!user">
+                    Please sign in using the "Login with Google" button to fill
+                    this field.
+                  </p>
+                </span>
+              </label>
+              <div class="input-icon">
+                <i class="fas fa-envelope"></i>
+                <input
+                  v-model="appointment.email"
+                  type="email"
+                  id="email"
+                  required
+                  readonly
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              class="email-button"
+              @click="googleLogin"
+              :disabled="loading || user"
+            >
+              <span v-if="!loading && !user" class="state-login">
+                Login with Google
+              </span>
+              <span v-else-if="loading" class="state-logging-in">
+                <i class="spinner"></i> Logging in...
+              </span>
+              <span v-else-if="user" class="state-logged-in">Logged In </span>
+            </button>
+          </div>
+
           <div class="second-row">
             <div class="form-group">
-              <label for="date">Preferred Date</label>
+              <label for="date"
+                >Preferred Date <span class="required-indicator">*</span></label
+              >
               <div class="input-icon">
                 <i class="fas fa-calendar"></i>
                 <input
@@ -53,7 +87,9 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="time">Preferred Time</label>
+              <label for="time"
+                >Preferred Time <span class="required-indicator">*</span></label
+              >
               <div class="input-icon">
                 <i class="fas fa-clock"></i>
                 <input
@@ -67,10 +103,11 @@
           </div>
         </div>
       </div>
-
       <div class="right-column">
         <div class="form-group">
-          <label for="appointmentType">Appointment Type</label>
+          <label for="appointmentType"
+            >Appointment Type <span class="required-indicator">*</span></label
+          >
           <div class="input-icon">
             <i class="fas fa-clipboard"></i>
             <select
@@ -87,36 +124,36 @@
             </select>
           </div>
         </div>
-        <div class="">
-          <div class="form-group">
-            <label>Your Campus</label>
-            <div class="campus-options">
-              <label class="campus-option">
-                <input
-                  type="radio"
-                  v-model="appointment.campus"
-                  value="Main"
-                  required
-                />
-                <span>Main Campus</span>
-              </label>
-              <label class="campus-option">
-                <input
-                  type="radio"
-                  v-model="appointment.campus"
-                  value="Calapan"
-                />
-                <span>Calapan Campus</span>
-              </label>
-              <label class="campus-option">
-                <input
-                  type="radio"
-                  v-model="appointment.campus"
-                  value="Bongabong"
-                />
-                <span>Bongabong Campus</span>
-              </label>
-            </div>
+        <div class="form-group">
+          <label>Your Campus <span class="required-indicator">*</span></label>
+          <div class="campus-options">
+            <label class="campus-option">
+              <input
+                type="radio"
+                v-model="appointment.campus"
+                value="Main"
+                required
+              />
+              <span>Main Campus</span>
+            </label>
+            <label class="campus-option">
+              <input
+                type="radio"
+                v-model="appointment.campus"
+                value="Calapan"
+                required
+              />
+              <span>Calapan Campus</span>
+            </label>
+            <label class="campus-option">
+              <input
+                type="radio"
+                v-model="appointment.campus"
+                value="Bongabong"
+                required
+              />
+              <span>Bongabong Campus</span>
+            </label>
           </div>
         </div>
         <div class="form-group">
@@ -139,8 +176,11 @@
 
 <script setup>
 import { ref } from "vue";
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
-import db from "../firebase";
+import firebase from "../firebase";
+const { db } = firebase;
+
 const appointment = ref({
   name: "",
   email: "",
@@ -153,19 +193,66 @@ const appointment = ref({
   campus: "",
 });
 
-const submitted = ref(false);
+const errors = ref({});
+const user = ref(null);
+const loading = ref(false);
+const error = ref(null);
+
+const googleLogin = async () => {
+  const provider = new GoogleAuthProvider();
+  loading.value = true;
+  error.value = null;
+
+  try {
+    const result = await signInWithPopup(getAuth(), provider);
+    const userCredential = result.user;
+    user.value = userCredential;
+    appointment.value.email = userCredential.email;
+  } catch (err) {
+    error.value = "Failed to log in. Please try again.";
+    console.error("Error during Google login:", err.message);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const validateForm = () => {
+  errors.value = {};
+
+  if (!appointment.value.name) errors.value.name = "Full Name is required.";
+  if (!appointment.value.phone)
+    errors.value.phone = "Phone Number is required.";
+  if (!appointment.value.email)
+    errors.value.email = "Email Address is required.";
+  if (!appointment.value.date)
+    errors.value.date = "Preferred Date is required.";
+  if (!appointment.value.time)
+    errors.value.time = "Preferred Time is required.";
+  if (!appointment.value.appointmentType)
+    errors.value.appointmentType = "Appointment Type is required.";
+  if (!appointment.value.campus)
+    errors.value.campus = "Campus selection is required.";
+
+  return Object.keys(errors.value).length === 0;
+};
 
 const submitForm = async () => {
+  if (!validateForm()) {
+    const errorMessages = Object.entries(errors.value)
+      .map(([field, message]) => `- ${message}`)
+      .join("\n");
+    alert(`${errorMessages}`);
+    return;
+  }
+
   try {
     const colRef = collection(db, "appointments");
     await addDoc(colRef, {
       ...appointment.value,
       createdAt: new Date(),
     });
-
-    submitted.value = true;
-    resetForm();
     alert("Appointment booked successfully!");
+    resetForm();
   } catch (error) {
     console.error("Error creating appointment:", error);
     alert("Failed to create appointment.");
@@ -181,13 +268,105 @@ const resetForm = () => {
     time: "",
     notes: "",
     status: "Pending",
-    appointmentType: "Dental",
+    appointmentType: "",
     campus: "",
   };
 };
 </script>
 
 <style scoped>
+form-group.email-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-with-button {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+
+.required-indicator {
+  color: red;
+  margin-left: 0.25rem;
+}
+
+.sign-in-message {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.input-icon {
+  position: relative;
+}
+
+.input-icon i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.input-icon input {
+  padding-left: 30px;
+  width: 100%;
+}
+
+.email-button {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.email-button:hover:not(:disabled) {
+  background-color: #3367d6;
+}
+
+.email-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.state-login,
+.state-logging-in,
+.state-logged-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.state-logged-in {
+  color: green;
+}
+
+.state-logging-in {
+  color: rgb(216, 190, 143);
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 form {
   display: flex;
   align-items: center;
@@ -202,7 +381,7 @@ form {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 80vh;
+  height: 85vh;
 }
 
 .left-column {
@@ -212,9 +391,8 @@ form {
   align-items: start;
   gap: 5vh;
   width: 50%;
-  height: 100%;
+  height: 50%;
   padding: 4.3rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .right-column {
@@ -351,10 +529,15 @@ textarea,
 @media (max-width: 768px) {
   body {
     overflow-x: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
   }
+
   form {
     flex-direction: column;
-    padding: 1rem;
+    padding: 0;
   }
 
   .appointment-container {
@@ -362,9 +545,15 @@ textarea,
     padding: 1rem;
   }
 
-  .left-column,
   .right-column {
     width: 100%;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .left-column {
+    width: 100%;
+    padding: 0;
   }
 
   .first-row,
@@ -413,5 +602,3 @@ textarea,
   }
 }
 </style>
-
-fix the sizes

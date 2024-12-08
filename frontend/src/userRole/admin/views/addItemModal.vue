@@ -59,11 +59,6 @@
                 </select>
               </div>
 
-              <!-- Quantity -->
-            
-            </div>
-
-            <div class="row">
               <!-- Unit of Measure -->
               <div class="col-md-6 mb-3">
                 <label for="unitOfMeasure" class="form-label">Unit of Measure</label>
@@ -77,6 +72,20 @@
                   <option value="Bottle">Bottle</option>
                   <option value="Pack">Pack</option>
                 </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Purchase Date -->
+              <div class="col-md-6 mb-3">
+                <label for="purchaseDate" class="form-label">Purchase Date</label>
+                <input
+                  type="date"
+                  id="purchaseDate"
+                  class="form-control"
+                  v-model="newItem.purchaseDate"
+                  required
+                />
               </div>
 
               <!-- Expiration Date -->
@@ -94,7 +103,7 @@
 
             <div class="row">
               <!-- Supplier -->
-              <div class="col-md-6 mb-3">
+              <div class="col-md-12 mb-3">
                 <label for="supplier" class="form-label">Supplier</label>
                 <input
                   type="text"
@@ -104,23 +113,14 @@
                   required
                 />
               </div>
-
-              <!-- Purchase Date -->
-              <div class="col-md-6 mb-3">
-                <label for="purchaseDate" class="form-label">Purchase Date</label>
-                <input
-                  type="date"
-                  id="purchaseDate"
-                  class="form-control"
-                  v-model="newItem.purchaseDate"
-                  required
-                />
-              </div>
             </div>
 
-
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary">Add Product</button>
+            <div class="row">
+              <div class="col-md-12 text-end">
+                <button type="submit" class="btn btn-primary">Add Product</button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
@@ -205,39 +205,90 @@ h2 {
   margin-bottom: 20px;
   font-size: 2rem;
   font-weight: bold;
+  color: #333;
+  text-align: center;
 }
 
-/* Form and input styling */
-.modal-body label {
+/* Form container with box shadow */
+form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+/* Styling for the label */
+label {
   font-weight: bold;
   margin-bottom: 8px;
   display: block;
+  color: #333;
 }
 
-.modal-body input,
-.modal-body select {
+/* Form input and select fields */
+input,
+select {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 12px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Input focus effect */
+input:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
 /* Submit button */
-.modal-body button {
+button {
   width: 100%;
   background-color: #007bff;
   color: white;
-  font-size: 1rem;
-  padding: 10px;
+  font-size: 1.1rem;
+  padding: 12px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
 }
 
-.modal-body button:hover {
+/* Button hover and focus effects */
+button:hover {
   background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Form grid layout for input fields */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-md-6 {
+  flex: 1 0 48%;
+  margin-right: 2%;
+}
+
+.col-md-6:last-child {
+  margin-right: 0;
+}
+
+/* Add spacing for form elements */
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+.text-end {
+  text-align: right;
 }
 </style>

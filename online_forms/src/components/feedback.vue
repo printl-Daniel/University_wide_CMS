@@ -29,11 +29,15 @@
             id="feedback"
             v-model="feedback"
             placeholder="Please share your thoughts..."
-            rows="4"
+            rows="13"
             required
           ></textarea>
         </div>
-        <button type="submit" :disabled="!isFormValid">Submit Feedback</button>
+        <div class="button-container">
+          <button type="submit" :disabled="!isFormValid">
+            Submit Feedback
+          </button>
+        </div>
       </form>
     </div>
     <div class="feedback-success" v-else>
@@ -46,7 +50,8 @@
 <script setup>
 import { ref, computed } from "vue";
 import { collection, addDoc } from "firebase/firestore";
-import db from "../firebase";
+import firebase from "../firebase";
+const { db } = firebase;
 
 const name = ref("");
 const email = ref("");
@@ -61,13 +66,27 @@ const isFormValid = computed(() => {
   );
 });
 
-const submitFeedback = () => {
+const submitFeedback = async () => {
   console.log("Feedback submitted:", {
     name: name.value,
     email: email.value,
     feedback: feedback.value,
   });
-  submitted.value = true;
+
+  const feedbackRef = collection(db, "feedbacks");
+
+  try {
+    await addDoc(feedbackRef, {
+      name: name.value,
+      email: email.value,
+      saved: "not-yet",
+      feedback: feedback.value,
+      submittedAt: new Date(),
+    });
+    submitted.value = true;
+  } catch (error) {
+    console.error("Error submitting feedback: ", error);
+  }
 };
 </script>
 
@@ -95,6 +114,7 @@ h4 {
   color: #333;
   font-size: 0.9rem;
   text-align: center;
+  font-weight: 400;
 }
 
 .form-group {
@@ -104,7 +124,7 @@ h4 {
 label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 900;
+  font-weight: 600;
   color: #333;
   font-size: 0.7rem;
 }
@@ -149,9 +169,11 @@ button:disabled {
 @media (max-width: 768px) {
   @media (max-width: 600px) {
     .feedback-container {
-      height: 80vh;
+      display: flex;
+      align-items: center;
       justify-content: start;
-      padding: 2rem;
+      padding: 1rem;
+      box-shadow: none;
     }
     .feedback-form,
     .feedback-success {
@@ -160,16 +182,37 @@ button:disabled {
       display: flex;
       flex-direction: column;
     }
+    label {
+      font-weight: 600;
+    }
+
+    .feedback-form {
+      box-shadow: none;
+    }
     form {
       gap: 4vh;
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
     }
-  }
 
-  h2 {
-    font-size: 1.25rem;
+    h4 {
+      font-size: 0.8rem;
+      font-weight: 400;
+    }
+
+    .button-container {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      color: white;
+      width: 80%;
+    }
   }
 
   input,
@@ -183,10 +226,6 @@ button:disabled {
   .feedback-form,
   .feedback-success {
     padding: 1rem;
-  }
-
-  h2 {
-    font-size: 1rem;
   }
 
   input,

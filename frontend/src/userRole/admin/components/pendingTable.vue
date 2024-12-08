@@ -118,7 +118,7 @@ export default {
       appointments: [],
       isDetailsModalOpen: false,
       isApprovalModalOpen: false,
-      isLoading: false, // Add loading state
+      isLoading: false,
       selectedAppointment: null,
       formData: {
         id: "",
@@ -144,8 +144,10 @@ export default {
     const tableElement = "#appointmentTable";
     if (!$.fn.DataTable.isDataTable(tableElement)) {
       new DataTable(tableElement, {
+        pageLength: 10,
+        lengthChange: false,
         layout: {
-          topStart: "pageLength",
+          topStart: null,
           topEnd: "search",
           bottomStart: "info",
           bottomEnd: "paging",
@@ -236,41 +238,34 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 button:hover {
   background-color: #0056b3;
 }
 
-i {
-  font-size: 20px;
-  cursor: pointer;
-  color: black;
+button.no-show {
+  background-color: #ff4c4c;
 }
 
-/* Loading Spinner Styles */
-.loading-spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
+button.no-show:hover {
+  background-color: #cc0000;
 }
 
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-top: 4px solid #007bff;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spin 1s linear infinite;
+button.attended {
+  background-color: #28a745;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+button.attended:hover {
+  background-color: #218838;
+}
+
+button.close {
+  background-color: #6c757d;
+}
+
+button.close:hover {
+  background-color: #5a6268;
 }
 </style>

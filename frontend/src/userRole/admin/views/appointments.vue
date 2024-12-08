@@ -68,8 +68,45 @@ export default {
 </script>
 
 <style scoped>
+/* Tabs */
+.tabs {
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+.content {
+  padding: 1rem;
+}
+.tab-content {
+  padding: 1rem;
+}
+
+.tabs button {
+  padding: 12px 24px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #757575;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tabs button:hover {
+  color: #91dfa2;
+}
+
 .tabs button.active {
-  background-color: #007bff;
-  color: white;
+  color: #4cca67;
+}
+
+.tabs button.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #91dfa2;
 }
 </style>

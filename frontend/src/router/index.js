@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/auth/LoginView.vue";
 import RegisterView from "../views/auth/RegisterView.vue";
 import OTP from "../views/auth/VerifyOTP.vue";
+import reset from "../views/auth/resetPassword.vue";
 //staff
 import staff_dashBoard from "../userRole/staff/views/staff_dashBoard.vue";
 import inventory from "../userRole/staff/views/manage_inventory.vue";
@@ -13,12 +14,12 @@ import userManagement from "@/userRole/admin/views/userManagement.vue";
 import adminInventory from "../userRole/admin/views/manage_inventory.vue";
 
 import appointments from "../userRole/admin/views/appointments.vue";
-
 import enrollment from "../userRole/admin/views/studentEnrollment.vue";
 import history from "../userRole/admin/views/viewHistory.vue";
 import audit from "../userRole/admin/views/viewAudit.vue";
 import addItemModal from "@/userRole/admin/views/addItemModal.vue";
 import DisbursedItem from "../userRole/admin/views/DisburseItem.vue";
+import Feedback from "../userRole/admin/views/feedback.vue";
 
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
@@ -45,6 +46,11 @@ const routes = [
     path: "/token",
     name: "otpVerification",
     component: OTP,
+  },
+  {
+    path:"/reset-password",
+    name: "reset",
+    component: reset,
   },
 
   //staff-router
@@ -122,7 +128,11 @@ const routes = [
     name: "addItem",
     component: addItemModal,
   },
-
+  {
+    path: "/feedback",
+    name: "feedback",
+    component: Feedback,
+  },
   //patient
   {
     path: "/patient/inbox",

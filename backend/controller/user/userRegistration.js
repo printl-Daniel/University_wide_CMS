@@ -1,92 +1,132 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const Role = require('../../models/role');
-const Patient = require('../../models/patientModel');
-const Staff = require('../../models/staffModel');
+const User = require('../../models/User/userModel');
+const { generateToken } = require('../../middleware/jwt');
 
-// Register Patient
-exports.registerPatient = async (req, res) => {
-  try {
-    const { email, password, firstName, lastName, contactInfo, medicalHistoryAccess } = req.body;
-
-    // Check if user already exists
-    const existingUser = await Role.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    // Create Role for patient
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new Role({
-      email,
-      password: hashedPassword,
-      role: 'patient',
-    });
-    await newUser.save();
-
-    // Create Patient
-    const newPatient = new Patient({
-      user: newUser._id,
-      firstName,
-      lastName,
-      contactInfo,
-      medicalHistoryAccess,
-    });
-    await newPatient.save();
-
-    res.status(201).json({ message: 'Patient registered successfully', patient: newPatient });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+exports.createUser = async (req, res) => {
+  const { fullname, username, password, role} = req.body;
+  if (!fullname || !username || !password || !role) {
+    return res.status(400).json({ message: "All fields are required." });
   }
-};
-
-// Register Staff (Admin can create staff)
-exports.registerStaff = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, department, specialization, role } = req.body;
-
-    // Only allow admin to register staff or doctors
-    if (role !== 'staff' && role !== 'doctor') {
-      return res.status(400).json({ message: 'Invalid role. Admin can only register staff or doctor.' });
-    }
-
-    // Check if user already exists
-    const existingUser = await Role.findOne({ email });
+    // Check if username already exists
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "Username already taken." });
     }
 
-    // Create Role for staff/doctor
+    // Hash the password before saving (using bcrypt)
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new Role({
-      email,
+
+    // Create and save the user
+    const newUser = new User({
+      fullname,
+      username,
       password: hashedPassword,
       role,
+      isFirstLogin: true, // Set to true by default
     });
+
     await newUser.save();
+    res.status(201).json({
+      message: "User created successfully.",
+      user: newUser,
+    });
 
-    // Create Staff/Doctor record
-    let newStaff = null;
-    if (role === 'staff') {
-      newStaff = new Staff({
-        user: newUser._id,
-        firstName,
-        lastName,
-        department,
-      });
-    } else if (role === 'doctor') {
-      newStaff = new Staff({
-        user: newUser._id,
-        firstName,
-        lastName,
-        department,
-        specialization,
-      });
-    }
-    await newStaff.save();
-
-    res.status(201).json({ message: 'Staff/Doctor registered successfully', staff: newStaff });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error." });
   }
 };
+
+exports.login = async (req, res) => {
+  const { username, password } = req.body;
+
+  // Ensure that both username and password are provided
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required." });
+  }
+
+  try {
+    // Find the user by username
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Compare the provided password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials." });
+    }
+
+    // If it's the user's first login, ask them to reset the password
+    if (user.isFirstLogin) {
+      return res.status(200).json({
+        message: 'First time login. Please reset your password.',
+        resetRequired: true,
+      });
+    }
+
+    // Since we're not using JWT, no need to send a token
+    res.status(200).json({
+      message: 'Login successful',
+      role: user.role,
+      username: user.username,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { newPassword, confirmPassword } = req.body;
+
+  // Ensure all required fields are provided
+  if (!newPassword || !confirmPassword) {
+    return res.status(400).json({ message: "Both new password and confirm password are required." });
+  }
+
+  // Ensure that the new password and confirm password match
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match." });
+  }
+
+  try {
+
+    const userId = req.user?._id; 
+    if (!userId) {
+      console.error("User ID is not available in the request.");
+      return res.status(401).json({ message: "User is not authenticated." });
+    }
+
+    console.log(`Attempting to reset password for user with ID: ${userId}`);
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      console.error("User not found with ID:", userId);
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    user.isFirstLogin = false;  // Set isFirstLogin to false since the user has reset their password
+
+    // Save the updated user data
+    await user.save();
+
+    res.status(200).json({
+      message: 'Password reset successful. You can now log in with your new password.',
+    });
+
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Error resetting password." });
+  }
+};
+
