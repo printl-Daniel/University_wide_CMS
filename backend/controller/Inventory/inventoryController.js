@@ -63,12 +63,10 @@ exports.addItemInventory = async (req, res) => {
       history: historyEntry,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        message: "Error adding item to inventory",
-        error: error.message,
-      });
+    res.status(400).json({
+      message: "Error adding item to inventory",
+      error: error.message,
+    });
   }
 };
 
@@ -270,95 +268,5 @@ exports.getHistory = async (req, res) => {
       success: false,
       message: "Failed to fetch history entries",
     });
-  }
-};
-
-exports.getInventoryItems = async (req, res) => {
-  try {
-    const inventoryItems = await Inventory.find(); // Retrieve all items from DB
-    res.status(200).json({
-      success: true,
-      data: inventoryItems,
-    });
-  } catch (error) {
-    console.error("Error fetching items:", error);
-    res.status(500).json({});
-  }
-};
-
-exports.disburseItem = async (req, res) => {
-  const { itemId, quantity, patientName, reason, college, responsiblePerson } =
-    req.body;
-
-  if (
-    !itemId ||
-    !quantity ||
-    !patientName ||
-    !reason ||
-    !college ||
-    !responsiblePerson
-  ) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
-  try {
-    // Fetch the item from the inventory using itemId
-    const item = await Inventory.findOne({ itemId });
-
-    if (!item) {
-      return res.status(404).json({ message: "Item not found in inventory" });
-    }
-
-    // Check if the requested quantity is available
-    if (item.quantity < quantity) {
-      return res
-        .status(400)
-        .json({ message: "Insufficient stock for disbursement" });
-    }
-
-    // Update the inventory quantity
-    item.quantity -= quantity;
-    await item.save();
-
-    // Log the disbursement action in the Disbursement model
-    const disbursementEntry = new Disbursement({
-      itemId,
-      itemName: item.itemName,
-      quantity,
-      patientName,
-      reason,
-      college,
-      responsiblePerson,
-      date: new Date(),
-    });
-
-    await disbursementEntry.save();
-
-    // Log the disbursement action in the History model
-    const historyEntry = new History({
-      transactionId: new mongoose.Types.ObjectId(),
-      transactionDate: new Date(),
-      itemName: item.itemName,
-      actionType: "Disbursement",
-      quantityChanged: -quantity, // Negative quantity since it is a reduction
-      remainingQuantity: item.quantity,
-      responsiblePerson,
-      reasonForAction: reason,
-      supplier: item.supplier || null, // Ensure supplier field is handled correctly
-    });
-
-    await historyEntry.save();
-
-    // Respond with success
-    return res.status(200).json({
-      message: "Item successfully disbursed!",
-      disbursement: disbursementEntry,
-      history: historyEntry,
-    });
-  } catch (error) {
-    console.error("Error during disbursement:", error);
-    return res
-      .status(500)
-      .json({ message: "Server error during disbursement process." });
   }
 };

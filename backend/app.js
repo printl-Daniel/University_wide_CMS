@@ -24,6 +24,11 @@ app.use("/api/student-enrollment", studentEnrollment);
 
 app.use("/api/inventory", inventoryRouter);
 
+//routes for user
+app.use("/api/user", userRouter);
+// Routes for reducestock
+// app.use('/api/inventory', inventoryRoutes);
+
 // app.use("/api/feedback", feedbackRouter);
 app.use("/api/patient", patientRouter);
 app.use("/api/appointments", appointmentsRouter);
