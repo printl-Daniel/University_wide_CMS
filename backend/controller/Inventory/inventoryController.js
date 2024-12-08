@@ -162,10 +162,15 @@ exports.getInventoryItems = async (req, res) => {
 };
 
 
-
-
 exports.disburseItem = async (req, res) => {
-  const { itemId, quantity, patientName, reason, college, responsiblePerson } = req.body;
+  const {
+    itemId,
+    quantity,
+    patientName,
+    reason,
+    college,
+    responsiblePerson
+  } = req.body;
 
   if (!itemId || !quantity || !patientName || !reason || !college || !responsiblePerson) {
     return res.status(400).json({ message: 'Missing required fields' });
@@ -179,12 +184,12 @@ exports.disburseItem = async (req, res) => {
       return res.status(404).json({ message: 'Item not found in inventory' });
     }
 
-    // Check if the quantity requested is less than or equal to the available quantity
+    // Check if the requested quantity is available
     if (item.quantity < quantity) {
       return res.status(400).json({ message: 'Insufficient stock for disbursement' });
     }
 
-    // Reduce the quantity from the inventory
+    // Update the inventory quantity
     item.quantity -= quantity;
     await item.save();
 
@@ -202,7 +207,7 @@ exports.disburseItem = async (req, res) => {
 
     await disbursementEntry.save();
 
-    // Log the disbursement action in the History model for auditing
+    // Log the disbursement action in the History model
     const historyEntry = new History({
       transactionId: new mongoose.Types.ObjectId(),
       transactionDate: new Date(),
@@ -212,21 +217,20 @@ exports.disburseItem = async (req, res) => {
       remainingQuantity: item.quantity,
       responsiblePerson,
       reasonForAction: reason,
-      supplier: item.supplier,
+      supplier: item.supplier || null, // Ensure supplier field is handled correctly
     });
 
     await historyEntry.save();
 
-    res.status(200).json({
+    // Respond with success
+    return res.status(200).json({
       message: 'Item successfully disbursed!',
       disbursement: disbursementEntry,
       history: historyEntry,
     });
   } catch (error) {
     console.error('Error during disbursement:', error);
-    res.status(500).json({
-      message: 'Server error during disbursement process.',
-    });
+    return res.status(500).json({ message: 'Server error during disbursement process.' });
   }
 };
 
