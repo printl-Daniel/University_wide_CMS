@@ -2,6 +2,7 @@ const Inventory = require("../../models/Inventory/inventory.js");
 const History = require("../../models/Inventory/history.js");
 const Audit = require("../../models/Inventory/audit.js");
 const Disburse = require("../../models/Inventory/disbursement.js")
+const Notification = require("../../models/Inventory/notification.js");
 const mongoose = require("mongoose");
 
 // Add Item to Inventory
@@ -71,7 +72,6 @@ exports.addItemInventory = async (req, res) => {
 };
 
 
-
 // Add Quantity to an Existing Item
 exports.addQuantityToItem = async (req, res) => {
   const { itemId } = req.params;
@@ -138,10 +138,24 @@ exports.getHistory = async (req, res) => {
 
 exports.getInventoryItems = async (req, res) => {
   try {
-    const inventoryItems = await Inventory.find(); // Retrieve all items from DB
+    const inventoryItems = await Inventory.find(); 
+
+    const lowStockItems = inventoryItems.filter(item => item.quantity < item.threshold);
+    if (lowStockItems.length > 0) {
+      for (let item of lowStockItems) {
+        // Create a notification for low stock items
+        const notification = new Notification({
+          message: `Low stock alert: ${item.itemName} has reached a quantity below threshold (${item.quantity})`,
+          itemId: item.itemId,
+        });
+
+        await notification.save();
+      }
+    }
     res.status(200).json({
       success: true,
       data: inventoryItems,
+      lowStockItems: lowStockItems,
     });
   } catch (error) {
     console.error("Error fetching items:", error);
@@ -223,5 +237,19 @@ exports.getDisbursements = async (req, res) => {
   } catch (error) {
     console.error("Error fetching disbursements:", error);
     res.status(500).json({ message: "Error fetching disbursements", error: error.message });
+  }
+};
+
+
+exports.getNotifications = async (req, res) => {
+  try {
+    const notifications = await Notification.find({ status: "unread" }).sort({ date: -1 }); // Fetch latest notifications
+    res.status(200).json({
+      success: true,
+      notifications: notifications,
+    });
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    res.status(500).json({ message: "Error fetching notifications", error: error.message });
   }
 };

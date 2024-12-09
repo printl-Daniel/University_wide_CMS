@@ -25,11 +25,11 @@
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-              <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
+              <DialogTitle as="h3" class="text-2xl font-medium leading-6 text-gray-900">
                 Disburse Item: {{ selectedItem.itemName }}
               </DialogTitle>
               <div class="mt-2">
-                <div class="text-sm text-gray-500">
+                <div class="text-base text-gray-500">
                   <p><strong>Item ID:</strong> {{ selectedItem.itemId }}</p>
                   <p><strong>Current Quantity:</strong> {{ selectedItem.quantity }}</p>
                   <p><strong>Category:</strong> {{ selectedItem.category }}</p>
@@ -38,7 +38,7 @@
 
               <form @submit.prevent="disburseItem" class="mt-4">
                 <div class="mb-4">
-                  <label for="quantityToDisburse" class="block text-sm font-medium text-gray-700">Quantity to Disburse:</label>
+                  <label for="quantityToDisburse" class="block text-base font-medium text-gray-700">Quantity to Disburse:</label>
                   <div class="mt-1 relative rounded-md shadow-sm">
                     <input
                       type="number"
@@ -47,37 +47,37 @@
                       :max="selectedItem.quantity"
                       min="1"
                       required
-                      class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-full pr-10 text-base border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Enter quantity"
                     />
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <MinusCircleIcon class="h-5 w-5 text-gray-400" />
+                      <MinusCircleIcon class="h-6 w-6 text-gray-400" />
                     </div>
                   </div>
                 </div>
                 <div class="mb-4">
-                  <label for="patientName" class="block text-sm font-medium text-gray-700">Patient Name:</label>
+                  <label for="patientName" class="block text-base font-medium text-gray-700">Patient Name:</label>
                   <div class="mt-1 relative rounded-md shadow-sm">
                     <input
                       type="text"
                       id="patientName"
                       v-model="patientName"
                       required
-                      class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      class="block w-full pr-10 text-base border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Enter patient name"
                     />
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <UserIcon class="h-5 w-5 text-gray-400" />
+                      <UserIcon class="h-6 w-6 text-gray-400" />
                     </div>
                   </div>
                 </div>
                 <div class="mb-4">
-                  <label for="college" class="block text-sm font-medium text-gray-700">College:</label>
+                  <label for="college" class="block text-base font-medium text-gray-700">College:</label>
                   <select
                     id="college"
                     v-model="college"
                     required
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                    class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-base rounded-md"
                   >
                     <option value="" disabled>Select College</option>
                     <option value="BSIT">BSIT</option>
@@ -89,32 +89,32 @@
                   </select>
                 </div>
                 <div class="mb-4">
-                  <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Disbursement:</label>
+                  <label for="reason" class="block text-base font-medium text-gray-700">Reason for Disbursement:</label>
                   <div class="mt-1">
                     <textarea
                       id="reason"
                       v-model="reason"
                       rows="3"
                       required
-                      class="shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+                      class="shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full text-base border-gray-300 rounded-md"
                       placeholder="Enter reason"
                     ></textarea>
                   </div>
                 </div>
 
                 <TransitionRoot appear :show="!!message" as="template">
-                  <div :class="[
-                    'mt-4 p-4 rounded-md',
+                  <div :class="[ 
+                    'mt-4 p-4 rounded-md', 
                     isSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
                   ]">
-                    <p class="text-sm">{{ message }}</p>
+                    <p class="text-base">{{ message }}</p>
                   </div>
                 </TransitionRoot>
 
                 <div class="mt-6 flex justify-end space-x-3">
                   <button
                     type="button"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-6 py-3 text-base font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
                     @click="closeModal"
                   >
                     Cancel
@@ -122,7 +122,7 @@
                   <button
                     type="submit"
                     :disabled="isSubmitting"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-6 py-3 text-base font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   >
                     {{ isSubmitting ? 'Disbursing...' : 'Disburse Item' }}
                   </button>
@@ -135,6 +135,7 @@
     </Dialog>
   </TransitionRoot>
 </template>
+
 
 <script setup>
 import { ref } from 'vue';

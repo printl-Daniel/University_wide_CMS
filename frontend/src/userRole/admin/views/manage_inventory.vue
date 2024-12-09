@@ -42,9 +42,17 @@
                   <td class="px-4 py-2 border-b">{{ item.supplier }}</td>
                   <td class="px-4 py-2 border-b">{{ formatDate(item.purchaseDate) }}</td>
                   <td class="px-4 py-2 border-b text-center">
-                    <button @click="openAddQuantityModal(item)" class="btn btn-primary p-2 bg-blue-500 text-white rounded-lg">Add Quantity</button> 
-                    <button @click="openDisburseModal(item)" class="btn btn-secondary p-2 bg-gray-500 text-white rounded-lg">Disburse</button>
-                  </td>
+                  <div class="flex space-x-2 justify-center">
+                    <button @click="openAddQuantityModal(item)" class="p-2 text-blue-500 hover:text-blue-700">
+                      <CirclePlus class="w-7 h-7" />
+                    </button>
+
+                    <!-- Disburse Button -->
+                    <button @click="openDisburseModal(item)" class="p-2 text-gray-500 hover:text-gray-700">
+                      <CircleMinus class="w-7 h-7" />
+                    </button>
+                  </div>
+                </td>
                 </tr>            
               </tbody>
             </table>
@@ -79,6 +87,8 @@ import sideNav from '../components/sideNav.vue';
 import topNav from '../components/topNav.vue';
 import addQuantityModal from '../../../components/addQuantityModal.vue';
 import disburseModal from '../../../components/disburseModal.vue';
+import { CirclePlus, CircleMinus } from 'lucide-vue-next';
+
 
 export default {
   components: {
@@ -86,6 +96,8 @@ export default {
     topNav,
     addQuantityModal,
     disburseModal,
+    CirclePlus,
+    CircleMinus,
   },
   data() {
     return {
@@ -159,49 +171,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-/* Tailwind CSS already handles most styling */
-.table-container {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-right: 20px;
-}
-
-.table {
-  margin-top: 20px;
-  border-collapse: collapse;
-}
-
-.table th, .table td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.table thead {
-  background-color: #f8f9fa;
-  font-weight: bold;
-  color: #333;
-}
-
-.table tbody tr:hover {
-  background-color: #f1f1f1;
-}
-
-.table-responsive {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.table thead th {
-  text-align: center;
-}
-
-.table tbody td {
-  text-align: center;
-}
-</style>

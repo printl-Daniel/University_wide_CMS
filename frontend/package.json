@@ -28,6 +28,9 @@
     "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
     "vue-cli-plugin-vuetify": "~2.5.8",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4"

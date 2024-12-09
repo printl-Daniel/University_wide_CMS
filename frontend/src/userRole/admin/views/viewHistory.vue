@@ -23,7 +23,6 @@
                 <th scope="col">Quantity</th>
                 <th scope="col">Current Quantity</th>
                 <th scope="col">Responsible Person</th>
-                <th scope="col">Reason for Action</th>
               </tr>
             </thead>
             <tbody>
@@ -35,7 +34,6 @@
                 <td>{{ history.quantityChanged }}</td>
                 <td>{{ history.remainingQuantity }}</td>
                 <td>{{ history.responsiblePerson }}</td>
-                <td>{{ history.reasonForAction }}</td>
               </tr>
             </tbody>
           </table>

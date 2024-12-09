@@ -5,50 +5,51 @@
       <topNav />
     </div>
 
-    <div class="page-content d-flex">
+    <div class="page-content flex">
       <!-- Sidebar Navigation -->
-      <div class="sidebar">
+      <div class="sidebar w-64 bg-gray-800 text-white">
         <sideNav />
       </div>
 
       <!-- Main Content Area -->
-      <div class="content flex-grow-1">
-        <div class="container mt-4">
+      <div class="content flex-grow p-6">
+        <div class="container mx-auto mt-4">
 
-          <form @submit.prevent="submitForm">
-            <div class="row">
+          <form @submit.prevent="submitForm" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Item ID -->
-              <div class="col-md-6 mb-3">
-                <label for="itemId" class="form-label">Item ID</label>
+              <div class="mb-6">
+                <label for="itemId" class="block text-gray-700 font-semibold mb-2">Item ID</label>
                 <input
                   type="text"
                   id="itemId"
-                  class="form-control"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.itemId"
                   required
                 />
               </div>
 
               <!-- Item Name -->
-              <div class="col-md-6 mb-3">
-                <label for="itemName" class="form-label">Item Name</label>
+              <div class="mb-6">
+                <label for="itemName" class="block text-gray-700 font-semibold mb-2">Item Name</label>
                 <input
                   type="text"
                   id="itemName"
-                  class="form-control"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.itemName"
                   required
                 />
               </div>
             </div>
 
-            <div class="row">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Category -->
-              <div class="col-md-6 mb-3">
-                <label for="category" class="form-label">Category</label>
+              <div class="mb-6">
+                <label for="category" class="block text-gray-700 font-semibold mb-2">Category</label>
                 <select
                   id="category"
-                  class="form-select"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.category"
                   required
                 >
@@ -60,11 +61,11 @@
               </div>
 
               <!-- Unit of Measure -->
-              <div class="col-md-6 mb-3">
-                <label for="unitOfMeasure" class="form-label">Unit of Measure</label>
+              <div class="mb-6">
+                <label for="unitOfMeasure" class="block text-gray-700 font-semibold mb-2">Unit of Measure</label>
                 <select
                   id="unitOfMeasure"
-                  class="form-select"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.unitOfMeasure"
                   required
                 >
@@ -75,51 +76,52 @@
               </div>
             </div>
 
-            <div class="row">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Purchase Date -->
-              <div class="col-md-6 mb-3">
-                <label for="purchaseDate" class="form-label">Purchase Date</label>
+              <div class="mb-6">
+                <label for="purchaseDate" class="block text-gray-700 font-semibold mb-2">Purchase Date</label>
                 <input
                   type="date"
                   id="purchaseDate"
-                  class="form-control"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.purchaseDate"
                   required
                 />
               </div>
 
               <!-- Expiration Date -->
-              <div class="col-md-6 mb-3">
-                <label for="expirationDate" class="form-label">Expiration Date</label>
+              <div class="mb-6">
+                <label for="expirationDate" class="block text-gray-700 font-semibold mb-2">Expiration Date</label>
                 <input
                   type="date"
                   id="expirationDate"
-                  class="form-control"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.expirationDate"
                   required
                 />
               </div>
             </div>
 
-            <div class="row">
+            <div class="mb-6">
               <!-- Supplier -->
-              <div class="col-md-12 mb-3">
-                <label for="supplier" class="form-label">Supplier</label>
-                <input
-                  type="text"
-                  id="supplier"
-                  class="form-control"
-                  v-model="newItem.supplier"
-                  required
-                />
-              </div>
+              <label for="supplier" class="block text-gray-700 font-semibold mb-2">Supplier</label>
+              <input
+                type="text"
+                id="supplier"
+                class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                v-model="newItem.supplier"
+                required
+              />
             </div>
 
             <!-- Submit Button -->
-            <div class="row">
-              <div class="col-md-12 text-end">
-                <button type="submit" class="btn btn-primary">Add Product</button>
-              </div>
+            <div class="text-right mt-6">
+              <button
+                type="submit"
+                class="w-full py-4 px-6 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 transition-all"
+              >
+                Add Product
+              </button>
             </div>
           </form>
         </div>
@@ -171,7 +173,6 @@ export default {
           expirationDate: "",
           supplier: "",
           purchaseDate: "",
-
         };
       } catch (error) {
         console.error(
@@ -186,109 +187,5 @@ export default {
 </script>
 
 <style scoped>
-/* Main content styling */
-.page-content {
-  display: flex;
-}
-
-.content {
-  flex-grow: 1;
-  padding: 20px;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-h2 {
-  margin-bottom: 20px;
-  font-size: 2rem;
-  font-weight: bold;
-  color: #333;
-  text-align: center;
-}
-
-/* Form container with box shadow */
-form {
-  background-color: #ffffff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-}
-
-/* Styling for the label */
-label {
-  font-weight: bold;
-  margin-bottom: 8px;
-  display: block;
-  color: #333;
-}
-
-/* Form input and select fields */
-input,
-select {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Input focus effect */
-input:focus,
-select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-/* Submit button */
-button {
-  width: 100%;
-  background-color: #007bff;
-  color: white;
-  font-size: 1.1rem;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-top: 20px;
-}
-
-/* Button hover and focus effects */
-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-button:active {
-  transform: translateY(0);
-}
-
-/* Form grid layout for input fields */
-.row {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.col-md-6 {
-  flex: 1 0 48%;
-  margin-right: 2%;
-}
-
-.col-md-6:last-child {
-  margin-right: 0;
-}
-
-/* Add spacing for form elements */
-.mb-3 {
-  margin-bottom: 1.5rem;
-}
-.text-end {
-  text-align: right;
-}
+/* Optional: If you need to include additional custom styles, you can do so here */
 </style>

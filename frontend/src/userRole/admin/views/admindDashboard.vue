@@ -78,9 +78,17 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Low Stock Alerts</h5>
-                <ul>
-                  <li v-for="item in lowStockItems" :key="item.itemId">{{ item.itemName }} - {{ item.quantity }} remaining</li>
-                </ul>
+                <div v-if="notifications.length > 0">
+                  <h3>Low Stock Notifications</h3>
+                  <ul>
+                    <li v-for="notification in notifications" :key="notification._id">
+                      {{ notification.message }}
+                    </li>
+                  </ul>
+                </div>
+                <div v-else>
+                  <p>No low stock notifications</p>
+                </div>
               </div>
             </div>
           </div>
@@ -120,7 +128,8 @@ export default {
       totalQuantityDisbursed: 0, // Replace with actual data
       recentDisbursements: [], // Replace with API data
       lowStockItems: [], // Replace with low stock data
-      expiringItems: [] // Replace with expiring items data
+      expiringItems: [], // Replace with expiring items data
+      notifications: [] // Store notifications
     };
   },
   methods: {
@@ -134,8 +143,18 @@ export default {
         this.recentDisbursements = data.recentDisbursements;
         this.lowStockItems = data.lowStockItems;
         this.expiringItems = data.expiringItems;
+        this.fetchNotifications(); // Fetch notifications
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+      }
+    },
+    // Method to fetch notifications from the backend
+    async fetchNotifications() {
+      try {
+        const response = await axios.get("http://localhost:5000/api/inventory/notifications");
+        this.notifications = response.data.notifications;
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
       }
     }
   },

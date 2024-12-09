@@ -36,6 +36,11 @@ const inventorySchema = new mongoose.Schema({
     type: Date, 
     required: true 
   },
+  threshold: {  // Add threshold to monitor low stock
+    type: Number,
+    required: true,
+    default: 5  // You can set a default threshold value
+  },
 }, { timestamps: true });  // Optionally add timestamps to track createdAt and updatedAt
 
 const Inventory = mongoose.model('Inventory', inventorySchema);
