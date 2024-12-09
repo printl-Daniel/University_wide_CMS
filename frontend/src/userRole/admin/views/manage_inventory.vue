@@ -5,45 +5,45 @@
       <topNav />
     </div>
 
-    <div class="page-content d-flex">
+    <div class="page-content flex">
       <!-- Sidebar Navigation -->
-      <div class="sidebar">
+      <div class="sidebar w-1/5 bg-gray-800 text-white">
         <sideNav />
       </div>
 
       <!-- Main Content Area -->
-      <div class="content flex-grow-1">
+      <div class="content flex-grow p-4">
 
         <!-- Enhanced container for the table -->
-        <div class="table-container">
-          <div class="mt-2 table-responsive">
-            <table id="inventoryTable" class="table table-striped table-hover">
+        <div class="table-container bg-white border border-gray-300 rounded-lg shadow-md p-4">
+          <div class="table-responsive">
+            <table id="inventoryTable" class="table-auto w-full">
               <thead>
                 <tr>
-                  <th scope="col">Item ID</th>
-                  <th scope="col">Item Name</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Unit of Measure</th>
-                  <th scope="col">Expiration Date</th>
-                  <th scope="col">Supplier</th>
-                  <th scope="col">Purchase Date</th>
-                  <th scope="col">Action</th>
+                  <th class="px-4 py-2 border-b text-left">Item ID</th>
+                  <th class="px-4 py-2 border-b text-left">Item Name</th>
+                  <th class="px-4 py-2 border-b text-left">Category</th>
+                  <th class="px-4 py-2 border-b text-left">Quantity</th>
+                  <th class="px-4 py-2 border-b text-left">Unit of Measure</th>
+                  <th class="px-4 py-2 border-b text-left">Expiration Date</th>
+                  <th class="px-4 py-2 border-b text-left">Supplier</th>
+                  <th class="px-4 py-2 border-b text-left">Purchase Date</th>
+                  <th class="px-4 py-2 border-b text-left">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="item in inventoryItems" :key="item._id">
-                  <td>{{ item.itemId }}</td>
-                  <td>{{ item.itemName }}</td>
-                  <td>{{ item.category }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.unitOfMeasure }}</td>
-                  <td>{{ formatDate(item.expirationDate) }}</td>
-                  <td>{{ item.supplier }}</td>
-                  <td>{{ formatDate(item.purchaseDate) }}</td>
-                  <td>
-                    <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
-                    <button @click="openDisburseModal(item)" class="btn btn-secondary">Disburse</button>
+                  <td class="px-4 py-2 border-b">{{ item.itemId }}</td>
+                  <td class="px-4 py-2 border-b">{{ item.itemName }}</td>
+                  <td class="px-4 py-2 border-b">{{ item.category }}</td>
+                  <td class="px-4 py-2 border-b">{{ item.quantity }}</td>
+                  <td class="px-4 py-2 border-b">{{ item.unitOfMeasure }}</td>
+                  <td class="px-4 py-2 border-b">{{ formatDate(item.expirationDate) }}</td>
+                  <td class="px-4 py-2 border-b">{{ item.supplier }}</td>
+                  <td class="px-4 py-2 border-b">{{ formatDate(item.purchaseDate) }}</td>
+                  <td class="px-4 py-2 border-b text-center">
+                    <button @click="openAddQuantityModal(item)" class="btn btn-primary p-2 bg-blue-500 text-white rounded-lg">Add Quantity</button> 
+                    <button @click="openDisburseModal(item)" class="btn btn-secondary p-2 bg-gray-500 text-white rounded-lg">Disburse</button>
                   </td>
                 </tr>            
               </tbody>
@@ -51,6 +51,7 @@
           </div>
         </div>
 
+        <!-- Add Quantity Modal -->
         <addQuantityModal
           v-if="showAddQuantityModal"
           :selectedItem="selectedItemForQuantity"
@@ -59,6 +60,7 @@
           @quantity-added="handleQuantityAdded"
         />
 
+        <!-- Disburse Modal -->
         <disburseModal
           v-if="showDisburseModal"
           :selectedItem="selectedItemForDisburse"
@@ -75,28 +77,19 @@
 import axios from 'axios';
 import sideNav from '../components/sideNav.vue';
 import topNav from '../components/topNav.vue';
-import addModal from './addItemModal.vue';
-import editItemModal from '../../../components/updateItemModal.vue';
 import addQuantityModal from '../../../components/addQuantityModal.vue';
 import disburseModal from '../../../components/disburseModal.vue';
-
 
 export default {
   components: {
     sideNav,
     topNav,
-    addModal,
-    editItemModal,
     addQuantityModal,
     disburseModal,
   },
   data() {
     return {
-      showModal: false,
       inventoryItems: [],
-      showEditModal: false,
-      selectedItem: null,
-      searchQuery: '',
       showAddQuantityModal: false,
       selectedItemForQuantity: null,
       showDisburseModal: false,
@@ -127,11 +120,6 @@ export default {
         info: true,      // Show info like "Showing 1 to 10 of 100 entries"
       });
     },
-    filterInventory() {
-      // Implement search filtering logic here
-      // For now, we can use the built-in DataTables search functionality
-      $('#inventoryTable').DataTable().search(this.searchQuery).draw();
-    },
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US'); // formats date to MM/DD/YYYY
@@ -159,12 +147,12 @@ export default {
       this.showDisburseModal = true;
     },
     handleItemDisbursed(updatedItem) {
-    const index = this.inventoryItems.findIndex((item) => item._id === updatedItem._id);
-    if (index !== -1) {
-      this.inventoryItems[index] = updatedItem;
-    }
-    this.refreshDataTable(); // Refresh DataTable
-  },
+      const index = this.inventoryItems.findIndex((item) => item._id === updatedItem._id);
+      if (index !== -1) {
+        this.inventoryItems[index] = updatedItem;
+      }
+      this.refreshDataTable(); // Refresh DataTable
+    },
   },
   mounted() {
     this.displayItems();
@@ -173,7 +161,7 @@ export default {
 </script>
 
 <style scoped>
-/* Add a container around the table with border and shadow */
+/* Tailwind CSS already handles most styling */
 .table-container {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -194,20 +182,16 @@ export default {
   border-bottom: 1px solid #ddd;
 }
 
-/* Table header styling */
 .table thead {
   background-color: #f8f9fa;
   font-weight: bold;
   color: #333;
 }
 
-/* Hover effect for rows */
 .table tbody tr:hover {
   background-color: #f1f1f1;
 }
 
-
-/* Responsive Table */
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;

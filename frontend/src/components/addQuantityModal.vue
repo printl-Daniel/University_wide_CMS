@@ -1,156 +1,161 @@
 <template>
-  <div class="modal" v-if="showModal">
-    <div class="modal-content">
-      <h4>Add Quantity to {{ selectedItem.itemName }}</h4> <!-- Show selected item name -->
-      
-      <!-- Display the item details -->
-      <div class="item-details">
-        <p><strong>Item ID:</strong> {{ selectedItem.itemId }}</p>
-        <p><strong>Current Quantity:</strong> {{ selectedItem.quantity }}</p>
-        <p><strong>Supplier:</strong> {{ selectedItem.supplier }}</p>
+  <TransitionRoot appear :show="showModal" as="template">
+    <Dialog as="div" @close="closeModal" class="relative z-10">
+      <TransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black bg-opacity-25" />
+      </TransitionChild>
+
+      <div class="fixed inset-0 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center">
+          <TransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
+                Add Quantity to {{ selectedItem.itemName }}
+              </DialogTitle>
+              <div class="mt-2">
+                <div class="text-sm text-gray-500">
+                  <p><strong>Item ID:</strong> {{ selectedItem.itemId }}</p>
+                  <p><strong>Current Quantity:</strong> {{ selectedItem.quantity }}</p>
+                  <p><strong>Supplier:</strong> {{ selectedItem.supplier }}</p>
+                </div>
+              </div>
+
+              <form @submit.prevent="addQuantity" class="mt-4">
+                <div class="mb-4">
+                  <label for="quantityToAdd" class="block text-sm font-medium text-gray-700">Quantity to Add:</label>
+                  <div class="mt-1 relative rounded-md shadow-sm">
+                    <input
+                      type="number"
+                      id="quantityToAdd"
+                      v-model="quantityToAdd"
+                      min="1"
+                      required
+                      class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter quantity"
+                    />
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <PlusCircleIcon class="h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label for="responsiblePerson" class="block text-sm font-medium text-gray-700">Responsible Person:</label>
+                  <div class="mt-1 relative rounded-md shadow-sm">
+                    <input
+                      type="text"
+                      id="responsiblePerson"
+                      v-model="responsiblePerson"
+                      required
+                      class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter name"
+                    />
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <UserIcon class="h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+
+                <TransitionRoot appear :show="!!message" as="template">
+                  <div :class="[
+                    'mt-4 p-4 rounded-md',
+                    isSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+                  ]">
+                    <p class="text-sm">{{ message }}</p>
+                  </div>
+                </TransitionRoot>
+
+                <div class="mt-6 flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                    @click="closeModal"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    :disabled="isSubmitting"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                  >
+                    {{ isSubmitting ? 'Adding...' : 'Add Quantity' }}
+                  </button>
+                </div>
+              </form>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
       </div>
-
-      <!-- Form to add quantity -->
-      <form @submit.prevent="addQuantity">
-        <div>
-          <label for="quantityToAdd">Quantity to Add:</label>
-          <input
-            type="number"
-            id="quantityToAdd"
-            v-model="quantityToAdd"
-            min="1"
-            required
-          />
-        </div>
-        <div>
-          <label for="responsiblePerson">Responsible Person:</label>
-          <input
-            type="text"
-            id="responsiblePerson"
-            v-model="responsiblePerson"
-            required
-          />
-        </div>
-
-        <!-- Custom Alert Message -->
-        <div v-if="message" :class="{'alert-success': isSuccess, 'alert-error': !isSuccess}" class="alert">
-          {{ message }}
-        </div>
-
-        <!-- Modal Footer with Buttons -->
-        <div class="modal-footer">
-          <button type="submit" :disabled="isSubmitting" class="btn btn-primary">
-            Add Quantity
-          </button>
-          <button type="button" @click="closeModal" class="btn btn-secondary">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>  
+    </Dialog>
+  </TransitionRoot>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { PlusCircleIcon, UserIcon } from 'lucide-vue-next';
 
-export default {
-  props: {
-    selectedItem: Object,
-    showModal: Boolean,
-  },
-  data() {
-    return {
-      quantityToAdd: 0,
-      responsiblePerson: "",
-      isSubmitting: false,
-      message: "",   // Used to show success or error messages
-      isSuccess: true,  // Flag to determine success or failure
-    };
-  },
-  methods: {
-    closeModal() {
-      this.$emit("close");
-    },
-    async addQuantity() {
-      if (this.isSubmitting) return;
+const props = defineProps({
+  selectedItem: Object,
+  showModal: Boolean,
+});
 
-      this.isSubmitting = true;
-      this.message = "";  // Reset previous message before trying
+const emit = defineEmits(['close', 'quantity-added']);
 
-      try {
-        const response = await axios.put(
-          `http://localhost:5000/api/inventory/add-quantity/${this.selectedItem.itemId}`, 
-          {
-            quantityToAdd: this.quantityToAdd,
-            responsiblePerson: this.responsiblePerson,
-          }
-        );
+const quantityToAdd = ref(0);
+const responsiblePerson = ref('');
+const isSubmitting = ref(false);
+const message = ref('');
+const isSuccess = ref(true);
 
-        this.$emit("quantity-added", response.data.item);
-        this.closeModal();
+const closeModal = () => {
+  emit('close');
+};
 
-        // Set success message
-        this.message = "Quantity added successfully!";
-        this.isSuccess = true;
-      } catch (error) {
-        console.error("Error adding quantity:", error.response ? error.response.data : error.message);
+const addQuantity = async () => {
+  if (isSubmitting.value) return;
 
-        // Set error message
-        this.message = error.response ? error.response.data.message : "Unexpected error occurred.";
-        this.isSuccess = false;
-      } finally {
-        this.isSubmitting = false;
+  isSubmitting.value = true;
+  message.value = '';
+
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/inventory/add-quantity/${props.selectedItem.itemId}`,
+      {
+        quantityToAdd: quantityToAdd.value,
+        responsiblePerson: responsiblePerson.value,
       }
-    }
-  },
+    );
+
+    emit('quantity-added', response.data.item);
+    message.value = 'Quantity added successfully!';
+    isSuccess.value = true;
+
+    setTimeout(() => {
+      closeModal();
+    }, 2000);
+  } catch (error) {
+    console.error('Error adding quantity:', error.response ? error.response.data : error.message);
+    message.value = error.response ? error.response.data.message : 'Unexpected error occurred.';
+    isSuccess.value = false;
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
-
-<style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
-  width: 100%;
-}
-
-.item-details {
-  margin-bottom: 20px;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-.alert {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.alert-success {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.alert-error {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-</style>

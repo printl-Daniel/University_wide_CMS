@@ -1,184 +1,197 @@
 <template>
-  <div class="modal" v-if="showModal">
-    <div class="modal-content">
-      <h4>Disburse Item: {{ selectedItem.itemName }}</h4>
+  <TransitionRoot appear :show="showModal" as="template">
+    <Dialog as="div" @close="closeModal" class="relative z-10">
+      <TransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black bg-opacity-25" />
+      </TransitionChild>
 
-      <!-- Display the item details -->
-      <div class="item-details">
-        <p><strong>Item ID:</strong> {{ selectedItem.itemId }}</p>
-        <p><strong>Current Quantity:</strong> {{ selectedItem.quantity }}</p>
-        <p><strong>Category:</strong> {{ selectedItem.category }}</p>
+      <div class="fixed inset-0 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center">
+          <TransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
+                Disburse Item: {{ selectedItem.itemName }}
+              </DialogTitle>
+              <div class="mt-2">
+                <div class="text-sm text-gray-500">
+                  <p><strong>Item ID:</strong> {{ selectedItem.itemId }}</p>
+                  <p><strong>Current Quantity:</strong> {{ selectedItem.quantity }}</p>
+                  <p><strong>Category:</strong> {{ selectedItem.category }}</p>
+                </div>
+              </div>
+
+              <form @submit.prevent="disburseItem" class="mt-4">
+                <div class="mb-4">
+                  <label for="quantityToDisburse" class="block text-sm font-medium text-gray-700">Quantity to Disburse:</label>
+                  <div class="mt-1 relative rounded-md shadow-sm">
+                    <input
+                      type="number"
+                      id="quantityToDisburse"
+                      v-model="quantityToDisburse"
+                      :max="selectedItem.quantity"
+                      min="1"
+                      required
+                      class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter quantity"
+                    />
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <MinusCircleIcon class="h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label for="patientName" class="block text-sm font-medium text-gray-700">Patient Name:</label>
+                  <div class="mt-1 relative rounded-md shadow-sm">
+                    <input
+                      type="text"
+                      id="patientName"
+                      v-model="patientName"
+                      required
+                      class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter patient name"
+                    />
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <UserIcon class="h-5 w-5 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label for="college" class="block text-sm font-medium text-gray-700">College:</label>
+                  <select
+                    id="college"
+                    v-model="college"
+                    required
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                  >
+                    <option value="" disabled>Select College</option>
+                    <option value="BSIT">BSIT</option>
+                    <option value="CBM">CBM</option>
+                    <option value="EDUC">EDUC</option>
+                    <option value="BTVLED">BTVLED</option>
+                    <option value="CAS">CAS</option>
+                    <option value="CCJE">CCJE</option>
+                  </select>
+                </div>
+                <div class="mb-4">
+                  <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Disbursement:</label>
+                  <div class="mt-1">
+                    <textarea
+                      id="reason"
+                      v-model="reason"
+                      rows="3"
+                      required
+                      class="shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+                      placeholder="Enter reason"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <TransitionRoot appear :show="!!message" as="template">
+                  <div :class="[
+                    'mt-4 p-4 rounded-md',
+                    isSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+                  ]">
+                    <p class="text-sm">{{ message }}</p>
+                  </div>
+                </TransitionRoot>
+
+                <div class="mt-6 flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                    @click="closeModal"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    :disabled="isSubmitting"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                  >
+                    {{ isSubmitting ? 'Disbursing...' : 'Disburse Item' }}
+                  </button>
+                </div>
+              </form>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
       </div>
-
-      <!-- Form to disburse item -->
-      <form @submit.prevent="disburseItem">
-        <div>
-          <label for="quantityToDisburse">Quantity to Disburse:</label>
-          <input
-            type="number"
-            id="quantityToDisburse"
-            v-model="quantityToDisburse"
-            :max="selectedItem.quantity"
-            min="1"
-            required
-          />
-        </div>
-        <div>
-          <label for="patientName">Patient Name:</label>
-          <input
-            type="text"
-            id="patientName"
-            v-model="patientName"
-            required
-          />
-        </div>
-        <div>
-          <label for="college">College:</label>
-          <select id="college" v-model="college" required>
-            <option value="" disabled>Select College</option>
-            <option value="BSIT">BSIT</option>
-            <option value="CBM">CBM</option>
-            <option value="EDUC">EDUC</option>
-            <option value="BTVLED">BTVLED</option>
-            <option value="CAS">CAS</option>
-            <option value="CCJE">CCJE</option>
-          </select>
-        </div>
-        <div>
-          <label for="reason">Reason for Disbursement:</label>
-          <textarea
-            id="reason"
-            v-model="reason"
-            rows="3"
-            required
-          ></textarea>
-        </div>
-
-        <!-- Custom Alert Message -->
-        <div v-if="message" :class="{'alert-success': isSuccess, 'alert-error': !isSuccess}" class="alert">
-          {{ message }}
-        </div>
-
-        <!-- Modal Footer with Buttons -->
-        <div class="modal-footer">
-          <button type="submit" :disabled="isSubmitting" class="btn btn-primary">
-            Disburse Item
-          </button>
-          <button type="button" @click="closeModal" class="btn btn-secondary">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+    </Dialog>
+  </TransitionRoot>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { MinusCircleIcon, UserIcon } from 'lucide-vue-next';
 
-export default {
-  props: {
-    selectedItem: Object,
-    showModal: Boolean,
-  },
-  data() {
-    return {
-      quantityToDisburse: 0,
-      patientName: "",
-      college: "",  // College selected from dropdown
-      reason: "",
-      isSubmitting: false,
-      message: "",
-      isSuccess: true,
-    };
-  },
-  methods: {
-    closeModal() {
-      this.$emit("close");
-    },
-    async disburseItem() {
-      if (this.isSubmitting) return;
+const props = defineProps({
+  selectedItem: Object,
+  showModal: Boolean,
+});
 
-      this.isSubmitting = true;
-      this.message = ""; // Reset previous message
+const emit = defineEmits(['close', 'item-disbursed']);
 
-      try {
-        const response = await axios.put(
-          `http://localhost:5000/api/inventory/disburse/${this.selectedItem.itemId}`, 
-          {
-            quantityToDisburse: this.quantityToDisburse,
-            patientName: this.patientName,
-            reason: this.reason,
-            college: this.college, // No need to send date, backend handles it
-          }
-        );
+const quantityToDisburse = ref(0);
+const patientName = ref('');
+const college = ref('');
+const reason = ref('');
+const isSubmitting = ref(false);
+const message = ref('');
+const isSuccess = ref(true);
 
-        // Emit the updated item data to parent component
-        this.$emit("item-disbursed", response.data.item); 
+const closeModal = () => {
+  emit('close');
+};
 
-        this.closeModal();
+const disburseItem = async () => {
+  if (isSubmitting.value) return;
 
-        // Success message
-        this.message = "Item successfully disbursed!";
-        this.isSuccess = true;
-      } catch (error) {
-        console.error("Error disbursing item:", error.response ? error.response.data : error.message);
+  isSubmitting.value = true;
+  message.value = '';
 
-        // Error message
-        this.message = error.response ? error.response.data.message : "Unexpected error occurred.";
-        this.isSuccess = false;
-      } finally {
-        this.isSubmitting = false;
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/inventory/disburse/${props.selectedItem.itemId}`,
+      {
+        quantityToDisburse: quantityToDisburse.value,
+        patientName: patientName.value,
+        reason: reason.value,
+        college: college.value,
       }
-    },
-  },
+    );
+
+    emit('item-disbursed', response.data.item);
+    message.value = 'Item successfully disbursed!';
+    isSuccess.value = true;
+
+    setTimeout(() => {
+      closeModal();
+    }, 2000);
+  } catch (error) {
+    console.error('Error disbursing item:', error.response ? error.response.data : error.message);
+    message.value = error.response ? error.response.data.message : 'Unexpected error occurred.';
+    isSuccess.value = false;
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 
-<style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
-  width: 100%;
-}
-
-.item-details {
-  margin-bottom: 20px;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-.alert {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.alert-success {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.alert-error {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-</style>
