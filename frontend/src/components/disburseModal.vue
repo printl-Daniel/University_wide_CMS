@@ -1,35 +1,57 @@
 <template>
   <div class="modal" v-if="showModal">
     <div class="modal-content">
-      <h4>Add Quantity to {{ selectedItem.itemName }}</h4> <!-- Show selected item name -->
-      
+      <h4>Disburse Item: {{ selectedItem.itemName }}</h4>
+
       <!-- Display the item details -->
       <div class="item-details">
         <p><strong>Item ID:</strong> {{ selectedItem.itemId }}</p>
         <p><strong>Current Quantity:</strong> {{ selectedItem.quantity }}</p>
-        <p><strong>Supplier:</strong> {{ selectedItem.supplier }}</p>
+        <p><strong>Category:</strong> {{ selectedItem.category }}</p>
       </div>
 
-      <!-- Form to add quantity -->
-      <form @submit.prevent="addQuantity">
+      <!-- Form to disburse item -->
+      <form @submit.prevent="disburseItem">
         <div>
-          <label for="quantityToAdd">Quantity to Add:</label>
+          <label for="quantityToDisburse">Quantity to Disburse:</label>
           <input
             type="number"
-            id="quantityToAdd"
-            v-model="quantityToAdd"
+            id="quantityToDisburse"
+            v-model="quantityToDisburse"
+            :max="selectedItem.quantity"
             min="1"
             required
           />
         </div>
         <div>
-          <label for="responsiblePerson">Responsible Person:</label>
+          <label for="patientName">Patient Name:</label>
           <input
             type="text"
-            id="responsiblePerson"
-            v-model="responsiblePerson"
+            id="patientName"
+            v-model="patientName"
             required
           />
+        </div>
+        <div>
+          <label for="college">College:</label>
+          <select id="college" v-model="college" required>
+            <option value="" disabled>Select College</option>
+            <option value="BSIT">BSIT</option>
+            <option value="CBM">CBM</option>
+            <option value="EDUC">EDUC</option>
+            <option value="BTVLED">BTVLED</option>
+            <option value="CAS">CAS</option>
+            <option value="CCJE">CCJE</option>
+          </select>
+        </div>
+        <div>
+          <label for="reason">Reason for Disbursement:</label>
+          <textarea
+            id="reason"
+            v-model="reason"
+            rows="3"
+            required
+          ></textarea>
         </div>
 
         <!-- Custom Alert Message -->
@@ -40,7 +62,7 @@
         <!-- Modal Footer with Buttons -->
         <div class="modal-footer">
           <button type="submit" :disabled="isSubmitting" class="btn btn-primary">
-            Add Quantity
+            Disburse Item
           </button>
           <button type="button" @click="closeModal" class="btn btn-secondary">
             Cancel
@@ -48,7 +70,7 @@
         </div>
       </form>
     </div>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -61,48 +83,54 @@ export default {
   },
   data() {
     return {
-      quantityToAdd: 0,
-      responsiblePerson: "",
+      quantityToDisburse: 0,
+      patientName: "",
+      college: "",  // College selected from dropdown
+      reason: "",
       isSubmitting: false,
-      message: "",   // Used to show success or error messages
-      isSuccess: true,  // Flag to determine success or failure
+      message: "",
+      isSuccess: true,
     };
   },
   methods: {
     closeModal() {
       this.$emit("close");
     },
-    async addQuantity() {
+    async disburseItem() {
       if (this.isSubmitting) return;
 
       this.isSubmitting = true;
-      this.message = "";  // Reset previous message before trying
+      this.message = ""; // Reset previous message
 
       try {
         const response = await axios.put(
-          `http://localhost:5000/api/inventory/add-quantity/${this.selectedItem.itemId}`, 
+          `http://localhost:5000/api/inventory/disburse/${this.selectedItem.itemId}`, 
           {
-            quantityToAdd: this.quantityToAdd,
-            responsiblePerson: this.responsiblePerson,
+            quantityToDisburse: this.quantityToDisburse,
+            patientName: this.patientName,
+            reason: this.reason,
+            college: this.college, // No need to send date, backend handles it
           }
         );
 
-        this.$emit("quantity-added", response.data.item);
+        // Emit the updated item data to parent component
+        this.$emit("item-disbursed", response.data.item); 
+
         this.closeModal();
 
-        // Set success message
-        this.message = "Quantity added successfully!";
+        // Success message
+        this.message = "Item successfully disbursed!";
         this.isSuccess = true;
       } catch (error) {
-        console.error("Error adding quantity:", error.response ? error.response.data : error.message);
+        console.error("Error disbursing item:", error.response ? error.response.data : error.message);
 
-        // Set error message
+        // Error message
         this.message = error.response ? error.response.data.message : "Unexpected error occurred.";
         this.isSuccess = false;
       } finally {
         this.isSubmitting = false;
       }
-    }
+    },
   },
 };
 </script>

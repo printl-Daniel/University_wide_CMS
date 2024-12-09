@@ -18,8 +18,8 @@ import enrollment from "../userRole/admin/views/studentEnrollment.vue";
 import history from "../userRole/admin/views/viewHistory.vue";
 import audit from "../userRole/admin/views/viewAudit.vue";
 import addItemModal from "@/userRole/admin/views/addItemModal.vue";
-import DisbursedItem from "../userRole/admin/views/DisburseItem.vue";
 import Feedback from "../userRole/admin/views/feedback.vue";
+import disburse from "../userRole/admin/views/viewDisbursed.vue";
 
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
@@ -84,11 +84,6 @@ const routes = [
 
   //admin-router
   {
-    path: "/admin/DisburseItem",
-    name: "DisbursedItem",
-    component: DisbursedItem,
-  },
-  {
     path: "/admin/dashboard",
     name: "adminDashboard",
     component: adminDashboard,
@@ -133,6 +128,12 @@ const routes = [
     name: "feedback",
     component: Feedback,
   },
+  {
+    path: "/admin/view-disbursed",
+    name: "disburse",
+    component: disburse,
+  },
+  
   //patient
   {
     path: "/patient/inbox",

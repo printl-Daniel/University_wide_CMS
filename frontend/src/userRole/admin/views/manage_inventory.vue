@@ -43,6 +43,7 @@
                   <td>{{ formatDate(item.purchaseDate) }}</td>
                   <td>
                     <button @click="openAddQuantityModal(item)" class="btn btn-primary">Add Quantity</button> 
+                    <button @click="openDisburseModal(item)" class="btn btn-secondary">Disburse</button>
                   </td>
                 </tr>            
               </tbody>
@@ -57,6 +58,14 @@
           @close="showAddQuantityModal = false"
           @quantity-added="handleQuantityAdded"
         />
+
+        <disburseModal
+          v-if="showDisburseModal"
+          :selectedItem="selectedItemForDisburse"
+          :showModal="showDisburseModal"
+          @close="showDisburseModal = false"
+          @item-disbursed="handleItemDisbursed"
+        />
       </div>
     </div>
   </div>
@@ -69,6 +78,8 @@ import topNav from '../components/topNav.vue';
 import addModal from './addItemModal.vue';
 import editItemModal from '../../../components/updateItemModal.vue';
 import addQuantityModal from '../../../components/addQuantityModal.vue';
+import disburseModal from '../../../components/disburseModal.vue';
+
 
 export default {
   components: {
@@ -77,6 +88,7 @@ export default {
     addModal,
     editItemModal,
     addQuantityModal,
+    disburseModal,
   },
   data() {
     return {
@@ -87,6 +99,8 @@ export default {
       searchQuery: '',
       showAddQuantityModal: false,
       selectedItemForQuantity: null,
+      showDisburseModal: false,
+      selectedItemForDisburse: null,
     };
   },
   methods: {
@@ -140,6 +154,17 @@ export default {
         this.initializeDataTable();
       });
     },
+    openDisburseModal(item) {
+      this.selectedItemForDisburse = item;
+      this.showDisburseModal = true;
+    },
+    handleItemDisbursed(updatedItem) {
+    const index = this.inventoryItems.findIndex((item) => item._id === updatedItem._id);
+    if (index !== -1) {
+      this.inventoryItems[index] = updatedItem;
+    }
+    this.refreshDataTable(); // Refresh DataTable
+  },
   },
   mounted() {
     this.displayItems();

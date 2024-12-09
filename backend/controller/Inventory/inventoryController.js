@@ -1,7 +1,7 @@
 const Inventory = require("../../models/Inventory/inventory.js");
 const History = require("../../models/Inventory/history.js");
 const Audit = require("../../models/Inventory/audit.js");
-const ClinicVisitLog = require("../../models/Clinic/clinicVisitLog.js");
+const Disburse = require("../../models/Inventory/disbursement.js")
 const mongoose = require("mongoose");
 
 // Add Item to Inventory
@@ -70,143 +70,7 @@ exports.addItemInventory = async (req, res) => {
   }
 };
 
-// Log Clinic Visit
-exports.logClinicVisit = async (req, res) => {
-  const {
-    controlNo,
-    nameOfPatient,
-    course,
-    year,
-    grade,
-    enrolee,
-    transferee,
-    visitor,
-    chiefComplaint,
-    treatmentOrMedication,
-    remarks,
-  } = req.body;
 
-  if (
-    !controlNo ||
-    !nameOfPatient ||
-    !chiefComplaint ||
-    !treatmentOrMedication
-  ) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
-  try {
-    const newVisitLog = new ClinicVisitLog({
-      controlNo,
-      nameOfPatient,
-      internal: { course, year, grade },
-      external: {
-        enrolee: enrolee || false,
-        transferee: transferee || false,
-        visitor: visitor || false,
-      },
-      chiefComplaint,
-      treatmentOrMedication,
-      remarks,
-    });
-
-    await newVisitLog.save();
-
-    res.status(201).json({
-      message: "Clinic visit logged successfully!",
-      visitLog: newVisitLog,
-    });
-  } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Error logging clinic visit", error: error.message });
-  }
-};
-
-// Get All Clinic Visit Logs
-exports.getClinicVisitLogs = async (req, res) => {
-  try {
-    const visitLogs = await ClinicVisitLog.find().sort({ date: -1 });
-    res.status(200).json({
-      success: true,
-      data: visitLogs,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch clinic visit logs",
-    });
-  }
-};
-
-// // Log Clinic Visit
-// exports.logClinicVisit = async (req, res) => {
-//   const {
-//     controlNo,
-//     nameOfPatient,
-//     course,
-//     year,
-//     grade,
-//     enrolee,
-//     transferee,
-//     visitor,
-//     chiefComplaint,
-//     treatmentOrMedication,
-//     remarks,
-//   } = req.body;
-
-//   if (
-//     !controlNo ||
-//     !nameOfPatient ||
-//     !chiefComplaint ||
-//     !treatmentOrMedication
-//   ) {
-//     return res.status(400).json({ message: "Missing required fields" });
-//   }
-
-//   try {
-//     // const newVisitLog = new ClinicVisitLog({
-//     //   controlNo,
-//     //   nameOfPatient,
-//     //   internal: { course, year, grade },
-//     //   external: {
-//     //     enrolee: enrolee || false,
-//     //     transferee: transferee || false,
-//     //     visitor: visitor || false,
-//     //   },
-//     //   chiefComplaint,
-//     //   treatmentOrMedication,
-//     //   remarks,
-//     // });
-
-//     await newVisitLog.save();
-
-//     res.status(201).json({
-//       message: "Clinic visit logged successfully!",
-//       visitLog: newVisitLog,
-//     });
-//   } catch (error) {
-//     res
-//       .status(400)
-//       .json({ message: "Error logging clinic visit", error: error.message });
-//   }
-// };
-
-// // Get All Clinic Visit Logs
-// exports.getClinicVisitLogs = async (req, res) => {
-//   try {
-//     const visitLogs = await ClinicVisitLog.find().sort({ date: -1 });
-//     res.status(200).json({
-//       success: true,
-//       data: visitLogs,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to fetch clinic visit logs",
-//     });
-//   }
-// };
 
 // Add Quantity to an Existing Item
 exports.addQuantityToItem = async (req, res) => {
@@ -268,5 +132,96 @@ exports.getHistory = async (req, res) => {
       success: false,
       message: "Failed to fetch history entries",
     });
+  }
+};
+
+
+exports.getInventoryItems = async (req, res) => {
+  try {
+    const inventoryItems = await Inventory.find(); // Retrieve all items from DB
+    res.status(200).json({
+      success: true,
+      data: inventoryItems,
+    });
+  } catch (error) {
+    console.error("Error fetching items:", error);
+    res.status(500).json({});
+  }
+};
+
+
+exports.disburseItem = async (req, res) => {
+  const { itemId } = req.params; // Identify the item in inventory
+  const { quantityToDisburse, patientName, reason, college} = req.body;
+
+  if (!quantityToDisburse || !patientName || !reason || !college) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    // Fetch the inventory item
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found in inventory" });
+    }
+
+    // Check if sufficient quantity is available
+    if (item.quantity < quantityToDisburse) {
+      return res.status(400).json({ message: "Insufficient stock for disbursement" });
+    }
+
+    // Deduct the quantity
+    item.quantity -= quantityToDisburse;
+    const updatedItem = await item.save();
+
+    // Record the disbursement
+    const disbursement = new Disburse({
+      itemName: item.itemName,
+      quantity: quantityToDisburse,
+      patientName,
+      reason,
+      college,
+    });
+
+    await disbursement.save();
+
+    // Log the action in history
+    const historyEntry = new History({
+      transactionId: new mongoose.Types.ObjectId(),
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: "Disbursed",
+      quantityChanged: -quantityToDisburse,
+      remainingQuantity: item.quantity,
+      responsiblePerson: "Admin",
+      reasonForAction: `Disbursed to ${patientName}`,
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: "Disbursement recorded successfully!",
+      disbursement,
+      item: updatedItem,
+      history: historyEntry,
+    });
+  } catch (error) {
+    console.error("Error disbursing item:", error);
+    res.status(500).json({
+      message: "Error disbursing item",
+      error: error.message,
+    });
+  }
+};
+
+exports.getDisbursements = async (req, res) => {
+  try {
+    const disbursements = await Disburse.find().sort({ date: -1 }); // Sort by most recent
+    res.status(200).json(disbursements);
+  } catch (error) {
+    console.error("Error fetching disbursements:", error);
+    res.status(500).json({ message: "Error fetching disbursements", error: error.message });
   }
 };

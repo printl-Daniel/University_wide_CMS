@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Admin Navbar (top navbar) -->
+    <!-- Admin Navbar (Top Navbar) -->
     <div class="header">
       <topNav />
     </div>
@@ -12,56 +12,99 @@
 
       <div class="content flex-grow-1">
         <h2>Dashboard</h2>
+
+        <!-- Overview Section -->
         <div class="row g-4 mt-3">
-          <!-- Inventory Card -->
+          <!-- Total Disbursements Card -->
           <div class="col-md-4">
             <div class="card text-center">
               <div class="card-body">
-                <h3 class="card-title">Inventory</h3>
-                <p class="card-text">100 Items Available</p>
+                <h3 class="card-title">Total Disbursements</h3>
+                <p class="card-text">{{ totalDisbursements }} Disbursements</p>
               </div>
             </div>
           </div>
 
-          <!-- Active Users Card -->
+          <!-- Current Inventory Card -->
           <div class="col-md-4">
             <div class="card text-center">
               <div class="card-body">
-                <h3 class="card-title">Active Users</h3>
-                <p class="card-text">100 Registered</p>
+                <h3 class="card-title">Current Inventory</h3>
+                <p class="card-text">{{ currentInventory }} Items Available</p>
               </div>
             </div>
           </div>
 
-          <!-- Feedback Card -->
+          <!-- Total Quantity Disbursed Card -->
           <div class="col-md-4">
             <div class="card text-center">
               <div class="card-body">
-                <h3 class="card-title">Feedbacks</h3>
-                <p class="card-text">120 Feedbacks Received</p>
+                <h3 class="card-title">Total Quantity Disbursed</h3>
+                <p class="card-text">{{ totalQuantityDisbursed }} Items</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Sentiment Analysis Chart -->
-        <div class="row g-4 mt-4">
-          <div class="col-md-12">
+        <!-- Recent Activity Section -->
+        <h3>Recent Activity</h3>
+        <table id="recentDisbursements" class="table table-striped">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Quantity</th>
+              <th>Patient Name</th>
+              <th>Reason</th>
+              <th>College</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="disbursement in recentDisbursements" :key="disbursement._id">
+              <td>{{ disbursement.itemName }}</td>
+              <td>{{ disbursement.quantity }}</td>
+              <td>{{ disbursement.patientName }}</td>
+              <td>{{ disbursement.reason }}</td>
+              <td>{{ disbursement.college }}</td>
+              <td>{{ new Date(disbursement.date).toLocaleString() }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Notifications Section -->
+        <div class="row mt-4">
+          <!-- Low Stock Alerts -->
+          <div class="col-md-6">
             <div class="card">
               <div class="card-body">
-                <h3 class="card-title text-center">Feedback Sentiment Over Time</h3>
-                <canvas id="feedbackSentimentChart" width="400" height="200"></canvas>
+                <h5 class="card-title">Low Stock Alerts</h5>
+                <ul>
+                  <li v-for="item in lowStockItems" :key="item.itemId">{{ item.itemName }} - {{ item.quantity }} remaining</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expiration Alerts -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Expiration Alerts</h5>
+                <ul>
+                  <li v-for="item in expiringItems" :key="item.itemId">{{ item.itemName }} - Expiring on {{ new Date(item.expirationDate).toLocaleDateString() }}</li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Chart from 'chart.js/auto';
+import axios from "axios";
 import sideNav from '../components/sideNav.vue';
 import topNav from '../components/topNav.vue';
 
@@ -70,68 +113,52 @@ export default {
     sideNav,
     topNav
   },
-  mounted() {
-    // Initialize the sentiment analysis chart using Chart.js
-    const ctx = document.getElementById('feedbackSentimentChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar', // Change chart type to 'bar'
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May'], // X-axis labels (Months)
-        datasets: [
-          {
-            label: 'Positive Sentiment',
-            data: [80, 85, 75, 90, 88], // Data for positive sentiment percentages
-            backgroundColor: 'rgba(75, 192, 192, 0.6)', // Bar color for positive feedback
-            borderColor: 'rgba(75, 192, 192, 1)', // Border color for positive feedback
-            borderWidth: 1
-          },
-          {
-            label: 'Neutral Sentiment',
-            data: [50, 40, 37, 50, 45], // Data for neutral sentiment percentages
-            backgroundColor: 'rgba(255, 159, 64, 0.6)', // Bar color for neutral feedback
-            borderColor: 'rgba(255, 159, 64, 1)', // Border color for neutral feedback
-            borderWidth: 1
-          },
-          {
-            label: 'Negative Sentiment',
-            data: [10, 7, 13, 4, 5], // Data for negative sentiment percentages
-            backgroundColor: 'rgba(255, 99, 132, 0.6)', // Bar color for negative feedback
-            borderColor: 'rgba(255, 99, 132, 1)', // Border color for negative feedback
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true, // Ensure the Y-axis starts from zero
-            title: {
-              display: true,
-              text: 'Sentiment Percentage'
-            }
-          },
-          x: {
-            title: {
-              display: true,
-              text: 'Month'
-            }
-          }
-        }
+  data() {
+    return {
+      totalDisbursements: 0, // Replace with actual data
+      currentInventory: 100, // Replace with actual data
+      totalQuantityDisbursed: 0, // Replace with actual data
+      recentDisbursements: [], // Replace with API data
+      lowStockItems: [], // Replace with low stock data
+      expiringItems: [] // Replace with expiring items data
+    };
+  },
+  methods: {
+    async fetchDashboardData() {
+      try {
+        const response = await axios.get("http://localhost:5000/api/dashboard");
+        const data = response.data;
+        this.totalDisbursements = data.totalDisbursements;
+        this.currentInventory = data.currentInventory;
+        this.totalQuantityDisbursed = data.totalQuantityDisbursed;
+        this.recentDisbursements = data.recentDisbursements;
+        this.lowStockItems = data.lowStockItems;
+        this.expiringItems = data.expiringItems;
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
       }
-    });
+    }
+  },
+  mounted() {
+    this.fetchDashboardData();
   }
-}
+};
 </script>
 
 <style scoped>
+.dashboard {
+  padding: 20px;
+}
 
 .card {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .card-body {
-  padding: 15px;
+  padding: 20px;
 }
 
 .card-title {
@@ -141,6 +168,22 @@ export default {
 
 .card-text {
   font-size: 1.2rem;
+  color: #555;
+}
+
+.table {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.card-body ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.card-body li {
+  padding: 5px;
+  font-size: 1rem;
 }
 
 /* For responsive layout */
@@ -149,5 +192,25 @@ export default {
     width: 100%;
     margin-bottom: 15px;
   }
+}
+
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-title {
+  color: #007bff;
+}
+
+.card-body {
+  background-color: #f8f9fa;
+}
+
+.card:hover .card-body {  
+  background-color: #e9ecef;
 }
 </style>

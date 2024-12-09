@@ -37,8 +37,8 @@
             <router-link class="sub-item" to="/admin/history"
               ><i class="fa-solid fa-clock-rotate-left"></i>View History Log</router-link
             >
-            <router-link class="sub-item" to="/admin/DisburseItem"
-              ><i class="fa-solid fa-notes-medical"></i>Disburse Item</router-link
+            <router-link class="sub-item" to="/admin/view-disbursed"
+              ><i class="fa-solid fa-notes-medical"></i>Disbursed Log</router-link
             >
           </div>
         </div>

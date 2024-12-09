@@ -85,7 +85,7 @@ exports.resetPassword = async (req, res) => {
 
   // Ensure all required fields are provided
   if (!newPassword || !confirmPassword) {
-    return res.status(400).json({ message: "Both new password and confirm password are required." });
+    return res.status(400).json({ message: "New password and confirm password are required." });
   }
 
   // Ensure that the new password and confirm password match
@@ -94,19 +94,16 @@ exports.resetPassword = async (req, res) => {
   }
 
   try {
+    // Assuming you're getting the user ID from somewhere (this is where session or token would go later)
+    const userId = req.body.userId; // or get it from a session, query param, or other means
 
-    const userId = req.user?._id; 
     if (!userId) {
-      console.error("User ID is not available in the request.");
-      return res.status(401).json({ message: "User is not authenticated." });
+      return res.status(400).json({ message: "User ID is required." });
     }
-
-    console.log(`Attempting to reset password for user with ID: ${userId}`);
 
     // Find the user by ID
     const user = await User.findById(userId);
     if (!user) {
-      console.error("User not found with ID:", userId);
       return res.status(404).json({ message: "User not found." });
     }
 
@@ -115,7 +112,7 @@ exports.resetPassword = async (req, res) => {
 
     // Update the user's password
     user.password = hashedPassword;
-    user.isFirstLogin = false;  // Set isFirstLogin to false since the user has reset their password
+    user.isFirstLogin = false;  // Update the `isFirstLogin` field (optional based on your logic)
 
     // Save the updated user data
     await user.save();
@@ -129,4 +126,3 @@ exports.resetPassword = async (req, res) => {
     res.status(500).json({ message: "Error resetting password." });
   }
 };
-
