@@ -108,8 +108,11 @@ export default {
 
 <style>
 
-.logoMinsu{
+.logoMinsu {
   border-bottom: 1px solid rgb(194, 194, 206);
+  display: flex; 
+  justify-content: center;
+  align-items: center; 
 }
 .container {
   min-height: 100vh;

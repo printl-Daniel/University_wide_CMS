@@ -10,6 +10,13 @@ router.put("/add-quantity/:itemId", inventoryController.addQuantityToItem);
 router.put("/disburse/:itemId", inventoryController.disburseItem);
 router.get("/disbursements", inventoryController.getDisbursements);
 router.get("/notifications", inventoryController.getNotifications);
+router.get("/expired", inventoryController.getExpiredItems);
+
+
+router.post("/notify-upcoming-expirations", inventoryController.notifyUpcomingExpirations);
+
+
+router.delete("/remove-expired", inventoryController.removeExpiredItems);
 
 
 

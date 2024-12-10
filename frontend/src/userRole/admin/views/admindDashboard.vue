@@ -133,25 +133,9 @@ export default {
     };
   },
   methods: {
-    async fetchDashboardData() {
-      try {
-        const response = await axios.get("http://localhost:5000/api/dashboard");
-        const data = response.data;
-        this.totalDisbursements = data.totalDisbursements;
-        this.currentInventory = data.currentInventory;
-        this.totalQuantityDisbursed = data.totalQuantityDisbursed;
-        this.recentDisbursements = data.recentDisbursements;
-        this.lowStockItems = data.lowStockItems;
-        this.expiringItems = data.expiringItems;
-        this.fetchNotifications(); // Fetch notifications
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
-    },
-    // Method to fetch notifications from the backend
     async fetchNotifications() {
       try {
-        const response = await axios.get("http://localhost:5000/api/inventory/notifications");
+        //const response = await axios.get("http://localhost:5000/api/inventory/notifications");
         this.notifications = response.data.notifications;
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -159,7 +143,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchDashboardData();
+  this.fetchNotifications();
   }
 };
 </script>

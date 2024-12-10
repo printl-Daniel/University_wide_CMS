@@ -1,42 +1,82 @@
 <template>
   <div>
-    <!-- Admin Navbar (Top Navbar) -->
+    <!-- Admin Navbar (top navbar) -->
     <div class="header">
       <topNav />
     </div>
-    
-    <div class="page-content d-flex">
-      <!-- Sidebar -->
-      <sideNav />
-      
+
+    <div class="page-content flex">
+      <!-- Sidebar Navigation -->
+      <div class="sidebar w-1/5 text-white">
+        <sideNav />
+      </div>
+
       <!-- Main Content Area -->
-      <div class="content flex-grow-1">
-        <!-- Transaction History Table Section -->
-        <div class="mt-4 table-responsive">
-          <table id="transactionHistoryTable" class="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Transaction ID</th>
-                <th scope="col">Transaction Date</th>
-                <th scope="col">Item Name</th>
-                <th scope="col">Action Type</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Current Quantity</th>
-                <th scope="col">Responsible Person</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="history in transactionHistory" :key="history.transactionId">
-                <td>{{ history.transactionId }}</td>
-                <td>{{ formatDate(history.transactionDate) }}</td>
-                <td>{{ history.itemName }}</td>
-                <td>{{ history.actionType }}</td>
-                <td>{{ history.quantityChanged }}</td>
-                <td>{{ history.remainingQuantity }}</td>
-                <td>{{ history.responsiblePerson }}</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="content flex-grow p-4">
+        <div class="p-4">
+          <div class="mb-4">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search..."
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div class="overflow-x-auto bg-white rounded-lg shadow overflow-y-auto relative">
+            <table class="border-collapse table-auto w-full whitespace-no-wrap bg-white table-striped relative">
+              <thead>
+                <tr class="text-left">
+                  <th
+                    v-for="header in headers"
+                    :key="header.key"
+                    class="bg-gray-100 sticky top-0 border-b border-gray-200 px-6 py-3 text-gray-600 font-bold tracking-wider uppercase text-xs"
+                    @click="sortBy(header.key)"
+                  >
+                    {{ header.label }}
+                    <span v-if="sortKey === header.key">
+                      {{ sortOrder === 'asc' ? '▲' : '▼' }}
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(history, index) in paginatedData"
+                  :key="history.transactionId"
+                  :class="{ 'bg-gray-50': index % 2 === 0 }"
+                  class="hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <td v-for="header in headers" :key="header.key" class="border-t border-gray-200 px-6 py-4">
+                    {{ header.key === 'transactionDate' ? formatDate(history[header.key]) : history[header.key] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          <div class="mt-4 flex justify-between items-center">
+            <div>
+              <span class="text-sm text-gray-700">
+                Showing {{ startIndex + 1 }} to {{ endIndex }} of {{ totalItems }} entries
+              </span>
+            </div>
+            <div>
+              <button
+                @click="prevPage"
+                :disabled="currentPage === 1"
+                class="px-3 py-1 rounded-md bg-gray-200 text-gray-700 mr-2 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <button
+                @click="nextPage"
+                :disabled="currentPage === totalPages"
+                class="px-3 py-1 rounded-md bg-gray-200 text-gray-700 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -44,134 +84,128 @@
 </template>
 
 <script>
-import axios from 'axios';
-import sideNav from '../components/sideNav.vue';
-import topNav from '../components/topNav.vue';
+import { ref, computed } from 'vue'
+import axios from 'axios'
+import sideNav from '../components/sideNav.vue'
+import topNav from '../components/topNav.vue'
 
 export default {
   components: {
     sideNav,
-    topNav
+    topNav,
   },
-  data() {
-    return {
-      transactionHistory: [], // Stores the history data
-    };
-  },
-  methods: {
-    // Fetch transaction history from the API
-    async fetchHistory() {
+  setup() {
+    const transactionHistory = ref([])
+    const searchQuery = ref('')
+    const sortKey = ref('transactionDate')
+    const sortOrder = ref('desc')
+    const currentPage = ref(1)
+    const itemsPerPage = 10
+
+    const headers = [
+      { key: 'transactionId', label: 'Transaction ID' },
+      { key: 'transactionDate', label: 'Transaction Date' },
+      { key: 'itemName', label: 'Item Name' },
+      { key: 'actionType', label: 'Action Type' },
+      { key: 'quantityChanged', label: 'Quantity' },
+      { key: 'remainingQuantity', label: 'Current Quantity' },
+      { key: 'responsiblePerson', label: 'Responsible Person' },
+    ]
+
+    const sortedAndFilteredData = computed(() => {
+      let result = [...transactionHistory.value]
+      
+      if (searchQuery.value) {
+        result = result.filter(item => 
+          Object.values(item).some(val => 
+            val.toString().toLowerCase().includes(searchQuery.value.toLowerCase())
+          )
+        )
+      }
+      
+      return result.sort((a, b) => {
+        const aValue = a[sortKey.value]
+        const bValue = b[sortKey.value]
+        
+        if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1
+        if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1
+        return 0
+      })
+    })
+
+    const totalItems = computed(() => sortedAndFilteredData.value.length)
+    const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage))
+
+    const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage)
+    const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, totalItems.value))
+
+    const paginatedData = computed(() => {
+      return sortedAndFilteredData.value.slice(startIndex.value, endIndex.value)
+    })
+
+    const sortBy = (key) => {
+      if (sortKey.value === key) {
+        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+      } else {
+        sortKey.value = key
+        sortOrder.value = 'asc'
+      }
+    }
+
+    const prevPage = () => {
+      if (currentPage.value > 1) {
+        currentPage.value--
+      }
+    }
+
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        currentPage.value++
+      }
+    }
+
+    const fetchHistory = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/inventory/history');
+        const res = await axios.get('http://localhost:5000/api/inventory/history')
         if (res.data.success) {
-          this.transactionHistory = res.data.data; // Assuming 'data' contains the history array
-          this.initializeDataTable(); // Initialize DataTable after data is loaded
+          transactionHistory.value = res.data.data
         } else {
-          console.error('Failed to fetch history:', res.data.message);
+          console.error('Failed to fetch history:', res.data.message)
         }
       } catch (error) {
-        console.error('Error fetching history:', error);
+        console.error('Error fetching history:', error)
       }
-    },
-
-    // Format the date to a readable format
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
-        weekday: 'short', // e.g., "Mon"
-        year: 'numeric',  // e.g., "2024"
-        month: 'short',   // e.g., "Nov"
-        day: 'numeric'    // e.g., "25"
-      });
-    },
-
-    // Initialize DataTable
-    initializeDataTable() {
-      $(document).ready(function () {
-        $('#transactionHistoryTable').DataTable({
-          searching: true,  // Enable search functionality
-          paging: true,     // Enable pagination
-          ordering: true,   // Enable column sorting
-          info: true,       // Show info like "Showing 1 to 10 of 100 entries"
-        });
-      });
     }
-  },
-  mounted() {
-    // Fetch transaction history data when the component is mounted
-    this.fetchHistory();
+
+    const formatDate = (dateString) => {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    }
+
+    fetchHistory()
+
+    return {
+      transactionHistory,
+      searchQuery,
+      sortKey,
+      sortOrder,
+      headers,
+      paginatedData,
+      sortBy,
+      formatDate,
+      currentPage,
+      totalPages,
+      totalItems,
+      startIndex,
+      endIndex,
+      prevPage,
+      nextPage,
+    }
   }
-};
+}
 </script>
-
-<style scoped>
-/* Main content styling */
-.content {
-  flex-grow: 1;
-  padding: 20px;
-}
-
-/* Table Styles */
-.table-responsive {
-  margin-top: 20px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem; /* Reduced font size */
-}
-
-th, td {
-  padding: 6px;  /* Reduced padding for compact view */
-  text-align: left;
-  border-bottom: 1px solid #ada9a9;
-}
-
-th {
-  color: white;
-  text-transform: uppercase;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #f9f9f9;
-}
-
-.table tbody tr:hover {
-  background-color: #f1f1f1; /* Highlight row on hover */
-}
-
-.table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* Button styling (if any buttons are present in the table rows) */
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-button:focus {
-  outline: none;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .table {
-    font-size: 0.75rem;  /* Even smaller font size for mobile */
-  }
-
-  .table th, .table td {
-    padding: 5px;  /* Reduced padding for mobile */
-  }
-}
-</style>

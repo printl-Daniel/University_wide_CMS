@@ -7,7 +7,7 @@
 
     <div class="page-content flex">
       <!-- Sidebar Navigation -->
-      <div class="sidebar w-64 bg-gray-800 text-white">
+      <div class="sidebar ">
         <sideNav />
       </div>
 

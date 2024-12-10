@@ -1,269 +1,196 @@
 <template>
-  <div class="main-container">
-    <!-- Admin Navbar (Top Navbar) -->
-    <div class="header">
-      <topNav />
-    </div>
-
-    <div class="page-content d-flex">
-      <!-- Sidebar -->
-      <sideNav />
-
-      <!-- Main Content -->
-      <div class="content flex-grow-1">
-        <!-- CSV Upload Section -->
-        <div class="card full-width">
-          <div class="card-header">
-            <h4>Import Students from CSV</h4>
-          </div>
-          <div class="card-body">
-            <input
-              type="file"
-              accept=".csv"
-              @change="handleFileUpload"
-              class="file-input"
-            />
-          </div>
-        </div>
-
-        <!-- Filter Section -->
-        <div class="card full-width">
-          <div class="card-header">
-            <h5>Filter Students</h5>
-          </div>
-          <div class="card-body d-flex gap-3 flex-wrap">
-            <div class="filter-group">
-              <label for="collegeFilter">College:</label>
-              <select
-                v-model="filters.college"
-                @change="fetchStudents"
-                id="collegeFilter"
-                class="form-control"
-              >
-                <option value="">All Colleges</option>
-                <option
-                  v-for="college in colleges"
-                  :key="college"
-                  :value="college"
-                >
-                  {{ college }}
-                </option>
-              </select>
+  <div class="flex h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <SideNav />
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Navbar -->
+      <TopNav />
+      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+        <div class="container mx-auto px-6 py-8">
+          <!-- CSV Upload Section -->
+          <div class="bg-white shadow-md rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h4 class="text-lg font-semibold text-gray-800">Import Students from CSV</h4>
             </div>
-
-            <div class="filter-group">
-              <label for="yearAndSectionFilter">Year & Section:</label>
-              <select
-                v-model="filters.yearAndSection"
-                @change="fetchStudents"
-                id="yearAndSectionFilter"
-                class="form-control"
-              >
-                <option value="">All Sections</option>
-                <option
-                  v-for="yearAndSection in yearAndSections"
-                  :key="yearAndSection"
-                  :value="yearAndSection"
-                >
-                  {{ yearAndSection }}
-                </option>
-              </select>
+            <div class="p-6">
+              <input
+                type="file"
+                accept=".csv"
+                @change="handleFileUpload"
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
             </div>
           </div>
-        </div>
 
-        <!-- Students Table Section -->
-        <div class="card full-width">
-          <div class="card-header">
-            <h5>Enrolled Students</h5>
+          <!-- Filter Section -->
+          <div class="bg-white shadow-md rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h5 class="text-lg font-semibold text-gray-800">Filter Students</h5>
+            </div>
+            <div class="p-6 flex flex-wrap gap-4">
+              <div class="w-full sm:w-auto">
+                <label for="collegeFilter" class="block text-sm font-medium text-gray-700 mb-1">College:</label>
+                <select
+                  v-model="filters.college"
+                  @change="fetchStudents"
+                  id="collegeFilter"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                >
+                  <option value="">All Colleges</option>
+                  <option
+                    v-for="college in colleges"
+                    :key="college"
+                    :value="college"
+                  >
+                    {{ college }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="w-full sm:w-auto">
+                <label for="yearAndSectionFilter" class="block text-sm font-medium text-gray-700 mb-1">Year & Section:</label>
+                <select
+                  v-model="filters.yearAndSection"
+                  @change="fetchStudents"
+                  id="yearAndSectionFilter"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                >
+                  <option value="">All Sections</option>
+                  <option
+                    v-for="yearAndSection in yearAndSections"
+                    :key="yearAndSection"
+                    :value="yearAndSection"
+                  >
+                    {{ yearAndSection }}
+                  </option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="card-body">
-            <table id="studentsTable" class="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <th>College</th>
-                  <th>Program</th>
-                  <th>Year & Section</th>
-                  <th>Major</th>
-                  <th>Student No.</th>
-                  <th>Full Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="student in students" :key="student._id">
-                  <td>{{ student.college }}</td>
-                  <td>{{ student.program }}</td>
-                  <td>{{ student.yearAndSection }}</td>
-                  <td>{{ student.major }}</td>
-                  <td>{{ student.studentNo }}</td>
-                  <td>{{ student.fullname }}</td>
-                </tr>
-              </tbody>
-            </table>
+
+          <!-- Students Table Section -->
+          <div class="bg-white shadow-md rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h5 class="text-lg font-semibold text-gray-800">Enrolled Students</h5>
+            </div>
+            <div class="p-6">
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">College</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year & Section</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Major</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student No.</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="student in students" :key="student._id" class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.college }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.program }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.yearAndSection }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.major }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ student.studentNo }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student.fullname }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </template>
 
-
 <script>
-import sideNav from '../components/sideNav.vue';
-import topNav from '../components/topNav.vue';
-import axios from 'axios';
+import SideNav from "../components/sideNav.vue";
+import TopNav from "../components/topNav.vue";
+import axios from "axios";
 
 export default {
   components: {
-    sideNav,
-    topNav
+    SideNav,
+    TopNav,
   },
   data() {
     return {
       students: [],
-      colleges: [], // To store distinct colleges
-      yearAndSections: [], // To store distinct Year & Sections
+      colleges: [],
+      yearAndSections: [],
       filters: {
-        college: '',
-        yearAndSection: ''
-      }
+        college: "",
+        yearAndSection: "",
+      },
     };
   },
   mounted() {
-    this.fetchColleges(); // Fetch college list on component mount
-    this.fetchYearAndSections(); // Fetch Year & Section list
-    this.fetchStudents(); // Fetch student data
+    this.fetchColleges();
+    this.fetchYearAndSections();
+    this.fetchStudents();
   },
   methods: {
-    // Fetch distinct colleges from the backend
     async fetchColleges() {
       try {
-        const response = await axios.get('http://localhost:5000/api/student-enrollment/colleges');
-        this.colleges = response.data; // Set the colleges list
+        const response = await axios.get(
+          "http://localhost:5000/api/student-enrollment/colleges"
+        );
+        this.colleges = response.data;
       } catch (error) {
-        console.error('Error fetching colleges:', error);
+        console.error("Error fetching colleges:", error);
       }
     },
-
-    // Fetch distinct Year & Section values from the backend
     async fetchYearAndSections() {
       try {
-        const response = await axios.get('http://localhost:5000/api/student-enrollment/year-and-sections');
-        this.yearAndSections = response.data; // Set the Year and Sections list
+        const response = await axios.get(
+          "http://localhost:5000/api/student-enrollment/year-and-sections"
+        );
+        this.yearAndSections = response.data;
       } catch (error) {
-        console.error('Error fetching year and sections:', error);
+        console.error("Error fetching year and sections:", error);
       }
     },
-
-    // Fetch students based on filters
     async fetchStudents() {
       try {
-        const response = await axios.get('http://localhost:5000/api/student-enrollment/students', {
-          params: {
-            college: this.filters.college,
-            yearAndSection: this.filters.yearAndSection
+        const response = await axios.get(
+          "http://localhost:5000/api/student-enrollment/students",
+          {
+            params: {
+              college: this.filters.college,
+              yearAndSection: this.filters.yearAndSection,
+            },
           }
-        });
+        );
         this.students = response.data;
       } catch (error) {
-        console.error('Error fetching students:', error);
+        console.error("Error fetching students:", error);
       }
     },
-
     async handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {
         const formData = new FormData();
-        formData.append('csvFile', file);
+        formData.append("csvFile", file);
 
         try {
-          const response = await axios.post('http://localhost:5000/api/student-enrollment/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          });
-
+          const response = await axios.post(
+            "http://localhost:5000/api/student-enrollment/upload",
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
           alert(response.data.message);
-          this.fetchStudents();  
+          this.fetchStudents();
         } catch (error) {
-          console.error('Error uploading CSV file:', error);
-          alert('Error uploading CSV file');
+          console.error("Error uploading CSV file:", error);
+          alert("Error uploading CSV file");
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
-
-
-
-
-<style scoped>
-.main-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.page-content {
-  display: flex;
-  flex-grow: 1;
-  overflow-x: hidden;
-}
-
-.content {
-  padding: 20px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Full width for cards */
-.full-width {
-  width: 100%;
-}
-
-.card {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.card-header {
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-.card-body {
-  padding: 10px;
-}
-
-.file-input {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  text-align: left;
-  padding: 8px;
-}
-
-.table-hover tbody tr:hover {
-  background-color: #f5f5f5;
-}
-</style>

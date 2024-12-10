@@ -1,119 +1,147 @@
 <template>
-  <div>
+  <div class="min-h-screen">
     <!-- Admin Navbar (Top Navbar) -->
-    <div class="header">
+    <div class="bg-white shadow">
       <topNav />
     </div>
 
-    <!-- Page Content (Main Content with Sidebar) -->
-    <div class="page-content d-flex">
-      <!-- Sidebar -->
-      <div class="sidebar">
+    <div class="flex">
+      <!-- Sidebar Navigation -->
+      <div class="w-64 min-h-screen">
         <sideNav />
       </div>
 
       <!-- Main Content Area -->
-      <div class="content flex-grow-1">
-        <div class="user-management container mt-1">
-          <!-- Page Title -->
-          <h2 class="text-center mb-4">User Management</h2>
+      <div class="flex-1 p-8">
+        <div class="max-w-7xl mx-auto">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">User Management</h2>
 
-          <!-- Form Section -->
-          <div class="user-form-section mb-5 p-4 bg-light rounded shadow-sm border">
-            <!-- Form Title -->
-            <h4 class="mb-3">Add or Manage User</h4>
-            <form @submit.prevent="createUser" class="d-flex flex-wrap gap-3">
-              <div class="flex-grow-1">
-                <label for="fullName" class="form-label">Full Name</label>
-                <input
-                  v-model="newUser.fullname"
-                  type="text"
-                  id="fullName"
-                  class="form-control"
-                  placeholder="Enter full name"
-                  required
-                />
+          <!-- User Form Section -->
+          <div class="bg-white shadow-sm rounded-lg p-6 mb-8">
+            <h4 class="text-xl font-semibold mb-4">Add or Manage User</h4>
+            <form @submit.prevent="createUser" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                  <input
+                    v-model="newUser.fullname"
+                    type="text"
+                    id="fullName"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    placeholder="Enter full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="userName" class="block text-sm font-medium text-gray-700">Username</label>
+                  <input
+                    v-model="newUser.username"
+                    type="text"
+                    id="userName"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    placeholder="Enter username"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="userPassword" class="block text-sm font-medium text-gray-700">Password</label>
+                  <input
+                    v-model="newUser.password"
+                    type="password"
+                    id="userPassword"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    placeholder="Enter password"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="userRole" class="block text-sm font-medium text-gray-700">Role</label>
+                  <select
+                    v-model="newUser.role"
+                    id="userRole"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    required
+                  >
+                    <option value="Admin">Admin</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Staff">Staff</option>
+                  </select>
+                </div>
               </div>
-              <div class="flex-grow-1">
-                <label for="userName" class="form-label">Username</label>
-                <input
-                  v-model="newUser.username"
-                  type="text"
-                  id="userName"
-                  class="form-control"
-                  placeholder="Enter username"
-                  required
-                />
+              <div>
+                <label for="firstTimeLogin" class="flex items-center">
+                  <input
+                    v-model="newUser.isFirstLogin"
+                    type="checkbox"
+                    id="firstTimeLogin"
+                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                    disabled
+                  />
+                  <span class="ml-2 text-sm text-gray-600">First-Time Login</span>
+                </label>
+                <p class="mt-1 text-sm text-gray-500">User will be required to reset password on first login.</p>
               </div>
-              <div class="flex-grow-1">
-                <label for="userPassword" class="form-label">Password</label>
-                <input
-                  v-model="newUser.password"
-                  type="password"
-                  id="userPassword"
-                  class="form-control"
-                  placeholder="Enter password"
-                  required
-                />
-              </div>
-              <div class="flex-grow-1">
-                <label for="userRole" class="form-label">Role</label>
-                <select v-model="newUser.role" id="userRole" class="form-select" required>
-                  <option value="Admin">Admin</option>
-                  <option value="Doctor">Doctor</option>
-                  <option value="Staff">Staff</option>
-                </select>
-              </div>
-
-              <!-- First-time Login Checkbox -->
-              <div class="flex-grow-1">
-                <label for="firstTimeLogin" class="form-label">First-Time Login</label>
-                <input
-                  v-model="newUser.isFirstLogin"
-                  type="checkbox"
-                  id="firstTimeLogin"
-                  class="form-check-input"
-                  disabled
-                />
-                <small class="form-text text-muted">User will be required to reset password on first login.</small>
-              </div>
-
-              <div class="text-end w-100">
-                <button type="submit" class="comic-button mt-3">Save User</button>
+              <div class="text-right">
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  Save User
+                </button>
               </div>
             </form>
           </div>
 
-          <!-- DataTable Section -->
-          <div class="user-table-section p-4 bg-light rounded shadow-sm border">
-            <h4 class="mb-3">User List</h4>
-            <div class="table-responsive">
-              <table id="userTable" class="table table-bordered table-striped">
-                <thead class="table-light">
+          <!-- User Table Section -->
+          <div class="bg-white shadow-sm rounded-lg p-6">
+            <h4 class="text-xl font-semibold mb-4">User List</h4>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
                   <tr>
-                    <th>ID</th>
-                    <th>Full Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <!-- Dynamic User Rows (Fetched from Backend) -->
-                  <tr v-for="user in users" :key="user._id">
-                    <td>{{ user._id }}</td>
-                    <td>{{ user.fullname }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
-                    <td>
-                      <button class="btn btn-warning btn-sm" @click="editUser(user)">Edit</button>
-                      <button class="btn btn-danger btn-sm" @click="deleteUser(user._id)">Delete</button>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="user in paginatedUsers" :key="user._id">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user._id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.fullname }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.username }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.role }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button @click="editUser(user)" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
+                      <button @click="deleteUser(user._id)" class="text-red-600 hover:text-red-900">Delete</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <!-- Pagination -->
+            <div class="mt-4 flex justify-between items-center">
+              <div>
+                <span class="text-sm text-gray-700">
+                  Showing {{ startIndex + 1 }} to {{ endIndex }} of {{ totalItems }} entries
+                </span>
+              </div>
+              <div>
+                <button
+                  @click="prevPage"
+                  :disabled="currentPage === 1"
+                  class="px-3 py-1 rounded-md bg-gray-200 text-gray-700 mr-2 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <button
+                  @click="nextPage"
+                  :disabled="currentPage === totalPages"
+                  class="px-3 py-1 rounded-md bg-gray-200 text-gray-700 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -123,6 +151,7 @@
 </template>
 
 <script>
+import { ref, computed } from 'vue';
 import topNav from "../components/topNav.vue";
 import sideNav from "../components/sideNav.vue";
 import axios from "axios";
@@ -132,134 +161,103 @@ export default {
     topNav,
     sideNav,
   },
-  data() {
-    return {
-      newUser: {
-        fullname: '',
-        username: '',
-        email: '',
-        password: '',
-        role: 'Staff',
-        isFirstLogin: true, 
-      },
-      users: [],  // Will hold the list of users fetched from the backend
-    };
-  },
-  methods: {
-    async createUser() {
+  setup() {
+    const newUser = ref({
+      fullname: '',
+      username: '',
+      email: '',
+      password: '',
+      role: 'Staff',
+      isFirstLogin: true,
+    });
+    const users = ref([]);
+    const currentPage = ref(1);
+    const itemsPerPage = 10;
+
+    const totalItems = computed(() => users.value.length);
+    const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage));
+
+    const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage);
+    const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, totalItems.value));
+
+    const paginatedUsers = computed(() => {
+      return users.value.slice(startIndex.value, endIndex.value);
+    });
+
+    const createUser = async () => {
       try {
-        // Send user data to backend for creation
-        const response = await axios.post('http://localhost:5000/api/user/add-user', this.newUser);
-        this.users.push(response.data);  // Add newly created user to the list
-        this.resetForm();  // Reset form fields
+        const response = await axios.post('http://localhost:5000/api/user/add-user', newUser.value);
+        users.value.push(response.data);
+        resetForm();
       } catch (error) {
         console.error("Error creating user:", error);
       }
-    },
+    };
 
-    // Method to fetch users from the backend
-    async fetchUsers() {
+    const fetchUsers = async () => {
       try {
         const response = await axios.get('/api/users');
-        this.users = response.data;
+        users.value = response.data;
       } catch (error) {
         console.error("Error fetching users:", error);
       }
-    },
+    };
 
-    // Method to delete a user
-    async deleteUser(userId) {
+    const deleteUser = async (userId) => {
       try {
         await axios.delete(`/api/users/${userId}`);
-        this.users = this.users.filter(user => user._id !== userId);  // Remove the deleted user from the list
+        users.value = users.value.filter(user => user._id !== userId);
       } catch (error) {
         console.error("Error deleting user:", error);
       }
-    },
+    };
 
-    // Method to edit a user
-    editUser(user) {
-      // Populate form with user details for editing
-      this.newUser = { ...user };
-    },
+    const editUser = (user) => {
+      newUser.value = { ...user };
+    };
 
-    // Reset form after adding a new user
-    resetForm() {
-      this.newUser = {
+    const resetForm = () => {
+      newUser.value = {
         fullname: '',
         username: '',
         email: '',
         password: '',
         role: 'Staff',
-        isFirstLogin: true,  // Default is first-time login
+        isFirstLogin: true,
       };
-    },
-  },
-  mounted() {
-    this.fetchUsers();  // Fetch users when the component is mounted
+    };
 
-    // Initialize DataTable
-    $("#userTable").DataTable({
-      responsive: true,
-      pageLength: 5,
-      lengthMenu: [5, 10, 25, 50],
-    });
+    const prevPage = () => {
+      if (currentPage.value > 1) {
+        currentPage.value--;
+      }
+    };
+
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+      }
+    };
+
+    fetchUsers();
+
+    return {
+      newUser,
+      users,
+      createUser,
+      deleteUser,
+      editUser,
+      resetForm,
+      paginatedUsers,
+      currentPage,
+      totalPages,
+      totalItems,
+      startIndex,
+      endIndex,
+      prevPage,
+      nextPage,
+    };
   },
 };
 </script>
 
-<style scoped>
-.user-management {
-  background-color: #f9f9f9;
-}
-
-.user-form-section,
-.user-table-section {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd;
-}
-
-.user-form-section h4,
-.user-table-section h4 {
-  color: #333;
-}
-
-.table thead {
-  background-color: #f0f0f0;
-}
-
-/* Comic Button Style */
-.comic-button {
-  display: inline-block;
-  padding: 6px 12px; /* Smaller button size */
-  font-size: 18px; /* Reduced font size */
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  color: #fff;
-  background-color: #4caf50; /* Light green background */
-  border: 2px solid #000;
-  border-radius: 8px; /* Slightly smaller border radius */
-  box-shadow: 3px 3px 0px #000; /* Reduced shadow */
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-
-.comic-button:hover {
-  background-color: #fff;
-  color: #000000;
-  border: 2px solid #13c42a;
-  box-shadow: 5px 5px 0px #ffffff;
-}
-
-.comic-button:active {
-  background-color: #fcf414;
-  box-shadow: none;
-  transform: translateY(4px);
-}
-
-.btn {
-  margin: 0 5px;
-}
-</style>

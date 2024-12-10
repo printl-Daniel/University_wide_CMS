@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/auth/LoginView.vue";
-import RegisterView from "../views/auth/RegisterView.vue";
 import OTP from "../views/auth/VerifyOTP.vue";
 import reset from "../views/auth/resetPassword.vue";
 //staff
@@ -37,11 +36,7 @@ const routes = [
     name: "login",
     component: LoginView, // Set LoginView as the default route
   },
-  {
-    path: "/register",
-    name: "register",
-    component: RegisterView,
-  },
+  
   {
     path: "/token",
     name: "otpVerification",
