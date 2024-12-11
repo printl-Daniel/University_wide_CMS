@@ -1,12 +1,16 @@
 <template>
   <div>
-    <!-- TopNav-->
+    <!-- TopNav -->
     <div class="header">
       <TopNav />
     </div>
     <!-- Dashboard Content -->
     <div class="page-content">
-      <div class="sidebar"><SideNav /></div>
+      <!-- Side Navigation -->
+      <div class="sidebar">
+        <SideNav />
+      </div>
+      <!-- Main Content -->
       <div class="content">
         <Feedback />
       </div>
@@ -29,8 +33,18 @@ export default {
 </script>
 
 <style scoped>
-.tabs button.active {
-  background-color: #007bff;
-  color: white;
+/* General Layout */
+.page-content {
+  display: flex; /* Enable flexbox layout */
+  
+}
+
+
+
+/* Content Area */
+.content {
+  flex: 1; /* Take the remaining space */
+  padding: 2rem;
+  background-color: #ffffff;
 }
 </style>
