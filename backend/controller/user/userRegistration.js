@@ -1,14 +1,16 @@
 const bcrypt = require('bcrypt');
 const User = require('../../models/User/userModel');
-const { generateToken } = require('../../middleware/jwt');
 
 exports.createUser = async (req, res) => {
-  const { fullname, username, password, role} = req.body;
+  const { fullname, username, password, role } = req.body;
+
+  // Validate required fields
   if (!fullname || !username || !password || !role) {
     return res.status(400).json({ message: "All fields are required." });
   }
+
   try {
-    // Check if username already exists
+    // Check if the username already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ message: "Username already taken." });
@@ -23,18 +25,31 @@ exports.createUser = async (req, res) => {
       username,
       password: hashedPassword,
       role,
-      isFirstLogin: true, // Set to true by default
     });
 
     await newUser.save();
     res.status(201).json({
       message: "User created successfully.",
-      user: newUser,
+      user: {
+        userId: newUser._id, // Include userId
+        fullname: newUser.fullname,
+        username: newUser.username,
+        role: newUser.role,
+        createdAt: newUser.createdAt,
+      },
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.fetchUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users); 
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error: error.message });
   }
 };
 
@@ -124,5 +139,22 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     console.error("Error resetting password:", error);
     res.status(500).json({ message: "Error resetting password." });
+  }
+};
+
+
+exports.deleteUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({ message: "User deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting user." });
   }
 };

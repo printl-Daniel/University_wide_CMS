@@ -7,7 +7,7 @@
 
     <div class="page-content flex">
       <!-- Sidebar Navigation -->
-      <div class="sidebar w-1/5 bg-gray-800 text-white">
+      <div class="sidebar ">
         <sideNav />
       </div>
 
@@ -59,6 +59,9 @@
                     <button @click="openDisburseModal(item)" class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
                       <CircleMinus class="h-5 w-5" />
                     </button>
+                    <a :href="`/admin/edit-item/`" class="text-green-500 hover:text-green-700 transition-colors duration-200">
+                      <PencilLine class="h-5 w-5" />
+                    </a>
                   </div>
                 </td>
               </tr>
@@ -114,7 +117,7 @@
 <script>
 import { ref, computed } from 'vue'
 import axios from 'axios'
-import { CirclePlus, CircleMinus } from 'lucide-vue-next'
+import { CirclePlus, CircleMinus, PencilLine } from 'lucide-vue-next'
 import addQuantityModal from '../../../components/addQuantityModal.vue'
 import disburseModal from '../../../components/disburseModal.vue'
 import sideNav from '../components/sideNav.vue'
@@ -126,6 +129,7 @@ export default {
     disburseModal,
     CirclePlus,
     CircleMinus,
+    PencilLine,
     sideNav,
     topNav,
   },
