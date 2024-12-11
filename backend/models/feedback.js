@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const admin = require("../firebase");
-//const db = admin.firestore();
+const db = admin.firestore();
 
 exports.getFeedback = async () => {
   try {

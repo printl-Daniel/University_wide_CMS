@@ -44,7 +44,7 @@
       <p><strong>Date:</strong> {{ selectedAppointment.date }}</p>
       <p><strong>Time:</strong> {{ selectedAppointment.time }}</p>
       <p><strong>Notes:</strong> {{ selectedAppointment.notes || "None" }}</p>
-      <div>
+      <div class="button-group">
         <button class="btn btn-success" @click="openApprovalModal('Approved')">
           Approve
         </button>
@@ -65,16 +65,33 @@
     aria-hidden="false"
   >
     <div class="modal-content" @click.stop>
-      <h3 id="approvalModal">Approval Form</h3>
       <form @submit.prevent="submitApproval">
         <label for="name">Name:</label>
-        <input type="text" id="name" v-model="formData.name" required />
+        <input
+          type="text"
+          id="name"
+          v-model="formData.name"
+          required
+          disabled
+        />
 
         <label for="email">Email:</label>
-        <input type="email" id="email" v-model="formData.email" required />
+        <input
+          type="email"
+          id="email"
+          v-model="formData.email"
+          required
+          disabled
+        />
 
         <label for="campus">Campus:</label>
-        <input type="text" id="campus" v-model="formData.campus" required />
+        <input
+          type="text"
+          id="campus"
+          v-model="formData.campus"
+          required
+          disabled
+        />
 
         <label for="date">Date:</label>
         <input type="date" id="date" v-model="formData.date" required />
@@ -85,7 +102,6 @@
         <label for="message">Message:</label>
         <textarea id="message" v-model="formData.additionalMessage"></textarea>
 
-        <!-- Loading Spinner -->
         <div v-if="isLoading" class="loading-spinner">
           <span>Submitting...</span>
           <div class="spinner"></div>
@@ -144,10 +160,8 @@ export default {
     const tableElement = "#appointmentTable";
     if (!$.fn.DataTable.isDataTable(tableElement)) {
       new DataTable(tableElement, {
-        pageLength: 10,
-        lengthChange: false,
         layout: {
-          topStart: null,
+          topStart: "pageLength",
           topEnd: "search",
           bottomStart: "info",
           bottomEnd: "paging",
@@ -208,14 +222,17 @@ export default {
   },
 };
 </script>
-
-<style scoped>
+<style>
+/* Modal overlay */
 .modal-overlay {
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-style: normal;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -223,49 +240,190 @@ export default {
   z-index: 1000;
 }
 
+/* Modal content */
 .modal-content {
-  background-color: white;
-  padding: 20px;
+  background-color: #ffffff;
   border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
+  padding: 4rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
+/* Modal title */
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+/* Modal paragraphs */
+.modal-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.modal-content strong {
+  color: #555;
+  font-weight: 600;
+}
+
+/* Button group */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  margin-right: 10px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btn-success {
+  background-color: #4caf50;
+  color: white;
 }
 
-button.no-show {
-  background-color: #ff4c4c;
+.btn-success:hover {
+  background-color: #45a049;
 }
 
-button.no-show:hover {
-  background-color: #cc0000;
+.btn-danger {
+  background-color: #f44336;
+  color: white;
 }
 
-button.attended {
+.btn-danger:hover {
+  background-color: #da190b;
+}
+
+.btn:last-child {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn:last-child:hover {
+  background-color: #e0e0e0;
+}
+/* Buttons */
+button {
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0.5rem 0.25rem;
+}
+
+button.btn-success {
   background-color: #28a745;
+  color: white;
+  transition: background 0.2s;
 }
 
-button.attended:hover {
+button.btn-success:hover {
   background-color: #218838;
 }
 
-button.close {
-  background-color: #6c757d;
+button.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  transition: background 0.2s;
 }
 
-button.close:hover {
-  background-color: #5a6268;
+button.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Form Styles */
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  color: #555;
+  transition: border-color 0.2s;
+}
+
+form input:focus,
+form textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.loading-spinner span {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  color: #007bff;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #007bff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

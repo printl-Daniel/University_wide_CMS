@@ -126,14 +126,17 @@ export default {
   },
 };
 </script>
-
 <style scoped>
+/* Modal overlay */
 .modal-overlay {
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-style: normal;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -141,49 +144,143 @@ export default {
   z-index: 1000;
 }
 
+/* Modal content */
 .modal-content {
-  background-color: white;
-  padding: 20px;
+  background-color: #ffffff;
   border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
+  padding: 4rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
+/* Modal title */
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
 }
 
-button:hover {
-  background-color: #0056b3;
+/* Modal paragraphs */
+.modal-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
 }
 
-button.no-show {
-  background-color: #ff4c4c;
+.modal-content strong {
+  color: #555;
+  font-weight: 600;
 }
 
-button.no-show:hover {
-  background-color: #cc0000;
+/* Button group */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 0.5rem;
 }
 
 button.attended {
   background-color: #28a745;
+  color: white;
+  transition: background 0.2s;
 }
 
-button.attended:hover {
+button.btn-success:hover {
   background-color: #218838;
 }
 
-button.close {
-  background-color: #6c757d;
+button.no-show {
+  background-color: #dc3545;
+  color: white;
+  transition: background 0.2s;
 }
 
-button.close:hover {
-  background-color: #5a6268;
+button.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Form Styles */
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  color: #555;
+  transition: border-color 0.2s;
+}
+
+form input:focus,
+form textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.loading-spinner span {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  color: #007bff;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #007bff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

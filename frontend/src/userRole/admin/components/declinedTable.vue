@@ -43,7 +43,7 @@
       <p><strong>Date:</strong> {{ selectedAppointment.date }}</p>
       <p><strong>Time:</strong> {{ selectedAppointment.time }}</p>
       <p><strong>Notes:</strong> {{ selectedAppointment.notes || "None" }}</p>
-      <div>
+      <div class="btn-group">
         <button class="btn" @click="closeDetailsModal">Close</button>
       </div>
     </div>
@@ -103,11 +103,14 @@ export default {
 
 <style scoped>
 .modal-overlay {
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-style: normal;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -115,30 +118,78 @@ export default {
   z-index: 1000;
 }
 
+/* Modal content */
 .modal-content {
-  background-color: white;
-  padding: 20px;
+  background-color: #ffffff;
   border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
+  padding: 4rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
+/* Modal title */
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+/* Modal paragraphs */
+.modal-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.modal-content strong {
+  color: #555;
+  font-weight: 600;
+}
+
+/* Button group */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btn-success {
+  background-color: #4caf50;
+  color: white;
 }
 
-i {
-  font-size: 20px;
-  cursor: pointer;
-  color: black;
+.btn-success:hover {
+  background-color: #45a049;
+}
+
+.btn-danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #da190b;
+}
+
+.btn:last-child {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn:last-child:hover {
+  background-color: #e0e0e0;
 }
 </style>

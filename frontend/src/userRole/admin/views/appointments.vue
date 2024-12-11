@@ -7,7 +7,8 @@
     <!-- Dashboard Content -->
     <div class="page-content">
       <div class="sidebar">
-        <SideNav /></div>
+        <SideNav />
+      </div>
       <div class="content">
         <div id="tab">
           <div class="tabs">
@@ -31,7 +32,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import pendingTable from "../components/pendingTable.vue";
 import approvedTable from "../components/approvedTable.vue";
@@ -69,7 +69,7 @@ export default {
 </script>
 
 <style scoped>
-.page-content{
+.page-content {
   display: flex;
 }
 .tabs {
@@ -78,6 +78,8 @@ export default {
 }
 .content {
   padding: 1rem;
+  width: 100%;
+  height: 80vh;
 }
 .tab-content {
   padding: 1rem;
@@ -88,7 +90,7 @@ export default {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #757575;
   transition: all 0.3s ease;

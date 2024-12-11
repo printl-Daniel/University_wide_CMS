@@ -9,13 +9,11 @@ const appointmentsRouter = require("./routes/appointmentRouter");
 const studentEnrollment = require("./routes/csvUpload/studentRoutes");
 const userRouter = require("./routes/userRouter/userRoutes");
 
-
 require("dotenv").config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
-
 
 //routes for csv
 app.use("/api/student-enrollment", studentEnrollment);
@@ -26,8 +24,8 @@ app.use("/api/inventory", inventoryRouter);
 //routes for user
 app.use("/api/user", userRouter);
 
-
-// app.use("/api/feedback", feedbackRouter);
+//Daniel//
+app.use("/api/feedback", feedbackRouter);
 app.use("/api/patient", patientRouter);
 app.use("/api/appointments", appointmentsRouter);
 
