@@ -59,7 +59,7 @@
                     <button @click="openDisburseModal(item)" class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
                       <CircleMinus class="h-5 w-5" />
                     </button>
-                    <a :href="`/admin/edit-item/`" class="text-green-500 hover:text-green-700 transition-colors duration-200">
+                    <a :href="`/admin/edit-item/${item._id}`" class="text-green-500 hover:text-green-700 transition-colors duration-200">
                       <PencilLine class="h-5 w-5" />
                     </a>
                   </div>
