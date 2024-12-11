@@ -1,219 +1,128 @@
 <template>
-  <div>
+  <div class="min-h-screen bg-gray-100">
     <!-- Admin Navbar (Top Navbar) -->
     <div class="header">
       <topNav />
     </div>
 
-    <div class="page-content d-flex">
+    <div class="flex">
       <div class="sidebar">
         <sideNav />
       </div>
 
-      <div class="content flex-grow-1">
-        <h2>Dashboard</h2>
-
-        <!-- Overview Section -->
-        <div class="row g-4 mt-3">
-          <!-- Total Disbursements Card -->
-          <div class="col-md-4">
-            <div class="card text-center">
-              <div class="card-body">
-                <h3 class="card-title">Total Disbursements</h3>
-                <p class="card-text">{{ totalDisbursements }} Disbursements</p>
-              </div>
-            </div>
+      <!-- Main Content -->
+      <div class="flex-1 p-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Clinic Dashboard</h1>
+        
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Total Items</h2>
+            <p class="text-3xl font-bold text-blue-600">{{ totalItems }}</p>
           </div>
-
-          <!-- Current Inventory Card -->
-          <div class="col-md-4">
-            <div class="card text-center">
-              <div class="card-body">
-                <h3 class="card-title">Current Inventory</h3>
-                <p class="card-text">{{ currentInventory }} Items Available</p>
-              </div>
-            </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Low Stock Items</h2>
+            <p class="text-3xl font-bold text-yellow-600">{{ lowStockItems.length }}</p>
           </div>
-
-          <!-- Total Quantity Disbursed Card -->
-          <div class="col-md-4">
-            <div class="card text-center">
-              <div class="card-body">
-                <h3 class="card-title">Total Quantity Disbursed</h3>
-                <p class="card-text">{{ totalQuantityDisbursed }} Items</p>
-              </div>
-            </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Expiring Soon</h2>
+            <p class="text-3xl font-bold text-red-600">{{ expiringItems.length }}</p>
           </div>
         </div>
-
-        <!-- Recent Activity Section -->
-        <h3>Recent Activity</h3>
-        <table id="recentDisbursements" class="table table-striped">
-          <thead>
-            <tr>
-              <th>Item Name</th>
-              <th>Quantity</th>
-              <th>Patient Name</th>
-              <th>Reason</th>
-              <th>College</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="disbursement in recentDisbursements" :key="disbursement._id">
-              <td>{{ disbursement.itemName }}</td>
-              <td>{{ disbursement.quantity }}</td>
-              <td>{{ disbursement.patientName }}</td>
-              <td>{{ disbursement.reason }}</td>
-              <td>{{ disbursement.college }}</td>
-              <td>{{ new Date(disbursement.date).toLocaleString() }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Notifications Section -->
-        <div class="row mt-4">
-          <!-- Low Stock Alerts -->
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Low Stock Alerts</h5>
-                <div v-if="notifications.length > 0">
-                  <h3>Low Stock Notifications</h3>
-                  <ul>
-                    <li v-for="notification in notifications" :key="notification._id">
-                      {{ notification.message }}
-                    </li>
-                  </ul>
-                </div>
-                <div v-else>
-                  <p>No low stock notifications</p>
-                </div>
-              </div>
+        
+        <!-- Notifications -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Notifications</h2>
+          <div v-if="lowStockItems.length || expiringItems.length">
+            <div v-for="item in lowStockItems" :key="'low-' + item.id" class="flex items-center mb-2">
+              <AlertCircle class="text-yellow-500 mr-2" />
+              <span>Low stock: {{ item.name }} ({{ item.quantity }} left)</span>
+            </div>
+            <div v-for="item in expiringItems" :key="'exp-' + item.id" class="flex items-center mb-2">
+              <AlertTriangle class="text-red-500 mr-2" />
+              <span>Expiring soon: {{ item.name }} ({{ formatDate(item.expiryDate) }})</span>
             </div>
           </div>
-
-          <!-- Expiration Alerts -->
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Expiration Alerts</h5>
-                <ul>
-                  <li v-for="item in expiringItems" :key="item.itemId">{{ item.itemName }} - Expiring on {{ new Date(item.expirationDate).toLocaleDateString() }}</li>
-                </ul>
-              </div>
-            </div>
+          <p v-else class="text-gray-600">No urgent notifications</p>
+        </div>
+        
+        <!-- Inventory Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <h2 class="text-xl font-semibold text-gray-800 p-6 pb-4">Inventory Items</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry Date</th>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr v-for="item in inventoryItems" :key="item.id" class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.name }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.quantity }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(item.expiryDate) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span :class="getStatusClass(item)">
+                      {{ getStatusText(item) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import sideNav from '../components/sideNav.vue';
-import topNav from '../components/topNav.vue';
+<script setup>
+import { ref, computed } from 'vue'
+import { AlertCircle, AlertTriangle } from 'lucide-vue-next'
+import sideNav from '../components/sideNav.vue'
+import topNav from '../components/topNav.vue'
 
-export default {
-  components: {
-    sideNav,
-    topNav
-  },
-  data() {
-    return {
-      totalDisbursements: 0, // Replace with actual data
-      currentInventory: 100, // Replace with actual data
-      totalQuantityDisbursed: 0, // Replace with actual data
-      recentDisbursements: [], // Replace with API data
-      lowStockItems: [], // Replace with low stock data
-      expiringItems: [], // Replace with expiring items data
-      notifications: [] // Store notifications
-    };
-  },
-  methods: {
-    async fetchNotifications() {
-      try {
-        //const response = await axios.get("http://localhost:5000/api/inventory/notifications");
-        this.notifications = response.data.notifications;
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    }
-  },
-  mounted() {
-  this.fetchNotifications();
-  }
-};
+// Mock data - replace with actual data fetching logic
+const inventoryItems = ref([
+  { id: 1, name: 'Paracetamol', quantity: 500, expiryDate: '2024-12-31' },
+  { id: 2, name: 'Ibuprofen', quantity: 10, expiryDate: '2024-06-30' },
+  { id: 3, name: 'Bandages', quantity: 200, expiryDate: '2025-12-31' },
+  { id: 4, name: 'Antiseptic Solution', quantity: 50, expiryDate: '2023-08-31' },
+  { id: 5, name: 'Syringes', quantity: 1000, expiryDate: '2026-01-31' },
+])
+
+const totalItems = computed(() => inventoryItems.value.length)
+
+const lowStockItems = computed(() => 
+  inventoryItems.value.filter(item => item.quantity <= 20)
+)
+
+const expiringItems = computed(() => {
+  const threeMonthsFromNow = new Date()
+  threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3)
+  return inventoryItems.value.filter(item => new Date(item.expiryDate) <= threeMonthsFromNow)
+})
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
+}
+
+const getStatusClass = (item) => {
+  if (item.quantity <= 20) return 'text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium'
+  if (new Date(item.expiryDate) <= new Date()) return 'text-red-600 bg-red-100 px-2 py-1 rounded-full text-xs font-medium'
+  return 'text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-medium'
+}
+
+const getStatusText = (item) => {
+  if (item.quantity <= 20) return 'Low Stock'
+  if (new Date(item.expiryDate) <= new Date()) return 'Expired'
+  return 'In Stock'
+}
 </script>
-
-<style scoped>
-.dashboard {
-  padding: 20px;
-}
-
-.card {
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.card-body {
-  padding: 20px;
-}
-
-.card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.card-text {
-  font-size: 1.2rem;
-  color: #555;
-}
-
-.table {
-  margin-top: 20px;
-  width: 100%;
-}
-
-.card-body ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.card-body li {
-  padding: 5px;
-  font-size: 1rem;
-}
-
-/* For responsive layout */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-}
-
-.card {
-  transition: transform 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.card-title {
-  color: #007bff;
-}
-
-.card-body {
-  background-color: #f8f9fa;
-}
-
-.card:hover .card-body {  
-  background-color: #e9ecef;
-}
-</style>

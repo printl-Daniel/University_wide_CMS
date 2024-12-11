@@ -98,7 +98,7 @@ exports.addQuantityToItem = async (req, res) => {
       transactionDate: new Date(),
       itemName: item.itemName,
       actionType: "Quantity Added",
-      quantityChanged: quantityToAdd,
+      quantityChanged: +quantityToAdd,
       remainingQuantity: item.quantity,
       responsiblePerson,
       reasonForAction: `Quantity added by ${quantityToAdd} units`,

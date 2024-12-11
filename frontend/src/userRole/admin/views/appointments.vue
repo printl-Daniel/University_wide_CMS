@@ -6,7 +6,8 @@
     </div>
     <!-- Dashboard Content -->
     <div class="page-content">
-      <div class="sidebar"><SideNav /></div>
+      <div class="sidebar">
+        <SideNav /></div>
       <div class="content">
         <div id="tab">
           <div class="tabs">
@@ -68,7 +69,9 @@ export default {
 </script>
 
 <style scoped>
-/* Tabs */
+.page-content{
+  display: flex;
+}
 .tabs {
   border-bottom: 2px solid #e0e0e0;
   margin-bottom: 20px;
