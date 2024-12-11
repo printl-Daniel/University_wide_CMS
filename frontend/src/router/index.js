@@ -19,6 +19,7 @@ import audit from "../userRole/admin/views/viewAudit.vue";
 import addItemModal from "@/userRole/admin/views/addItemModal.vue";
 import Feedback from "../userRole/admin/views/feedback.vue";
 import disburse from "../userRole/admin/views/viewDisbursed.vue";
+import updateItem from "../userRole/admin/views/updateItem.vue";
 
 //doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
@@ -117,6 +118,11 @@ const routes = [
     path: "/admin/add-item",
     name: "addItem",
     component: addItemModal,
+  },
+  {
+    path: "/admin/edit-item",
+    name: 'editItem',
+  component: updateItem,
   },
   {
     path: "/feedback",

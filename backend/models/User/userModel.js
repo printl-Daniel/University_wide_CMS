@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 // Define the User schema
 const userSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId(),
+    unique: true, // Ensures no duplicate IDs
+  },
   fullname: {
     type: String,
     required: true,
@@ -20,24 +25,10 @@ const userSchema = new mongoose.Schema({
     required: true,  
     enum: ['Admin', 'Doctor', 'Staff'],
   },
-  isFirstLogin: {
-    type: Boolean,
-    default: true,  
-  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-// Middleware to update the `updatedAt` field on update
-userSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
-  next();
 });
 
 // Create and export the User model

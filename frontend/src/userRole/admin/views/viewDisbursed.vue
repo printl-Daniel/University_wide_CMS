@@ -42,7 +42,7 @@
            :class="{ 'bg-gray-50': index % 2 === 0 }"
            class="hover:bg-gray-100 transition-colors duration-200"
          >
-           <td v-for="header in headers" :key="header.key" class="border-t border-gray-200 px-6 py-4">
+           <td v-for="header in headers" :key="header.key" class="border-t border-gray-200 px-10 py-3">
              {{ header.key === 'date' ? formatDate(disbursement[header.key]) : disbursement[header.key] }}
            </td>
          </tr>
