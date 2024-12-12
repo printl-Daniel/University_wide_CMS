@@ -55,6 +55,7 @@ exports.getLowStockItemCount = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+
 exports.itemsNeedAttention = async (req, res) => {
   try {
     const today = new Date();
