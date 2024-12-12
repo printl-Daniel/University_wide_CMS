@@ -8,6 +8,7 @@
           <th>Phone</th>
           <th>Date</th>
           <th>Time</th>
+          <th>Status</th>
           <th>View</th>
         </tr>
       </thead>
@@ -18,6 +19,7 @@
           <td>{{ appointment.phone }}</td>
           <td>{{ appointment.date }}</td>
           <td>{{ appointment.time }}</td>
+          <td>{{ appointment.status }}</td>
           <td class="view">
             <a href="#" @click.prevent="openDetailsModal(appointment)">
               <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -42,6 +44,7 @@
       <p><strong>Phone:</strong> {{ selectedAppointment.phone }}</p>
       <p><strong>Date:</strong> {{ selectedAppointment.date }}</p>
       <p><strong>Time:</strong> {{ selectedAppointment.time }}</p>
+      <p><strong>Status:</strong> {{ selectedAppointment.status }}</p>
       <p><strong>Notes:</strong> {{ selectedAppointment.notes || "None" }}</p>
       <div class="btn-group">
         <button class="btn" @click="closeDetailsModal">Close</button>

@@ -1,5 +1,7 @@
 <template>
-  <div class="container d-flex align-items-center justify-content-center vh-100">
+  <div
+    class="container d-flex align-items-center justify-content-center vh-100"
+  >
     <div class="card">
       <!-- Logo -->
       <div class="logoMinsu">
@@ -24,8 +26,8 @@
               v-model="form.username"
               required
               autocomplete="off"
+              placeholder="Username"
             />
-            <label for="username">Username</label>
           </div>
 
           <!-- Password Field -->
@@ -36,8 +38,8 @@
               v-model="form.password"
               required
               autocomplete="off"
+              placeholder="Password"
             />
-            <label for="password">Password</label>
           </div>
 
           <!-- Error Message -->
@@ -82,17 +84,20 @@ export default {
 
         // Store JWT token and user role in localStorage
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userRole", JSON.stringify(response.data.user.role)); // Assuming user.role is available
+        localStorage.setItem(
+          "userRole",
+          JSON.stringify(response.data.user.role)
+        ); // Assuming user.role is available
 
         // Redirect to the appropriate dashboard based on user role
         const userRole = response.data.user.role; // Assuming user role is returned in the response
-        if (userRole === 'Admin') {
+        if (userRole === "Admin") {
           this.$router.push("admin/dashboard");
-        } else if (userRole === 'Staff') {
+        } else if (userRole === "Staff") {
           this.$router.push("staff/dashboard");
-        } else if (userRole === 'Doctor') {
+        } else if (userRole === "Doctor") {
           this.$router.push("doctor/dashboard");
-        } else if (userRole === 'Patient') {
+        } else if (userRole === "Patient") {
           this.$router.push("patient/inbox");
         } else {
           this.message = "Unknown role. Please contact support.";
@@ -155,9 +160,10 @@ export default {
 }
 
 .inputGroup {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   margin: 1em 0;
-  position: relative }
+  position: relative;
+}
 
 .inputGroup input {
   font-size: 100%;
@@ -178,7 +184,6 @@ export default {
   pointer-events: none;
   transition: all 0.3s ease;
   color: rgb(100, 100, 100);
-
 }
 
 .inputGroup :is(input:focus, input:valid) ~ label {
@@ -244,6 +249,3 @@ export default {
   transform: scale(100) translateX(2px);
 }
 </style>
-
-
-

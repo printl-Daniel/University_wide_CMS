@@ -41,10 +41,12 @@ exports.getAfterAppointed = async () => {
   try {
     const snapshot = await db
       .collection("appointments")
-      .where("status", "in", ["No-Show", "Attended"])
+      .where("status", "in", ["No-show", "Attended"])
       .get();
-
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
   } catch (error) {
     throw new Error("Error fetching appointments: " + error.message);
   }
