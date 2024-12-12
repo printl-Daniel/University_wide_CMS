@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const inventoryController = require("../controller/Inventory/inventoryController");
 
 router.post("/add", inventoryController.addItemInventory);
+router.put("/update/:itemId", inventoryController.updateItemInventory);
 router.get("/display", inventoryController.getInventoryItems);
 router.get("/history", inventoryController.getHistory);
 router.put("/add-quantity/:itemId", inventoryController.addQuantityToItem);
@@ -12,12 +13,11 @@ router.get("/disbursements", inventoryController.getDisbursements);
 router.get("/notifications", inventoryController.getNotifications);
 router.get("/expired", inventoryController.getExpiredItems);
 
-
-router.post("/notify-upcoming-expirations", inventoryController.notifyUpcomingExpirations);
-
+router.post(
+  "/notify-upcoming-expirations",
+  inventoryController.notifyUpcomingExpirations
+);
 
 router.delete("/remove-expired", inventoryController.removeExpiredItems);
-
-
 
 module.exports = router;

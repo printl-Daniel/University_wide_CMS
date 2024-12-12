@@ -1,7 +1,7 @@
 const Inventory = require("../../models/Inventory/inventory.js");
 const History = require("../../models/Inventory/history.js");
 const Audit = require("../../models/Inventory/audit.js");
-const Disburse = require("../../models/Inventory/disbursement.js")
+const Disburse = require("../../models/Inventory/disbursement.js");
 const Notification = require("../../models/Inventory/notification.js");
 const mongoose = require("mongoose");
 
@@ -71,7 +71,6 @@ exports.addItemInventory = async (req, res) => {
   }
 };
 
-
 // Add Quantity to an Existing Item
 exports.addQuantityToItem = async (req, res) => {
   const { itemId } = req.params;
@@ -135,12 +134,13 @@ exports.getHistory = async (req, res) => {
   }
 };
 
-
 exports.getInventoryItems = async (req, res) => {
   try {
-    const inventoryItems = await Inventory.find(); 
+    const inventoryItems = await Inventory.find();
 
-    const lowStockItems = inventoryItems.filter(item => item.quantity < item.threshold);
+    const lowStockItems = inventoryItems.filter(
+      (item) => item.quantity < item.threshold
+    );
     if (lowStockItems.length > 0) {
       for (let item of lowStockItems) {
         // Create a notification for low stock items
@@ -163,10 +163,9 @@ exports.getInventoryItems = async (req, res) => {
   }
 };
 
-
 exports.disburseItem = async (req, res) => {
   const { itemId } = req.params; // Identify the item in inventory
-  const { quantityToDisburse, patientName, reason, college} = req.body;
+  const { quantityToDisburse, patientName, reason, college } = req.body;
 
   if (!quantityToDisburse || !patientName || !reason || !college) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -182,7 +181,9 @@ exports.disburseItem = async (req, res) => {
 
     // Check if sufficient quantity is available
     if (item.quantity < quantityToDisburse) {
-      return res.status(400).json({ message: "Insufficient stock for disbursement" });
+      return res
+        .status(400)
+        .json({ message: "Insufficient stock for disbursement" });
     }
 
     // Deduct the quantity
@@ -236,29 +237,35 @@ exports.getDisbursements = async (req, res) => {
     res.status(200).json(disbursements);
   } catch (error) {
     console.error("Error fetching disbursements:", error);
-    res.status(500).json({ message: "Error fetching disbursements", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching disbursements", error: error.message });
   }
 };
 
-
 exports.getNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ status: "unread" }).sort({ date: -1 }); // Fetch latest notifications
+    const notifications = await Notification.find({ status: "unread" }).sort({
+      date: -1,
+    }); // Fetch latest notifications
     res.status(200).json({
       success: true,
       notifications: notifications,
     });
   } catch (error) {
     console.error("Error fetching notifications:", error);
-    res.status(500).json({ message: "Error fetching notifications", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching notifications", error: error.message });
   }
 };
-
 
 exports.getExpiredItems = async (req, res) => {
   try {
     const today = new Date();
-    const expiredItems = await Inventory.find({ expirationDate: { $lt: today } });
+    const expiredItems = await Inventory.find({
+      expirationDate: { $lt: today },
+    });
 
     res.status(200).json({
       success: true,
@@ -286,7 +293,9 @@ exports.notifyUpcomingExpirations = async (req, res) => {
 
     for (const item of itemsToExpire) {
       const notification = new Notification({
-        message: `Item "${item.itemName}" is nearing expiration (expires on ${item.expirationDate.toDateString()})`,
+        message: `Item "${
+          item.itemName
+        }" is nearing expiration (expires on ${item.expirationDate.toDateString()})`,
         itemId: item.itemId,
       });
       await notification.save();
@@ -310,7 +319,9 @@ exports.notifyUpcomingExpirations = async (req, res) => {
 exports.removeExpiredItems = async (req, res) => {
   try {
     const today = new Date();
-    const expiredItems = await Inventory.find({ expirationDate: { $lt: today } });
+    const expiredItems = await Inventory.find({
+      expirationDate: { $lt: today },
+    });
 
     if (expiredItems.length === 0) {
       return res.status(200).json({

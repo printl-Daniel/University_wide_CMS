@@ -120,7 +120,7 @@ const routes = [
     component: addItemModal,
   },
   {
-    path: "/admin/edit-item",
+    path: '/admin/edit-item/:itemId',
     name: 'editItem',
   component: updateItem,
   },
