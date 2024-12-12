@@ -69,9 +69,9 @@
                         <button @click="openDisburseModal(item)" class="text-red-600 hover:text-red-900">
                           <CircleMinus class="h-5 w-5" />
                         </button>
-                        <a :href="`/admin/edit-item/${item._id}`" class="text-green-600 hover:text-green-900">
+                        <button @click="openUpdateItemModal(item)" class="text-green-600 hover:text-green-900">
                           <PencilLine class="h-5 w-5" />
-                        </a>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -164,6 +164,13 @@
       @close="showDisburseModal = false"
       @item-disbursed="handleItemDisbursed"
     />
+    <updateItemModal
+      v-if="showUpdateItemModal"
+      :item="selectedItemForUpdate"
+      :showModal="showUpdateItemModal"
+      @close="showUpdateItemModal = false"
+      @item-updated="handleItemUpdated"
+    />
   </div>
 </template>
 
@@ -175,15 +182,18 @@ import addQuantityModal from '../../../components/addQuantityModal.vue'
 import disburseModal from '../../../components/disburseModal.vue'
 import sideNav from '../components/sideNav.vue'
 import topNav from '../components/topNav.vue'
+import updateItemModal from '../../../components/updateItemModal.vue';
 
 const inventoryItems = ref([])
 const searchQuery = ref('')
 const sortKey = ref('itemId')
 const sortOrder = ref('asc')
 const showAddQuantityModal = ref(false)
+const showUpdateItemModal = ref(false)
 const showDisburseModal = ref(false)
 const selectedItemForQuantity = ref(null)
 const selectedItemForDisburse = ref(null)
+const selectedItemForUpdate = ref(null)
 
 // Pagination
 const currentPage = ref(1)
@@ -303,6 +313,10 @@ const handleQuantityAdded = (updatedItem) => {
     inventoryItems.value[index] = updatedItem
   }
 }
+const openUpdateItemModal = (item) => {
+  selectedItemForUpdate.value = item
+  showUpdateItemModal.value = true
+}
 
 const handleItemDisbursed = (updatedItem) => {
   const index = inventoryItems.value.findIndex((item) => item._id === updatedItem._id)
@@ -311,5 +325,11 @@ const handleItemDisbursed = (updatedItem) => {
   }
 }
 
+const handleItemUpdated = (updatedItem) => {
+    const index = inventoryItems.value.findIndex((item) => item._id === updatedItem._id)
+  if (index !== -1) {
+    inventoryItems.value[index] = updatedItem
+  }
+}
 displayItems()
 </script>

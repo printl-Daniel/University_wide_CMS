@@ -71,6 +71,72 @@ exports.addItemInventory = async (req, res) => {
   }
 };
 
+// Update Item in Inventory
+exports.updateItem = async (req, res) => {
+  const { itemId } = req.params; // Get itemId from request parameters
+  const {
+    itemName,
+    category,
+    unitOfMeasure,
+    expirationDate,
+    supplier,
+    purchaseDate,
+    quantity,
+  } = req.body; 
+
+
+  if (!itemId) {
+    return res.status(400).json({ message: "Item ID is required." });
+  }
+
+  try {
+    // Find the item in the inventory
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found." });
+    }
+
+    // Update item fields if provided
+    if (itemName) item.itemName = itemName;
+    if (category) item.category = category;
+    if (unitOfMeasure) item.unitOfMeasure = unitOfMeasure;
+    if (expirationDate) item.expirationDate = expirationDate;
+    if (supplier) item.supplier = supplier;
+    if (purchaseDate) item.purchaseDate = purchaseDate;
+    if (quantity !== undefined) item.quantity = quantity; // Update quantity only if provided
+
+    // Save the updated item
+    await item.save();
+
+    // Log the update in history
+    const historyEntry = new History({
+      transactionId: new mongoose.Types.ObjectId(),
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: "Updated",
+      quantityChanged: 0, // No quantity change in this case
+      remainingQuantity: item.quantity,
+      responsiblePerson: "Admin", 
+      reasonForAction: "Item details updated",
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: "Item updated successfully!",
+      item,
+      history: historyEntry,
+    });
+  } catch (error) {
+    console.error("Error updating item:", error);
+    res.status(500).json({
+      message: "Error updating item",
+      error: error.message,
+    });
+  }
+};
 // Add Quantity to an Existing Item
 exports.addQuantityToItem = async (req, res) => {
   const { itemId } = req.params;
