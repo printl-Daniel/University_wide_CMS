@@ -36,13 +36,16 @@ export default {
 /* General Layout */
 .page-content {
   display: flex; /* Enable flexbox layout */
-  
+  font-family: "Poppins", serif;
+  font-weight: 300;
+  font-style: normal;
+  height: 92vh;
 }
 
 /* Content Area */
 .content {
   flex: 1; /* Take the remaining space */
-  padding: 2rem;
+  padding: 1rem;
   background-color: #ffffff;
 }
 </style>

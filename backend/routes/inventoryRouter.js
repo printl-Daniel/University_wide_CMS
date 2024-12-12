@@ -12,7 +12,6 @@ router.put("/disburse/:itemId", inventoryController.disburseItem);
 router.get("/disbursements", inventoryController.getDisbursements);
 router.get("/notifications", inventoryController.getNotifications);
 router.get("/expired", inventoryController.getExpiredItems);
-
 router.post(
   "/notify-upcoming-expirations",
   inventoryController.notifyUpcomingExpirations
