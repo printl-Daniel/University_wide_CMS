@@ -1,7 +1,7 @@
 const Inventory = require("../../models/Inventory/inventory.js");
 const History = require("../../models/Inventory/history.js");
 const Audit = require("../../models/Inventory/audit.js");
-const Disburse = require("../../models/Inventory/disbursement.js")
+const Disburse = require("../../models/Inventory/disbursement.js");
 const Notification = require("../../models/Inventory/notification.js");
 const mongoose = require("mongoose");
 
@@ -71,68 +71,6 @@ exports.addItemInventory = async (req, res) => {
   }
 };
 
-exports.updateItemInventory = async (req, res) => {
-  const { itemId } = req.params;
-  const {
-    itemName,
-    category,
-    unitOfMeasure,
-    expirationDate,
-    supplier,
-    purchaseDate,
-    responsiblePerson,
-  } = req.body;
-
-  if (!itemId || !itemName || !category || !unitOfMeasure || !expirationDate || !supplier || !purchaseDate) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
-  try {
-    // Find the item by itemId
-    const item = await Inventory.findOne({ itemId });
-
-    if (!item) {
-      return res.status(404).json({ message: "Item not found in inventory" });
-    }
-
-    // Update the item details (excluding quantity)
-    item.itemName = itemName;
-    item.category = category;
-    item.unitOfMeasure = unitOfMeasure;
-    item.expirationDate = expirationDate;
-    item.supplier = supplier;
-    item.purchaseDate = purchaseDate;
-
-    await item.save();
-
-    // Log the update in history
-    const historyEntry = new History({
-      transactionId: new mongoose.Types.ObjectId(),
-      transactionDate: new Date(),
-      itemName: item.itemName,
-      actionType: "Updated",
-      quantityChanged: 0,
-      remainingQuantity: item.quantity, // Ensure quantity remains unchanged
-      responsiblePerson: responsiblePerson || "Admin",
-      reasonForAction: "Item details updated (Quantity not editable)",
-      supplier: item.supplier,
-    });
-
-    await historyEntry.save();
-
-    res.status(200).json({
-      message: "Item updated successfully!",
-      item,
-      history: historyEntry,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: "Error updating item",
-      error: error.message,
-    });
-  }
-};
-
 // Add Quantity to an Existing Item
 exports.addQuantityToItem = async (req, res) => {
   const { itemId } = req.params;
@@ -196,12 +134,13 @@ exports.getHistory = async (req, res) => {
   }
 };
 
-
 exports.getInventoryItems = async (req, res) => {
   try {
-    const inventoryItems = await Inventory.find(); 
+    const inventoryItems = await Inventory.find();
 
-    const lowStockItems = inventoryItems.filter(item => item.quantity < item.threshold);
+    const lowStockItems = inventoryItems.filter(
+      (item) => item.quantity < item.threshold
+    );
     if (lowStockItems.length > 0) {
       for (let item of lowStockItems) {
         // Create a notification for low stock items
@@ -224,10 +163,9 @@ exports.getInventoryItems = async (req, res) => {
   }
 };
 
-
 exports.disburseItem = async (req, res) => {
   const { itemId } = req.params; // Identify the item in inventory
-  const { quantityToDisburse, patientName, reason, college} = req.body;
+  const { quantityToDisburse, patientName, reason, college } = req.body;
 
   if (!quantityToDisburse || !patientName || !reason || !college) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -243,7 +181,9 @@ exports.disburseItem = async (req, res) => {
 
     // Check if sufficient quantity is available
     if (item.quantity < quantityToDisburse) {
-      return res.status(400).json({ message: "Insufficient stock for disbursement" });
+      return res
+        .status(400)
+        .json({ message: "Insufficient stock for disbursement" });
     }
 
     // Deduct the quantity
@@ -297,7 +237,127 @@ exports.getDisbursements = async (req, res) => {
     res.status(200).json(disbursements);
   } catch (error) {
     console.error("Error fetching disbursements:", error);
-    res.status(500).json({ message: "Error fetching disbursements", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching disbursements", error: error.message });
   }
 };
 
+exports.getNotifications = async (req, res) => {
+  try {
+    const notifications = await Notification.find({ status: "unread" }).sort({
+      date: -1,
+    }); // Fetch latest notifications
+    res.status(200).json({
+      success: true,
+      notifications: notifications,
+    });
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching notifications", error: error.message });
+  }
+};
+
+exports.getExpiredItems = async (req, res) => {
+  try {
+    const today = new Date();
+    const expiredItems = await Inventory.find({
+      expirationDate: { $lt: today },
+    });
+
+    res.status(200).json({
+      success: true,
+      expiredItems,
+    });
+  } catch (error) {
+    console.error("Error fetching expired items:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch expired items",
+      error: error.message,
+    });
+  }
+};
+
+exports.notifyUpcomingExpirations = async (req, res) => {
+  try {
+    const today = new Date();
+    const upcomingThreshold = new Date();
+    upcomingThreshold.setDate(today.getDate() + 7); // Notify for items expiring in the next 7 days
+
+    const itemsToExpire = await Inventory.find({
+      expirationDate: { $gte: today, $lte: upcomingThreshold },
+    });
+
+    for (const item of itemsToExpire) {
+      const notification = new Notification({
+        message: `Item "${
+          item.itemName
+        }" is nearing expiration (expires on ${item.expirationDate.toDateString()})`,
+        itemId: item.itemId,
+      });
+      await notification.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Notifications for upcoming expirations sent successfully",
+    });
+  } catch (error) {
+    console.error("Error notifying upcoming expirations:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to notify upcoming expirations",
+      error: error.message,
+    });
+  }
+};
+
+// Remove Expired Items
+exports.removeExpiredItems = async (req, res) => {
+  try {
+    const today = new Date();
+    const expiredItems = await Inventory.find({
+      expirationDate: { $lt: today },
+    });
+
+    if (expiredItems.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No expired items to remove",
+      });
+    }
+
+    for (const item of expiredItems) {
+      await item.remove();
+
+      // Optional: Log removal in history
+      const historyEntry = new History({
+        transactionId: new mongoose.Types.ObjectId(),
+        transactionDate: new Date(),
+        itemName: item.itemName,
+        actionType: "Removed (Expired)",
+        quantityChanged: -item.quantity,
+        remainingQuantity: 0,
+        responsiblePerson: "System",
+        reasonForAction: "Expired",
+        supplier: item.supplier,
+      });
+      await historyEntry.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Expired items removed successfully",
+    });
+  } catch (error) {
+    console.error("Error removing expired items:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to remove expired items",
+      error: error.message,
+    });
+  }
+};
