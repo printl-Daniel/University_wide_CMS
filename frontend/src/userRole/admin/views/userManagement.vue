@@ -267,17 +267,18 @@ export default {
       return Array.from({ length: end - start + 1 }, (_, i) => start + i)
     })
 
-    const createUser = async () => {
-      try {
-        const response = await axios.post('http://localhost:5000/api/user/add-user', newUser.value)
-        users.value.push(response.data)
-        successMessage.value = "User has been added successfully!"
-        showSuccessModal.value = true
-        resetForm()
-      } catch (error) {
-        console.error("Error creating user:", error)
-      }
-    }
+    const createUser  = async () => {
+  try {
+    const response = await axios.post('http://localhost:5000/api/user/add-user', newUser .value);
+    // Option 1: Fetch users again to refresh the list
+    await fetchUsers(); // Refresh the user list
+    successMessage.value = "User  has been added successfully!";
+    showSuccessModal.value = true;
+    resetForm();
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
+}
 
     const fetchUsers = async () => {
       try {

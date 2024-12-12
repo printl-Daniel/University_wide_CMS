@@ -6,7 +6,7 @@ let tokenBlacklist = [];
 
 // Middleware to check if the user is authenticated
 const authMiddleware = async (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', ''); // Get the token
+  const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
     return res.status(401).json({ message: "Authorization token is required" });
@@ -18,15 +18,25 @@ const authMiddleware = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Verify token
+    // Verify token directly without promisify
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Unauthorized access" });
+      }
 
-    const user = await User.findById(decoded.userId);  // Find user by decoded userId
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized access" });
-    }
+      // Find user by decoded userId
+      User.findById(decoded.userId).then(user => {
+        if (!user) {
+          return res.status(401).json({ message: "Unauthorized access" });
+        }
 
-    req.user = user;  // Attach the user object to the request
-    next();  // Proceed if the user is authenticated
+        req.user = user;  // Attach the user object to the request
+        next();  // Proceed if the user is authenticated
+      }).catch(error => {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+      });
+    });
   } catch (error) {
     console.error(error);
     res.status(401).json({ message: "Unauthorized access" });

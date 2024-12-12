@@ -62,18 +62,21 @@
                       {{ formatCellData(item[header.key], header.key) }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap text-sm font-medium">
-                      <div class="flex space-x-2">
-                        <button @click="openAddQuantityModal(item)" class="text-blue-600 hover:text-blue-900">
-                          <CirclePlus class="h-5 w-5" />
-                        </button>
-                        <button @click="openDisburseModal(item)" class="text-red-600 hover:text-red-900">
-                          <CircleMinus class="h-5 w-5" />
-                        </button>
-                        <a :href="`/admin/edit-item/${item._id}`" class="text-green-600 hover:text-green-900">
-                          <PencilLine class="h-5 w-5" />
-                        </a>
-                      </div>
-                    </td>
+                    <div class="flex space-x-2">
+                      <button @click="openAddQuantityModal(item)" class="text-blue-600 hover:text-blue-900">
+                        <CirclePlus class="h-5 w-5" />
+                      </button>
+                      <button @click="openDisburseModal(item)" class="text-red-600 hover:text-red-900">
+                        <CircleMinus class="h-5 w-5" />
+                      </button>
+                      <button @click="openUpdateItemModal(item)" class="text-green-600 hover:text-green-900">
+                        <PencilLine class="h-5 w-5" />
+                      </button>
+                      <button @click="archiveItem(item.itemId)" class="text-yellow-600 hover:text-yellow-900">
+                        <Archive class="h-5 w-5" />
+                      </button>
+                    </div>
+                  </td>
                   </tr>
                 </tbody>
               </table>
@@ -164,26 +167,36 @@
       @close="showDisburseModal = false"
       @item-disbursed="handleItemDisbursed"
     />
+    <updateItemModal
+      v-if="showUpdateItemModal"
+      :item="selectedItemForUpdate"
+      :showModal="showUpdateItemModal"
+      @close="showUpdateItemModal = false"
+      @item-updated="handleItemUpdated"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import axios from 'axios'
-import { CirclePlus, CircleMinus, PencilLine } from 'lucide-vue-next'
+import { CirclePlus, CircleMinus, PencilLine, Archive } from 'lucide-vue-next'
 import addQuantityModal from '../../../components/addQuantityModal.vue'
 import disburseModal from '../../../components/disburseModal.vue'
 import sideNav from '../components/sideNav.vue'
 import topNav from '../components/topNav.vue'
+import updateItemModal from '../../../components/updateItemModal.vue';
 
 const inventoryItems = ref([])
 const searchQuery = ref('')
 const sortKey = ref('itemId')
 const sortOrder = ref('asc')
 const showAddQuantityModal = ref(false)
+const showUpdateItemModal = ref(false)
 const showDisburseModal = ref(false)
 const selectedItemForQuantity = ref(null)
 const selectedItemForDisburse = ref(null)
+const selectedItemForUpdate = ref(null)
 
 // Pagination
 const currentPage = ref(1)
@@ -279,6 +292,17 @@ const displayItems = async () => {
     console.error('Error fetching items:', error)
   }
 }
+const archiveItem = async (itemId) => {
+  try {
+    await axios.delete(`http://localhost:5000/api/inventory/archive-item/${itemId}`);
+    // Remove the item from the inventoryItems array
+    inventoryItems.value = inventoryItems.value.filter(item => item.itemId !== itemId);
+    alert('Item archived successfully!');
+  } catch (error) {
+    console.error("Error archiving item:", error);
+    alert('Failed to archive item.');
+  }
+};
 
 const formatCellData = (value, key) => {
   if (key === 'expirationDate' || key === 'purchaseDate') {
@@ -303,6 +327,10 @@ const handleQuantityAdded = (updatedItem) => {
     inventoryItems.value[index] = updatedItem
   }
 }
+const openUpdateItemModal = (item) => {
+  selectedItemForUpdate.value = item
+  showUpdateItemModal.value = true
+}
 
 const handleItemDisbursed = (updatedItem) => {
   const index = inventoryItems.value.findIndex((item) => item._id === updatedItem._id)
@@ -311,5 +339,11 @@ const handleItemDisbursed = (updatedItem) => {
   }
 }
 
+const handleItemUpdated = (updatedItem) => {
+    const index = inventoryItems.value.findIndex((item) => item._id === updatedItem._id)
+  if (index !== -1) {
+    inventoryItems.value[index] = updatedItem
+  }
+}
 displayItems()
 </script>

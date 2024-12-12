@@ -71,6 +71,199 @@ exports.addItemInventory = async (req, res) => {
   }
 };
 
+// Update Item in Inventory
+exports.updateItem = async (req, res) => {
+  const { itemId } = req.params; // Get itemId from request parameters
+  const {
+    itemName,
+    category,
+    unitOfMeasure,
+    expirationDate,
+    supplier,
+    purchaseDate,
+    quantity,
+  } = req.body; 
+
+
+  if (!itemId) {
+    return res.status(400).json({ message: "Item ID is required." });
+  }
+
+  try {
+    // Find the item in the inventory
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found." });
+    }
+
+    // Update item fields if provided
+    if (itemName) item.itemName = itemName;
+    if (category) item.category = category;
+    if (unitOfMeasure) item.unitOfMeasure = unitOfMeasure;
+    if (expirationDate) item.expirationDate = expirationDate;
+    if (supplier) item.supplier = supplier;
+    if (purchaseDate) item.purchaseDate = purchaseDate;
+    if (quantity !== undefined) item.quantity = quantity; // Update quantity only if provided
+
+    // Save the updated item
+    await item.save();
+
+    // Log the update in history
+    const historyEntry = new History({
+      transactionId: new mongoose.Types.ObjectId(),
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: "Updated",
+      quantityChanged: 0, // No quantity change in this case
+      remainingQuantity: item.quantity,
+      responsiblePerson: "Admin", 
+      reasonForAction: "Item details updated",
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: "Item updated successfully!",
+      item,
+      history: historyEntry,
+    });
+  } catch (error) {
+    console.error("Error updating item:", error);
+    res.status(500).json({
+      message: "Error updating item",
+      error: error.message,
+    });
+  }
+};
+
+// Archive an Item
+exports.archiveItem = async (req, res) => {
+  const { itemId } = req.params; // Get itemId from request parameters
+
+  try {
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found." });
+    }
+
+    item.isArchived = true; // Mark as archived
+    await item.save();
+
+    // Log the action in history
+    const historyEntry = new History({
+      transactionId: new mongoose.Types.ObjectId(),
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: "Archived",
+      quantityChanged: 0, // No quantity change
+      remainingQuantity: item.quantity,
+      responsiblePerson: "Admin",
+      reasonForAction: "Item archived",
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: "Item archived successfully!",
+      item,
+      history: historyEntry,
+    });
+  } catch (error) {
+    console.error("Error archiving item:", error);
+    res.status(500).json({
+      message: "Error archiving item",
+      error: error.message,
+    });
+  }
+};
+
+// Restore an Archived Item
+exports.restoreItem = async (req, res) => {
+  const { itemId } = req.params; // Get itemId from request parameters
+
+  try {
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item || !item.isArchived) {
+      return res.status(404).json({ message: "Archived item not found." });
+    }
+
+    item.isArchived = false; // Restore the item
+    await item.save();
+
+    // Log the action in history
+    const historyEntry = new History({
+      transactionId: new mongoose.Types.ObjectId(),
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: "Restored",
+      quantityChanged: 0, // No quantity change
+      remainingQuantity: item.quantity,
+      responsiblePerson: "Admin",
+      reasonForAction: "Item restored from archive",
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: "Item restored successfully!",
+      item,
+      history: historyEntry,
+    });
+  } catch (error) {
+    console.error("Error restoring item:", error);
+    res.status(500).json({
+      message: "Error restoring item",
+      error: error.message,
+    });
+  }
+};
+
+// Permanently Delete an Archived Item
+exports.deleteArchivedItem = async (req, res) => {
+  const { itemId } = req.params; // Get itemId from request parameters
+
+  try {
+    const item = await Inventory.findOne({ itemId });
+
+    if (!item || !item.isArchived) {
+      return res.status(404).json({ message: "Archived item not found." });
+    }
+
+    await item.remove(); // Permanently delete the item
+
+    // Log the action in history
+    const historyEntry = new History({
+      transactionId: new mongoose.Types.ObjectId(),
+      transactionDate: new Date(),
+      itemName: item.itemName,
+      actionType: "Deleted (Archived)",
+      quantityChanged: -item.quantity, // Quantity removed
+      remainingQuantity: 0,
+      responsiblePerson: "Admin",
+      reasonForAction: "Item permanently deleted from archive",
+      supplier: item.supplier,
+    });
+
+    await historyEntry.save();
+
+    res.status(200).json({
+      message: "Archived item deleted successfully!",
+      history: historyEntry,
+    });
+  } catch (error) {
+    console.error("Error deleting archived item:", error);
+    res.status(500).json({
+      message: "Error deleting archived item",
+      error: error.message,
+    });
+  }
+};
 // Add Quantity to an Existing Item
 exports.addQuantityToItem = async (req, res) => {
   const { itemId } = req.params;
@@ -141,7 +334,7 @@ exports.getInventoryItems = async (req, res) => {
     const lowStockItems = inventoryItems.filter(
       (item) => item.quantity < item.threshold
     );
-    if (lowStockItems.length > 0) {
+    if (lowStockItems.length > 0) { 
       for (let item of lowStockItems) {
         // Create a notification for low stock items
         const notification = new Notification({
