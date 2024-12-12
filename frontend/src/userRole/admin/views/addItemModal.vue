@@ -7,20 +7,25 @@
 
     <div class="page-content flex">
       <!-- Sidebar Navigation -->
-      <div class="sidebar ">
+      <div class="sidebar">
         <sideNav />
       </div>
 
       <!-- Main Content Area -->
       <div class="content flex-grow p-6">
         <div class="container mx-auto mt-4">
-
-          <form @submit.prevent="submitForm" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
-
+          <form
+            @submit.prevent="submitForm"
+            class="bg-white p-6 rounded-lg shadow-lg border border-gray-200"
+          >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Item ID -->
               <div class="mb-6">
-                <label for="itemId" class="block text-gray-700 font-semibold mb-2">Item ID</label>
+                <label
+                  for="itemId"
+                  class="block text-gray-700 font-semibold mb-2"
+                  >Item ID</label
+                >
                 <input
                   type="text"
                   id="itemId"
@@ -32,7 +37,11 @@
 
               <!-- Item Name -->
               <div class="mb-6">
-                <label for="itemName" class="block text-gray-700 font-semibold mb-2">Item Name</label>
+                <label
+                  for="itemName"
+                  class="block text-gray-700 font-semibold mb-2"
+                  >Item Name</label
+                >
                 <input
                   type="text"
                   id="itemName"
@@ -46,7 +55,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Category -->
               <div class="mb-6">
-                <label for="category" class="block text-gray-700 font-semibold mb-2">Category</label>
+                <label
+                  for="category"
+                  class="block text-gray-700 font-semibold mb-2"
+                  >Category</label
+                >
                 <select
                   id="category"
                   class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -62,7 +75,11 @@
 
               <!-- Unit of Measure -->
               <div class="mb-6">
-                <label for="unitOfMeasure" class="block text-gray-700 font-semibold mb-2">Unit of Measure</label>
+                <label
+                  for="unitOfMeasure"
+                  class="block text-gray-700 font-semibold mb-2"
+                  >Unit of Measure</label
+                >
                 <select
                   id="unitOfMeasure"
                   class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -79,7 +96,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Purchase Date -->
               <div class="mb-6">
-                <label for="purchaseDate" class="block text-gray-700 font-semibold mb-2">Purchase Date</label>
+                <label
+                  for="purchaseDate"
+                  class="block text-gray-700 font-semibold mb-2"
+                  >Purchase Date</label
+                >
                 <input
                   type="date"
                   id="purchaseDate"
@@ -91,7 +112,11 @@
 
               <!-- Expiration Date -->
               <div class="mb-6">
-                <label for="expirationDate" class="block text-gray-700 font-semibold mb-2">Expiration Date</label>
+                <label
+                  for="expirationDate"
+                  class="block text-gray-700 font-semibold mb-2"
+                  >Expiration Date</label
+                >
                 <input
                   type="date"
                   id="expirationDate"
@@ -104,7 +129,11 @@
 
             <div class="mb-6">
               <!-- Supplier -->
-              <label for="supplier" class="block text-gray-700 font-semibold mb-2">Supplier</label>
+              <label
+                for="supplier"
+                class="block text-gray-700 font-semibold mb-2"
+                >Supplier</label
+              >
               <input
                 type="text"
                 id="supplier"
@@ -132,14 +161,14 @@
 
 <script>
 import axios from "axios";
-import sideNav from '../components/sideNav.vue';
-import topNav from '../components/topNav.vue';
+import sideNav from "../components/sideNav.vue";
+import topNav from "../components/topNav.vue";
 
 export default {
   name: "AddItem",
   components: {
     sideNav,
-    topNav
+    topNav,
   },
   data() {
     return {
@@ -147,10 +176,10 @@ export default {
         itemId: "",
         itemName: "",
         category: "",
-        unitOfMeasure: "Box", // Default value for unit of measure
-        expirationDate: "", // Expiration date
-        supplier: "", // Supplier name
-        purchaseDate: "", // Purchase date
+        unitOfMeasure: "Box",
+        expirationDate: "",
+        supplier: "",
+        purchaseDate: "",
       },
     };
   },
@@ -185,7 +214,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Optional: If you need to include additional custom styles, you can do so here */
-</style>

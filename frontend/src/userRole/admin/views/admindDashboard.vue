@@ -59,7 +59,6 @@
             <p class="text-3xl font-bold text-red-600">{{ expiringItems }}</p>
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-md p-6">
           <h2 class="text-xl font-semibold text-gray-800 mb-4">Legends</h2>
           <!-- Legend -->
@@ -83,9 +82,17 @@
         <!-- Inventory Table for Items that Need Attention -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
           <div class="p-6 pb-4 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-800">
-              Items that needs your attention
-            </h2>
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-semibold text-gray-800">
+                Items that need your attention
+              </h2>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search items..."
+                class="px-4 py-2 border rounded-md text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left">
@@ -111,16 +118,11 @@
                   >
                     Status
                   </th>
-                  <th
-                    class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Action
-                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
                 <tr
-                  v-for="item in mergedAttentionItems"
+                  v-for="item in filteredAttentionItems"
                   :key="'item-' + item.itemId"
                   class="hover:bg-gray-50"
                 >
@@ -144,11 +146,6 @@
                     >
                       {{ status }}
                     </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button class="text-indigo-600 hover:text-indigo-900">
-                      Edit
-                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -176,6 +173,7 @@ const attentionItems = ref([]);
 const totalLowStockItems = ref(0);
 const totalItems = ref(0);
 const expiringItems = ref(0);
+const searchQuery = ref("");
 
 const mergedAttentionItems = computed(() => {
   const mergedItems = {};
@@ -187,6 +185,13 @@ const mergedAttentionItems = computed(() => {
     }
   });
   return Object.values(mergedItems);
+});
+
+const filteredAttentionItems = computed(() => {
+  if (!searchQuery.value) return mergedAttentionItems.value;
+  return mergedAttentionItems.value.filter((item) =>
+    item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 });
 
 const fetchItemsNeedAttention = async () => {
@@ -246,3 +251,4 @@ const getStatusClass = (item) => {
   return "bg-green-100 text-green-800"; // Default for in-stock items
 };
 </script>
+<style scoped></style>

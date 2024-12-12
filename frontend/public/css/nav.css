@@ -1,15 +1,14 @@
 .side-nav-container {
   position: relative;
   height: 100%;
-  transition: all 0.3s ease;
 }
 
 .side-nav {
+  position: fixed;
   width: 280px;
-  height: 90vh;
+  height: 95vh;
   background-color: #f6f8fc;
   padding: 1.5rem;
-  transition: all 0.3s ease;
   position: relative;
 }
 
@@ -21,16 +20,17 @@
 .toggle-btn {
   position: absolute;
   top: 10px;
-  right: -10px;
+  right: -33px;
   color: rgb(0, 0, 0);
   border: none;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  background-color: #91dfa2;
   z-index: 10;
   transition: all 0.3s ease;
 }
@@ -101,7 +101,8 @@
   justify-content: center;
 }
 
-.sub-btn:hover, .sub-btn.active {
+.sub-btn:hover,
+.sub-btn.active {
   background-color: #e8f5ea;
 }
 
@@ -161,7 +162,8 @@
   padding: 0.75rem;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   background-color: #e8f5ea;
   color: #2e7d32;
 }
@@ -185,7 +187,7 @@
   .side-nav {
     width: 240px;
   }
-  
+
   .side-nav.collapsed {
     width: 70px;
   }
@@ -221,11 +223,9 @@
   }
 }
 
-
 /* topnav */
-
 .top-nav {
-  height: 64px;
+  height: 8vh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -238,6 +238,7 @@
 }
 
 .logo {
+  padding-top: 2vh;
   display: flex;
   align-items: center;
   gap: 0.75rem;

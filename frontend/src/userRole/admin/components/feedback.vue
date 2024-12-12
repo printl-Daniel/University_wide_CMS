@@ -226,6 +226,7 @@ export default {
 .dashboard-content {
   display: flex;
   gap: 2rem;
+  max-height: 95%;
 }
 
 .chart-section {
@@ -262,7 +263,6 @@ export default {
   padding: 1rem;
   background-color: white;
   border-radius: 8px;
-
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -329,7 +329,7 @@ export default {
 .feedback-item {
   background-color: white;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-left: 5px solid transparent;
