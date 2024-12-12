@@ -7,7 +7,7 @@
 
     <div class="flex flex-1 overflow-hidden">
       <!-- Sidebar Navigation -->
-      <div class="w-64 bg-gray-800">
+      <div class="sidebar">
         <SideNav />
       </div>
       <div class="flex-1 overflow-y-auto bg-gray-100">
@@ -15,8 +15,8 @@
           <div class="max-w-7xl mx-auto">
             <!-- Combined CSV Upload and Filter Section -->
             <div class="bg-white shadow-md rounded-lg mb-6">
-              <div class="px-6 py-4 border-b border-gray-200">
-                <h4 class="text-lg font-semibold text-gray-800">Manage Students</h4>
+              <div class="px-6 py-4 border-b border-black-200">
+                <h4 class="text-lg font-semibold text-black-800">Manage Students</h4>
               </div>
               <div class="p-6">
                 <div class="mb-6">

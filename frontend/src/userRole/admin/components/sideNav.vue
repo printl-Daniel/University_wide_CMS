@@ -1,9 +1,12 @@
 <template>
-  <div class="side-nav-container">
-    <div class="side-nav">
+  <div class="side-nav" :class="{ 'collapsed': isCollapsed }">
+    <button class="toggle-btn" @click="toggleSidebar">
+      <i :class="isCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left'"></i>
+    </button>
+    <div class="nav-content">
       <button class="compose-btn" @click="goTo('/admin/dashboard')">
         <i class="fas fa-chart-line"></i>
-        <span>Dashboard</span>
+        <span v-show="!isCollapsed">Dashboard</span>
       </button>
 
       <div class="nav-items">
@@ -12,12 +15,12 @@
           <button class="sub-btn" @click="toggleSubmenu('inventory')" :class="{ 'active': activeSubmenu === 'inventory' }">
             <div class="btn-content">
               <i class="fas fa-warehouse"></i>
-              <span>Inventory</span>
+              <span v-show="!isCollapsed">Inventory</span>
             </div>
-            <i class="fas fa-chevron-right" :class="{ 'rotate': activeSubmenu === 'inventory' }"></i>
+            <i v-show="!isCollapsed" class="fas fa-chevron-right" :class="{ 'rotate': activeSubmenu === 'inventory' }"></i>
           </button>
           <transition name="slide">
-            <div class="sub-menu" v-show="activeSubmenu === 'inventory'">
+            <div class="sub-menu" v-show="activeSubmenu === 'inventory' && !isCollapsed">
               <router-link class="sub-item" to="/admin/inventory">
                 <i class="fas fa-clipboard-list"></i>
                 <span>View Inventory</span>
@@ -47,7 +50,7 @@
           :class="{ 'active': isActive(item.path) }"
         >
           <i :class="item.icon"></i>
-          <span>{{ item.label }}</span>
+          <span v-show="!isCollapsed">{{ item.label }}</span>
         </router-link>
       </div>
     </div>
@@ -60,37 +63,46 @@ import { useRouter, useRoute } from "vue-router";
 
 export default {
   name: "SideNav",
-  data() {
-    return {
-      activeSubmenu: null,
-      navItems: [
-        { path: "/admin/view-user", label: "Manage User", icon: "fas fa-users" },
-        { path: "/appointments", label: "Appointments", icon: "far fa-calendar-check" },
-        { path: "/feedback", label: "Feedback & Evaluation", icon: "fas fa-scroll" },
-        { path: "/admin/enrollment", label: "Enrollment", icon: "fas fa-scroll" },
-      ],
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
+    const isCollapsed = ref(false);
+    const activeSubmenu = ref(null);
+
+    const navItems = [
+      { path: "/admin/view-user", label: "Manage User", icon: "fas fa-users" },
+      { path: "/appointments", label: "Appointments", icon: "far fa-calendar-check" },
+      { path: "/feedback", label: "Feedback & Evaluation", icon: "fas fa-scroll" },
+      { path: "/admin/enrollment", label: "Enrollment", icon: "fas fa-scroll" },
+    ];
+
+    const toggleSidebar = () => {
+      isCollapsed.value = !isCollapsed.value;
     };
-  },
-  methods: {
-    toggleSubmenu(menu) {
-      this.activeSubmenu = this.activeSubmenu === menu ? null : menu;
-    },
-    goTo(route) {
-      this.$router.push(route);
-    },
-    isActive(path) {
-      return this.$route.path === path;
-    },
-  },
-  mounted() {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "/css/nav.css"; // Adjust the path if necessary
-    document.head.appendChild(link);
+
+    const toggleSubmenu = (menu) => {
+      if (!isCollapsed.value) {
+        activeSubmenu.value = activeSubmenu.value === menu ? null : menu;
+      }
+    };
+
+    const goTo = (route) => {
+      router.push(route);
+    };
+
+    const isActive = (path) => {
+      return route.path === path;
+    };
+
+    return {
+      isCollapsed,
+      activeSubmenu,
+      navItems,
+      toggleSidebar,
+      toggleSubmenu,
+      goTo,
+      isActive,
+    };
   },
 };
 </script>
-
-<style scoped>
-/* Add scoped styles here if needed */
-</style>
