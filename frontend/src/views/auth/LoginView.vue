@@ -178,6 +178,7 @@ export default {
   pointer-events: none;
   transition: all 0.3s ease;
   color: rgb(100, 100, 100);
+
 }
 
 .inputGroup :is(input:focus, input:valid) ~ label {
@@ -243,3 +244,6 @@ export default {
   transform: scale(100) translateX(2px);
 }
 </style>
+
+
+

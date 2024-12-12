@@ -20,7 +20,7 @@ import addItemModal from "@/userRole/admin/views/addItemModal.vue";
 import Feedback from "../userRole/admin/views/feedback.vue";
 import disburse from "../userRole/admin/views/viewDisbursed.vue";
 import updateItem from "@/userRole/admin/views/updateItem.vue";
-
+import archive from "../userRole/admin/views/archive.vue";
 // Doctor
 import patientHistory from "@/userRole/doctor/views/patientHistory.vue";
 import doctorDashboard from "../userRole/doctor/views/doctorDashboard.vue";
@@ -135,6 +135,12 @@ const routes = [
     path: '/admin/edit-item/:itemId',
     name: 'editItem',
     component: updateItem,
+    meta: { requiresAuth: true, roles: ['Admin'] },
+  },
+  {
+    path: '/admin/archive',
+    name: 'archive',
+    component: archive,
     meta: { requiresAuth: true, roles: ['Admin'] },
   },
  {

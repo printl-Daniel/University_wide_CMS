@@ -156,6 +156,12 @@
         </div>
       </div>
     </div>
+    <SuccessModal
+      :title="'Success'"
+      :message="'Item added successfully!'"
+      :visible="successModalVisible"
+      @close="successModalVisible = false"
+    />
   </div>
 </template>
 
@@ -163,15 +169,18 @@
 import axios from "axios";
 import sideNav from "../components/sideNav.vue";
 import topNav from "../components/topNav.vue";
+import SuccessModal from '../../../components/sucessModal.vue';
 
 export default {
   name: "AddItem",
   components: {
     sideNav,
     topNav,
+    SuccessModal,
   },
   data() {
     return {
+      successModalVisible: false,
       newItem: {
         itemId: "",
         itemName: "",
@@ -192,7 +201,7 @@ export default {
         );
 
         console.log("Item added successfully:", response.data);
-        alert("Item added successfully.");
+        this.successModalVisible = true;
         // Reset form fields
         this.newItem = {
           itemId: "",

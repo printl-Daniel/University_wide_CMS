@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 // Inventory Model
 const inventorySchema = new mongoose.Schema({
   itemId: { 
-    type: String, // Custom itemId as a string (e.g., '001-PA500')
+    type: String, 
     required: true,
-    unique: true, // Ensure itemId is unique
+    unique: true, 
   },
   itemName: { 
     type: String, 
@@ -36,12 +36,18 @@ const inventorySchema = new mongoose.Schema({
     type: Date, 
     required: true 
   },
-  threshold: {  // Add threshold to monitor low stock
-    type: Number,
-    required: true,
-    default: 5  // You can set a default threshold value
-  },
-}, { timestamps: true });  // Optionally add timestamps to track createdAt and updatedAt
+  // threshold: {  // Add threshold to monitor low stock
+  //   type: Number,
+  //   required: true,
+  //   default: 5  // You can set a default threshold value
+  // },
+  isArchived: { // New field to mark items as archived
+    type: Boolean,
+    default: false // Default value is false (not archived)
+  }
+
+
+}, { timestamps: true }); 
 
 const Inventory = mongoose.model('Inventory', inventorySchema);
 
