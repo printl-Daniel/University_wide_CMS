@@ -1,13 +1,15 @@
 const express = require('express');
-const userController = require('../../controller/User/userRegistration.js');
-//const { verifyTokenMiddleware } = require('../../middleware/jwt');
+const userController = require('../../controller/User/userRegistration');
+const { authMiddleware, isAdmin, isStaff, isDoctor } = require('../../middleware/authMiddleware');  // Import the authMiddleware
 const router = express.Router();
 
-router.post('/add-user', userController.createUser);
-router.post('/login', userController.login);
-router.post('/reset-password', userController.resetPassword);
-router.get('/users', userController.fetchUsers);
-router.delete('/delete-user/:id', userController.deleteUser);
+// Public routes
+router.post('/add-user', authMiddleware, isAdmin, userController.createUser);  // User registration
+router.post('/login', userController.login);  // User login
+router.post('/logout', userController.logout); 
 
+// Protected routes - require authentication (valid token)
+router.get('/users', authMiddleware, isAdmin, userController.fetchUsers);  // Fetch all users (protected)
+router.delete('/delete-user/:id', authMiddleware, isAdmin, userController.deleteUser);  // Delete a user (protected)
 
 module.exports = router;

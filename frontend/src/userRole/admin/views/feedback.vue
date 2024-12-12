@@ -39,8 +39,6 @@ export default {
   
 }
 
-
-
 /* Content Area */
 .content {
   flex: 1; /* Take the remaining space */

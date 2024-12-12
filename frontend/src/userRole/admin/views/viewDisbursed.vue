@@ -40,7 +40,7 @@
                       v-for="header in headers"
                       :key="header.key"
                       @click="sortBy(header.key)"
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     >
                       {{ header.label }}
                       <span v-if="sortKey === header.key" class="ml-1">

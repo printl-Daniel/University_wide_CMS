@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-100">
     <!-- Top Navbar -->
-    <div class="header">
+    <div class="header font-sans">
       <topNav />
     </div>
 
@@ -14,7 +14,7 @@
       <!-- Main Content Area -->
       <div class="flex-1 p-8 overflow-hidden">
         <div class="max-w-7xl mx-auto">
-          <h2 class="text-3xl font-bold text-gray-900 mb-6">Inventory Items</h2>
+          <h2 class="text-3xl font-bold text-black-900 mb-6">Inventory Items</h2>
 
           <!-- Search Section -->
           <div class="bg-white shadow-sm rounded-lg p-6 mb-6">

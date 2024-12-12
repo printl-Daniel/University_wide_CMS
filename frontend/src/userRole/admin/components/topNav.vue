@@ -22,19 +22,11 @@
                 <i class="fas fa-user"></i>
               </div>
               <div class="user-details">
-                <p class="user-name">John Doe</p>
-                <p class="user-role">Administrator</p>
+                <p class="user-name">Admin</p>
+
               </div>
             </div>
             <div class="dropdown-divider"></div>
-            <button class="dropdown-item">
-              <i class="fas fa-cog"></i>
-              <span>Settings</span>
-            </button>
-            <button class="dropdown-item">
-              <i class="fas fa-user-circle"></i>
-              <span>Profile</span>
-            </button>
             <div class="dropdown-divider"></div>
             <button class="logout-btn" @click="handleLogout">
               <i class="fas fa-sign-out-alt"></i>
@@ -63,16 +55,34 @@ export default {
     document.head.appendChild(link);
   },
   methods: {
-    toggleUserMenu() {
-      this.isUserMenuOpen = !this.isUserMenuOpen;
-    },
-    toggleNotifications() {
-      // Handle notifications logic
-    },
-    handleLogout() {
-      // Handle logout logic
-    },
+  toggleUserMenu() {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
   },
+  toggleNotifications() {
+    // Handle notifications logic
+  },
+  async handleLogout() {
+    try {
+      const response = await fetch('http://localhost:5000/api/user/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'), // Pass the token in the Authorization header
+        },
+      });
+
+      if (response.ok) {
+        // Clear the token from local storage
+        localStorage.removeItem('token');
+        // Redirect to the login page
+        this.$router.push('/');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  },
+},
 };
 </script>
 

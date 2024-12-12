@@ -21,9 +21,8 @@
 .toggle-btn {
   position: absolute;
   top: 10px;
-  right: -15px;
-  background-color: #4cca67;
-  color: white;
+  right: -10px;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 50%;
   width: 30px;
@@ -37,10 +36,11 @@
 }
 
 .toggle-btn:hover {
-  background-color: #45b85d;
+  background-color: #cfcccc;
 }
 
 .compose-btn {
+  margin-top: 35px;
   width: 100%;
   padding: 1rem 1.5rem;
   border: none;

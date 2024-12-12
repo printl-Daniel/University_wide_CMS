@@ -81,21 +81,21 @@
             <div class="p-6">
               <h4 class="text-xl font-semibold mb-4">User List</h4>
               <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-300">
                   <thead class="bg-gray-50">
                     <tr>
                       <th
                         v-for="header in headers"
                         :key="header.key"
                         @click="sortBy(header.key)"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       >
                         {{ header.label }}
                         <span v-if="sortKey === header.key" class="ml-1">
                           {{ sortOrder === 'asc' ? '▲' : '▼' }}
                         </span>
                       </th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
@@ -105,11 +105,11 @@
                       <td
                         v-for="header in headers"
                         :key="header.key"
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        class="px-6 py-4 whitespace-nowrap text-m text-black-500"
                       >
                         {{ user[header.key] }}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
                         <button @click="deleteUser(user._id)" class="text-red-600 hover:text-red-900">Delete</button>
                       </td>
                     </tr>

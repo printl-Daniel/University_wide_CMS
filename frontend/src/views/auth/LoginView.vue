@@ -4,11 +4,7 @@
       <!-- Logo -->
       <div class="logoMinsu">
         <div class="text-center">
-          <img
-            src="/img/icons/logo.png"
-            alt="Logo"
-            class="logo"
-          />
+          <img src="/img/icons/logo.png" alt="Logo" class="logo" />
         </div>
       </div>
 
@@ -20,7 +16,7 @@
 
         <!-- Login Form -->
         <form @submit.prevent="login">
-          <!-- Email Field -->
+          <!-- Username Field -->
           <div class="inputGroup">
             <input
               type="text"
@@ -54,13 +50,11 @@
               <span class="btn-txt">Login</span>
             </button>
           </div>
-
         </form>
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from "axios";
@@ -69,7 +63,7 @@ export default {
   data() {
     return {
       form: {
-        email: "", // Stores the entered email
+        username: "", // Stores the entered username
         password: "", // Stores the entered password
       },
       message: "", // Stores error messages to display
@@ -85,15 +79,23 @@ export default {
             password: this.form.password,
           }
         );
-        if (response.data.resetRequired) {
-          // Redirect to reset password page if it's the first login
-          this.$router.push("/reset-password");
-        } else {
-          // Store JWT token in localStorage
-          localStorage.setItem("token", response.data.token);
 
-          // Redirect to the user dashboard
+        // Store JWT token and user role in localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userRole", JSON.stringify(response.data.user.role)); // Assuming user.role is available
+
+        // Redirect to the appropriate dashboard based on user role
+        const userRole = response.data.user.role; // Assuming user role is returned in the response
+        if (userRole === 'Admin') {
           this.$router.push("admin/dashboard");
+        } else if (userRole === 'Staff') {
+          this.$router.push("staff/dashboard");
+        } else if (userRole === 'Doctor') {
+          this.$router.push("doctor/dashboard");
+        } else if (userRole === 'Patient') {
+          this.$router.push("patient/inbox");
+        } else {
+          this.message = "Unknown role. Please contact support.";
         }
       } catch (error) {
         // Handle error response
@@ -107,13 +109,13 @@ export default {
 </script>
 
 <style>
-
 .logoMinsu {
   border-bottom: 1px solid rgb(194, 194, 206);
-  display: flex; 
+  display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
 }
+
 .container {
   min-height: 100vh;
 }
@@ -140,16 +142,6 @@ export default {
   color: #6c757d;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #004085;
-}
-
 .alert {
   margin-top: 10px;
 }
@@ -162,13 +154,10 @@ export default {
   text-decoration: underline;
 }
 
-/* Custom Styles from Universe.io by Maximinodotpy */
-
 .inputGroup {
   font-family: 'Segoe UI', sans-serif;
   margin: 1em 0;
-  position: relative;
-}
+  position: relative }
 
 .inputGroup input {
   font-size: 100%;
@@ -203,60 +192,11 @@ export default {
   border-color: rgb(90, 90, 216);
 }
 
-/* Additional Styles */
-.container {
-  min-height: 100vh;
-}
-
-.card {
-  width: 25rem;
-  padding: 20px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-
-.logo {
-  max-width: 100px;
-  margin-bottom: 20px;
-}
-
-.card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.card-subtitle {
-  font-size: 1rem;
-  color: #6c757d;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #004085;
-}
-
-.alert {
-  margin-top: 10px;
-}
-
-.text-primary {
-  color: #007bff;
-}
-
-.text-primary:hover {
-  text-decoration: underline;
-}
-
 .button-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px; /* Optional, adds space between the form fields and the button */
+  margin-top: 20px;
 }
 
 .button {
@@ -302,5 +242,4 @@ export default {
   visibility: visible;
   transform: scale(100) translateX(2px);
 }
-
 </style>
