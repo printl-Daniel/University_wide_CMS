@@ -33,6 +33,10 @@
                 <i class="fas fa-clock-rotate-left"></i>
                 <span>View History Log</span>
               </router-link>
+              <router-link class="sub-item" to="/admin/archive">
+                <i class="fa-solid fa-box-archive"></i>
+                <span>View Archive</span>
+              </router-link>
               <router-link class="sub-item" to="/admin/view-disbursed">
                 <i class="fas fa-notes-medical"></i>
                 <span>Disbursed Log</span>
@@ -73,7 +77,7 @@ export default {
       { path: "/admin/view-user", label: "Manage User", icon: "fas fa-users" },
       { path: "/appointments", label: "Appointments", icon: "far fa-calendar-check" },
       { path: "/feedback", label: "Feedback & Evaluation", icon: "fas fa-scroll" },
-      { path: "/admin/enrollment", label: "Enrollment", icon: "fas fa-scroll" },
+      { path: "/admin/enrollment", label: "Enrollment", icon: "fa-solid fa-house-user" },
     ];
 
     const toggleSidebar = () => {

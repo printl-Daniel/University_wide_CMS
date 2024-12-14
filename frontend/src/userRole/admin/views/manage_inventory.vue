@@ -294,7 +294,7 @@ const displayItems = async () => {
 }
 const archiveItem = async (itemId) => {
   try {
-    await axios.delete(`http://localhost:5000/api/inventory/archive-item/${itemId}`);
+    await axios.put(`http://localhost:5000/api/inventory/archive-item/${itemId}`);
     // Remove the item from the inventoryItems array
     inventoryItems.value = inventoryItems.value.filter(item => item.itemId !== itemId);
     alert('Item archived successfully!');
@@ -303,7 +303,6 @@ const archiveItem = async (itemId) => {
     alert('Failed to archive item.');
   }
 };
-
 const formatCellData = (value, key) => {
   if (key === 'expirationDate' || key === 'purchaseDate') {
     return new Date(value).toLocaleDateString('en-US')

@@ -41,11 +41,7 @@ const inventorySchema = new mongoose.Schema({
   //   required: true,
   //   default: 5  // You can set a default threshold value
   // },
-  isArchived: { // New field to mark items as archived
-    type: Boolean,
-    default: false // Default value is false (not archived)
-  }
-
+  status: { type: String, enum: ['active', 'archived'], default: 'active' },
 
 }, { timestamps: true }); 
 

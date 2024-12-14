@@ -19,8 +19,11 @@ router.post(
 
 router.delete("/remove-expired", inventoryController.removeExpiredItems);
 
-router.delete("/archive-item/:itemId", inventoryController.archiveItem); // Archive an item
-router.put("/restore-item/:itemId", inventoryController.restoreItem); // Restore an archived item
+
+router.put("/archive-item/:itemId", inventoryController.archiveItem);
+router.put("/restore-item/:itemId", inventoryController.restoreItem);
 router.delete("/delete-archived-item/:itemId", inventoryController.deleteArchivedItem);
+router.get("/archived-items", inventoryController.getArchivedItems);
+
 
 module.exports = router;
