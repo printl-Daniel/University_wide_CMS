@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const disbursementSchema = new mongoose.Schema({
+  itemId: { 
+    type: String, 
+    required: true 
+  },
   itemName: { type: String, required: true },
   quantity: { type: Number, required: true },
   patientName: { type: String, required: true },

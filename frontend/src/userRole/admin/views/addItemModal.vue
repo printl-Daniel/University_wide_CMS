@@ -1,70 +1,50 @@
 <template>
-  <div>
+  <div class="min-h-screen bg-gray-100">
     <!-- Admin Navbar (top navbar) -->
-    <div class="header">
-      <topNav />
-    </div>
+    <topNav />
 
-    <div class="page-content flex">
+    <div class="flex">
       <!-- Sidebar Navigation -->
-      <div class="sidebar">
-        <sideNav />
-      </div>
+      <sideNav class="w-64 flex-shrink-0" />
 
       <!-- Main Content Area -->
-      <div class="content flex-grow p-6">
-        <div class="container mx-auto mt-4">
-          <form
-            @submit.prevent="submitForm"
-            class="bg-white p-6 rounded-lg shadow-lg border border-gray-200"
-          >
+      <div class="flex-grow p-8">
+        <div class="max-w-4xl mx-auto">
+          <h1 class="text-3xl font-bold text-gray-800 mb-8">Add New Item</h1>
+          <form @submit.prevent="submitForm" class="bg-white p-8 rounded-xl shadow-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Item ID -->
-              <div class="mb-6">
-                <label
-                  for="itemId"
-                  class="block text-gray-700 font-semibold mb-2"
-                  >Item ID</label
-                >
+              <div>
+                <label for="itemId" class="block text-sm font-medium text-gray-700 mb-1">Item ID</label>
                 <input
                   type="text"
                   id="itemId"
-                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.itemId"
                   required
+                  class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <!-- Item Name -->
-              <div class="mb-6">
-                <label
-                  for="itemName"
-                  class="block text-gray-700 font-semibold mb-2"
-                  >Item Name</label
-                >
+              <div>
+                <label for="itemName" class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
                 <input
                   type="text"
                   id="itemName"
-                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.itemName"
                   required
+                  class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Category -->
-              <div class="mb-6">
-                <label
-                  for="category"
-                  class="block text-gray-700 font-semibold mb-2"
-                  >Category</label
-                >
+              <div>
+                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                 <select
                   id="category"
-                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.category"
                   required
+                  class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="" disabled>Select a category</option>
                   <option value="Medicine">Medicine</option>
@@ -73,153 +53,93 @@
                 </select>
               </div>
 
-              <!-- Unit of Measure -->
-              <div class="mb-6">
-                <label
-                  for="unitOfMeasure"
-                  class="block text-gray-700 font-semibold mb-2"
-                  >Unit of Measure</label
-                >
-                <select
-                  id="unitOfMeasure"
-                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  v-model="newItem.unitOfMeasure"
+              <!-- Supplier -->
+              <div>
+                <label for="supplier" class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                <input
+                  type="text"
+                  id="supplier"
+                  v-model="newItem.supplier"
                   required
-                >
-                  <option value="Box">Box</option>
-                  <option value="Bottle">Bottle</option>
-                  <option value="Pack">Pack</option>
-                </select>
+                  class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Purchase Date -->
-              <div class="mb-6">
-                <label
-                  for="purchaseDate"
-                  class="block text-gray-700 font-semibold mb-2"
-                  >Purchase Date</label
-                >
+              <div>
+                <label for="purchaseDate" class="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
                 <input
                   type="date"
                   id="purchaseDate"
-                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.purchaseDate"
                   required
+                  class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <!-- Expiration Date -->
-              <div class="mb-6">
-                <label
-                  for="expirationDate"
-                  class="block text-gray-700 font-semibold mb-2"
-                  >Expiration Date</label
-                >
+              <div>
+                <label for="expirationDate" class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
                 <input
                   type="date"
                   id="expirationDate"
-                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   v-model="newItem.expirationDate"
                   required
+                  class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
 
-            <div class="mb-6">
-              <!-- Supplier -->
-              <label
-                for="supplier"
-                class="block text-gray-700 font-semibold mb-2"
-                >Supplier</label
-              >
-              <input
-                type="text"
-                id="supplier"
-                class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                v-model="newItem.supplier"
-                required
-              />
-            </div>
-
             <!-- Submit Button -->
-            <div class="text-right mt-6">
+            <div class="mt-8">
               <button
                 type="submit"
-                class="w-full py-4 px-6 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 transition-all"
+                class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               >
-                Add Product
+                Add
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
+
     <SuccessModal
-      :title="'Success'"
-      :message="'Item added successfully!'"
+      title="Success"
+      message="Item added successfully!"
       :visible="successModalVisible"
       @close="successModalVisible = false"
     />
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import sideNav from "../components/sideNav.vue";
-import topNav from "../components/topNav.vue";
+<script setup>
+import { ref, reactive } from 'vue'
+import axios from 'axios'
+import sideNav from '../components/sideNav.vue';
+import topNav from '../components/topNav.vue';
 import SuccessModal from '../../../components/sucessModal.vue';
 
-export default {
-  name: "AddItem",
-  components: {
-    sideNav,
-    topNav,
-    SuccessModal,
-  },
-  data() {
-    return {
-      successModalVisible: false,
-      newItem: {
-        itemId: "",
-        itemName: "",
-        category: "",
-        unitOfMeasure: "Box",
-        expirationDate: "",
-        supplier: "",
-        purchaseDate: "",
-      },
-    };
-  },
-  methods: {
-    async submitForm() {
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/api/inventory/add",
-          this.newItem
-        );
+const successModalVisible = ref(false)
+const newItem = reactive({
+  itemId: '',
+  itemName: '',
+  category: '',
+  expirationDate: '',
+  supplier: '',
+  purchaseDate: '',
+})
 
-        console.log("Item added successfully:", response.data);
-        this.successModalVisible = true;
-        // Reset form fields
-        this.newItem = {
-          itemId: "",
-          itemName: "",
-          category: "",
-          unitOfMeasure: "Box",
-          expirationDate: "",
-          supplier: "",
-          purchaseDate: "",
-        };
-      } catch (error) {
-        console.error(
-          "Error adding item:",
-          error.response?.data?.message || error.message
-        );
-        alert("Failed to add item. Please try again.");
-      }
-    },
-  },
-};
+const submitForm = async () => {
+  try {
+    const response = await axios.post('http://localhost:5000/api/inventory/add', newItem)
+    console.log('Item added successfully:', response.data)
+    successModalVisible.value = true
+    // Reset form fields
+    Object.keys(newItem).forEach(key => newItem[key] = '')
+  } catch (error) {
+    console.error('Error adding item:', error.response?.data?.message || error.message)
+    alert('Failed to add item. Please try again.')
+  }
+}
 </script>

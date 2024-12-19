@@ -67,7 +67,7 @@
                       placeholder="Enter patient name"
                     />
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <UserIcon class="h-6 w-6 text-gray-400" />
+                      <User Icon class="h-6 w-6 text-gray-400" />
                     </div>
                   </div>
                 </div>
@@ -82,7 +82,7 @@
                     <option value="" disabled>Select College</option>
                     <option value="BSIT">BSIT</option>
                     <option value="CBM">CBM</option>
-                    <option value="EDUC">EDUC</option>
+                    <option value="EDUC">ED UC</option>
                     <option value="BTVLED">BTVLED</option>
                     <option value="CAS">CAS</option>
                     <option value="CCJE">CCJE</option>
@@ -136,7 +136,6 @@
   </TransitionRoot>
 </template>
 
-
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
@@ -160,6 +159,16 @@ const isSuccess = ref(true);
 
 const closeModal = () => {
   emit('close');
+  resetForm();
+};
+
+const resetForm = () => {
+  quantityToDisburse.value = 0;
+  patientName.value = '';
+  college.value = '';
+  reason.value = '';
+  message.value = '';
+  isSuccess.value = true;
 };
 
 const disburseItem = async () => {
@@ -195,4 +204,3 @@ const disburseItem = async () => {
   }
 };
 </script>
-

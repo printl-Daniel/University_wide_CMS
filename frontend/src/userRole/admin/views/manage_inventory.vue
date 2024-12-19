@@ -21,7 +21,7 @@
             <div class="flex flex-wrap gap-4 items-center">
               <div class="flex-grow">
                 <input
-                  v-model="searchQuery"
+ v-model="searchQuery"
                   type="text"
                   placeholder="Search inventory items..."
                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -62,21 +62,24 @@
                       {{ formatCellData(item[header.key], header.key) }}
                     </td>
                     <td class="px-6 py-1 whitespace-nowrap text-sm font-medium">
-                    <div class="flex space-x-2">
-                      <button @click="openAddQuantityModal(item)" class="text-blue-600 hover:text-blue-900">
-                        <CirclePlus class="h-5 w-5" />
-                      </button>
-                      <button @click="openDisburseModal(item)" class="text-red-600 hover:text-red-900">
-                        <CircleMinus class="h-5 w-5" />
-                      </button>
-                      <button @click="openUpdateItemModal(item)" class="text-green-600 hover:text-green-900">
-                        <PencilLine class="h-5 w-5" />
-                      </button>
-                      <button @click="archiveItem(item.itemId)" class="text-yellow-600 hover:text-yellow-900">
-                        <Archive class="h-5 w-5" />
-                      </button>
-                    </div>
-                  </td>
+                      <div class="flex space-x-2">
+                        <button @click="openAddQuantityModal(item)" class="text-blue-600 hover:text-blue-900">
+                          <CirclePlus class="h-5 w-5" />
+                        </button>
+                        <button @click="openDisburseModal(item)" class="text-red-600 hover:text-red-900">
+                          <CircleMinus class="h-5 w-5" />
+                        </button>
+                        <button @click="openUpdateItemModal(item)" class="text-green-600 hover:text-green-900">
+                          <PencilLine class="h-5 w-5" />
+                        </button>
+                        <button @click="archiveItem(item.itemId)" class="text-yellow-600 hover:text-yellow-900">
+                          <Archive class="h-5 w-5" />
+                        </button>
+                        <button @click="openDisbursementHistoryModal(item.itemId)" class="text-purple-600 hover:text-purple-900">
+                          <Clock class="h-5 w-5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -113,7 +116,6 @@
                       class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                     >
                       <span class="sr-only">Previous</span>
-                      <!-- Heroicon name: solid/chevron-left -->
                       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                       </svg>
@@ -137,7 +139,6 @@
                       class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                     >
                       <span class="sr-only">Next</span>
-                      <!-- Heroicon name: solid/chevron-right -->
                       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                       </svg>
@@ -167,6 +168,7 @@
       @close="showDisburseModal = false"
       @item-disbursed="handleItemDisbursed"
     />
+
     <updateItemModal
       v-if="showUpdateItemModal"
       :item="selectedItemForUpdate"
@@ -174,18 +176,26 @@
       @close="showUpdateItemModal = false"
       @item-updated="handleItemUpdated"
     />
+
+    <disbursementHistoryModal
+      v-if="showDisbursementHistoryModal"
+      :itemId="selectedItemForDisbursementHistory"
+      :showModal="showDisbursementHistoryModal"
+      @close="showDisbursementHistoryModal = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import axios from 'axios'
-import { CirclePlus, CircleMinus, PencilLine, Archive } from 'lucide-vue-next'
+import { CirclePlus, CircleMinus, PencilLine, Archive, Clock } from 'lucide-vue-next'
 import addQuantityModal from '../../../components/addQuantityModal.vue'
 import disburseModal from '../../../components/disburseModal.vue'
 import sideNav from '../components/sideNav.vue'
 import topNav from '../components/topNav.vue'
 import updateItemModal from '../../../components/updateItemModal.vue';
+import disbursementHistoryModal from '../../../components/DisbursementHistoryModal.vue'; // Import the new modal
 
 const inventoryItems = ref([])
 const searchQuery = ref('')
@@ -194,9 +204,12 @@ const sortOrder = ref('asc')
 const showAddQuantityModal = ref(false)
 const showUpdateItemModal = ref(false)
 const showDisburseModal = ref(false)
+const showDisbursementHistoryModal = ref(false) // State for the disbursement history modal
 const selectedItemForQuantity = ref(null)
+
 const selectedItemForDisburse = ref(null)
 const selectedItemForUpdate = ref(null)
+const selectedItemForDisbursementHistory = ref(null) // State for the selected item ID for history modal
 
 // Pagination
 const currentPage = ref(1)
@@ -207,7 +220,6 @@ const headers = [
   { key: 'itemName', label: 'Item Name' },
   { key: 'category', label: 'Category' },
   { key: 'quantity', label: 'Quantity' },
-  { key: 'unitOfMeasure', label: 'Unit of Measure' },
   { key: 'expirationDate', label: 'Expiration Date' },
   { key: 'supplier', label: 'Supplier' },
   { key: 'purchaseDate', label: 'Purchase Date' },
@@ -292,6 +304,7 @@ const displayItems = async () => {
     console.error('Error fetching items:', error)
   }
 }
+
 const archiveItem = async (itemId) => {
   try {
     await axios.put(`http://localhost:5000/api/inventory/archive-item/${itemId}`);
@@ -303,6 +316,7 @@ const archiveItem = async (itemId) => {
     alert('Failed to archive item.');
   }
 };
+
 const formatCellData = (value, key) => {
   if (key === 'expirationDate' || key === 'purchaseDate') {
     return new Date(value).toLocaleDateString('en-US')
@@ -320,12 +334,18 @@ const openDisburseModal = (item) => {
   showDisburseModal.value = true
 }
 
+const openDisbursementHistoryModal = (itemId) => {
+  selectedItemForDisbursementHistory.value = itemId
+  showDisbursementHistoryModal.value = true
+}
+
 const handleQuantityAdded = (updatedItem) => {
   const index = inventoryItems.value.findIndex((item) => item._id === updatedItem._id)
   if (index !== -1) {
     inventoryItems.value[index] = updatedItem
   }
 }
+
 const openUpdateItemModal = (item) => {
   selectedItemForUpdate.value = item
   showUpdateItemModal.value = true
@@ -339,10 +359,15 @@ const handleItemDisbursed = (updatedItem) => {
 }
 
 const handleItemUpdated = (updatedItem) => {
-    const index = inventoryItems.value.findIndex((item) => item._id === updatedItem._id)
+  const index = inventoryItems.value.findIndex((item) => item._id === updatedItem._id)
   if (index !== -1) {
     inventoryItems.value[index] = updatedItem
   }
 }
+
 displayItems()
 </script>
+
+<style scoped>
+/* Add any additional styles here */
+</style>

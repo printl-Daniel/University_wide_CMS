@@ -20,10 +20,6 @@ const inventorySchema = new mongoose.Schema({
     required: true,
     default: 0
   },
-  unitOfMeasure: { 
-    type: String, 
-    required: true 
-  },
   expirationDate: { 
     type: Date, 
     required: true 
@@ -36,11 +32,6 @@ const inventorySchema = new mongoose.Schema({
     type: Date, 
     required: true 
   },
-  // threshold: {  // Add threshold to monitor low stock
-  //   type: Number,
-  //   required: true,
-  //   default: 5  // You can set a default threshold value
-  // },
   status: { type: String, enum: ['active', 'archived'], default: 'active' },
 
 }, { timestamps: true }); 

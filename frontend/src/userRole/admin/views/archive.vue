@@ -84,7 +84,6 @@ const headers = [
   { key: 'itemName', label: 'Item Name' },
   { key: 'category', label: 'Category' },
   { key: 'quantity', label: 'Quantity' },
-  { key: 'unitOfMeasure', label: 'Unit of Measure' },
   { key: 'expirationDate', label: 'Expiration Date' },
   { key: 'supplier', label: 'Supplier' },
   { key: 'purchaseDate', label: 'Purchase Date' },

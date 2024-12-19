@@ -59,20 +59,6 @@
                 </select>
               </div>
 
-              <!-- Unit of Measure -->
-              <div class="mb-6">
-                <label for="unitOfMeasure" class="block text-gray-700 font-semibold mb-2">Unit of Measure</label>
-                <select
-                  id="unitOfMeasure"
-                  class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  v-model="item.unitOfMeasure"
-                  required
-                >
-                  <option value="Box">Box</option>
-                  <option value="Bottle">Bottle</option>
-                  <option value="Pack">Pack</option>
-                </select>
-              </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -146,7 +132,6 @@ export default {
         itemId: "",
         itemName: "",
         category: "",
-        unitOfMeasure: "Box", // Default value for unit of measure
         expirationDate: "", // Expiration date
         supplier: "", // Supplier name
         purchaseDate: "", // Purchase date

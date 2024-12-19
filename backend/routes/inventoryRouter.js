@@ -24,6 +24,7 @@ router.put("/archive-item/:itemId", inventoryController.archiveItem);
 router.put("/restore-item/:itemId", inventoryController.restoreItem);
 router.delete("/delete-archived-item/:itemId", inventoryController.deleteArchivedItem);
 router.get("/archived-items", inventoryController.getArchivedItems);
+router.get('/disbursements/:itemId', inventoryController.getDisbursementHistory);
 
 
 module.exports = router;

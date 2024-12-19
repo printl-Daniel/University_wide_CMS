@@ -11,7 +11,6 @@ exports.addItemInventory = async (req, res) => {
     itemId,
     itemName,
     category,
-    unitOfMeasure,
     expirationDate,
     supplier,
     purchaseDate,
@@ -22,7 +21,6 @@ exports.addItemInventory = async (req, res) => {
     !itemId ||
     !itemName ||
     !category ||
-    !unitOfMeasure ||
     !expirationDate ||
     !supplier ||
     !purchaseDate
@@ -36,7 +34,6 @@ exports.addItemInventory = async (req, res) => {
       itemName,
       category,
       quantity: req.body.quantity || 0,
-      unitOfMeasure,
       expirationDate,
       supplier,
       purchaseDate,
@@ -77,7 +74,6 @@ exports.updateItem = async (req, res) => {
   const {
     itemName,
     category,
-    unitOfMeasure,
     expirationDate,
     supplier,
     purchaseDate,
@@ -100,7 +96,6 @@ exports.updateItem = async (req, res) => {
     // Update item fields if provided
     if (itemName) item.itemName = itemName;
     if (category) item.category = category;
-    if (unitOfMeasure) item.unitOfMeasure = unitOfMeasure;
     if (expirationDate) item.expirationDate = expirationDate;
     if (supplier) item.supplier = supplier;
     if (purchaseDate) item.purchaseDate = purchaseDate;
@@ -237,8 +232,9 @@ exports.disburseItem = async (req, res) => {
     item.quantity -= quantityToDisburse;
     const updatedItem = await item.save();
 
-    // Record the disbursement
+    // Record the disbursement with itemId
     const disbursement = new Disburse({
+      itemId: item.itemId, // Save the itemId here
       itemName: item.itemName,
       quantity: quantityToDisburse,
       patientName,
@@ -486,5 +482,20 @@ exports.getArchivedItems = async (req, res) => {
     res.status(200).json({ success: true, data: archivedItems });
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to fetch archived items", error: error.message });
+  }
+};
+
+exports.getDisbursementHistory = async (req, res) => {
+  const { itemId } = req.params; 
+
+  try {
+    const disbursements = await Disburse.find({ itemId }).sort({ date: -1 }); // Sort by most recent
+    res.status(200).json(disbursements);
+  } catch (error) {
+    console.error("Error fetching disbursement history:", error);
+    res.status(500).json({
+      message: "Error fetching disbursement history",
+      error: error.message,
+    });
   }
 };
